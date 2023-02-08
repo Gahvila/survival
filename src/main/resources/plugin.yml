@@ -1,0 +1,44 @@
+name: SelviytymisHarpake
+version: 1.19.4
+main: net.gahvila.selviytymisharpake.SelviytymisHarpake
+api-version: 1.19
+authors: [ Jokni ]
+description: Lisäosa Gahvilan survival 1.18-palvelimelle.
+loadbefore:
+  - JakesRTP
+depend:
+  - Vault
+  - GriefPrevention
+commands:
+  editwarp:
+  delwarp:
+  warp:
+  buywarp:
+  setwarp:
+  feed:
+  craft:
+  komennot:
+  säännöt:
+    aliases: [rules]
+  puhu:
+    aliases: [ph]
+  enderchest:
+    aliases: ec
+  addon:
+  sit:
+  tpadeny:
+  back:
+  addhome:
+    aliases: [buyhomes, ostakoti]
+  selviytymishärpäke:
+    permission: sh.admin
+  rtp:
+    aliases: [randomtp, randomteleport, wild]
+  spawn:
+  delhome:
+  sethome:
+  home:
+  tpaccept:
+    aliases: tpy
+  tpa:
+
