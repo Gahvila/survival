@@ -16,7 +16,6 @@ public class SpawnCMD implements CommandExecutor {
         Player p = (Player) sender;
         SpawnTeleport.teleportSpawn(p);
         p.sendMessage("Teleporttasit spawnille.");
-        Bukkit.getWorld("spawn").setTime(Bukkit.getWorld("world").getTime());
         return true;
     }
 

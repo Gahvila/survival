@@ -19,25 +19,25 @@ public class TPACMD implements CommandExecutor {
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (sender instanceof Player) {
-            Player p1 = (Player) sender;
+            Player tpasender = (Player) sender;
             switch (cmd.getName()){
                 case "tpa":
                     if (args.length == 1) {
-                        if (!args[0].equalsIgnoreCase(p1.getName())) {
+                        if (!args[0].equalsIgnoreCase(tpasender.getName())) {
                             if (Bukkit.getServer().getPlayer(args[0]) != null) {
-                                Player p2 = Bukkit.getServer().getPlayer(args[0]);
-                                if (tpa.get(p2) != p1) {
+                                Player tpareceiver = Bukkit.getServer().getPlayer(args[0]);
+                                if (tpa.get(tpareceiver) != tpasender) {
 
 
                                     //Player 1
-                                    p1.sendMessage("§a§lSurvival §8> §fLähetit TPA-Pyynnön pelaajalle §e" + p2.getName() + "§f.");
-                                    p1.playSound(p1.getLocation(), Sound.ENTITY_VILLAGER_YES, 2F, 1F);
+                                    tpasender.sendMessage("§fLähetit TPA-Pyynnön pelaajalle §e" + tpareceiver.getName() + "§f.");
+                                    tpasender.playSound(tpasender.getLocation(), Sound.ENTITY_VILLAGER_YES, 2F, 1F);
                                     Bukkit.getServer().getScheduler().runTaskLater(SelviytymisHarpake.instance, new Runnable() {
                                         @Override
                                         public void run() {
-                                            if (tpa.get(p1) != null) {
-                                                tpa.remove(p1, p2);
-                                                p1.sendMessage("§a§lSurvival §8> §fPyyntösi vanhentui!");
+                                            if (tpa.get(tpasender) != null) {
+                                                tpa.remove(tpareceiver, tpasender);
+                                                tpasender.sendMessage("§fPyyntösi vanhentui!");
                                             }
                                         }
                                     }, 20 * 40);
@@ -57,51 +57,113 @@ public class TPACMD implements CommandExecutor {
                                     TextComponent text = new TextComponent();
                                     text.setText(" §7tai ");
 
-                                    p2.sendMessage("§r");
-                                    p2.sendMessage("§e" + p1.getName() + "§r §7lähetti sinulle TPA-Pyynnön");
-                                    p2.sendMessage("§7Hyväksyäksesi, suorita komento §e/tpaccept");
-                                    p2.sendMessage("§7Kieltäytyäksesi, suorita komento §e/tpadeny");
-                                    p2.sendMessage("§7Pyyntö vanhenee §e40 sekunnin §7kuluttua.");
-                                    p2.spigot().sendMessage(accept, text, deny);
-                                    p2.playSound(p1.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 2F, 1F);
+                                    tpareceiver.sendMessage("§r");
+                                    tpareceiver.sendMessage("§e" + tpasender.getName() + "§r §7lähetti sinulle TPA-Pyynnön");
+                                    tpareceiver.sendMessage("§7Hyväksyäksesi, suorita komento §e/tpaccept");
+                                    tpareceiver.sendMessage("§7Kieltäytyäksesi, suorita komento §e/tpadeny");
+                                    tpareceiver.sendMessage("§7Pyyntö vanhenee §e40 sekunnin §7kuluttua.");
+                                    tpareceiver.spigot().sendMessage(accept, text, deny);
+                                    tpareceiver.playSound(tpasender.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 2F, 1F);
 
 
-                                    //Both
-                                    tpa.put(p2, p1);
+                                    tpa.put(tpareceiver, tpasender);
                                 } else {
-                                    p1.sendMessage("§a§lSurvival §8> §fEt voi lähettää pelaajalle §e" + p2.getName() + "§r §fTPA-pyyntöä, koska olet jo lähettänyt hänelle pyynnön.");
+                                    tpasender.sendMessage("§fEt voi lähettää pelaajalle §e" + tpareceiver.getName() + "§r §fTPA-pyyntöä, koska olet jo lähettänyt hänelle pyynnön.");
                                 }
                             }
                         }
                     } else {
-                        p1.sendMessage("§a§lSurvival §8> §fHupsista! Tuota komentoa käytetään näin: §e/tpa (pelaajan nimi)§f.");
+                        tpasender.sendMessage("§fHupsista! Tuota komentoa käytetään näin: §e/tpa (pelaajan nimi)§f.");
+                    }
+                    break;
+                case "tpahere":
+                    if (args.length == 1) {
+                        if (!args[0].equalsIgnoreCase(tpasender.getName())) {
+                            if (Bukkit.getServer().getPlayer(args[0]) != null) {
+                                Player tpareceiver = Bukkit.getServer().getPlayer(args[0]);
+                                if (tpa.get(tpareceiver) != tpasender) {
+
+
+                                    //Player 1
+                                    tpasender.sendMessage("§fLähetit TPAHere-Pyynnön pelaajalle §e" + tpareceiver.getName() + "§f.");
+                                    tpasender.playSound(tpasender.getLocation(), Sound.ENTITY_VILLAGER_YES, 2F, 1F);
+                                    Bukkit.getServer().getScheduler().runTaskLater(SelviytymisHarpake.instance, new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (tpa.get(tpasender) != null) {
+                                                tpa.remove(tpasender, tpareceiver);
+                                                tpa.remove(tpareceiver, tpasender);
+                                                tpasender.sendMessage("§fPyyntösi vanhentui!");
+                                            }
+                                        }
+                                    }, 20 * 40);
+
+
+                                    //Player 2
+                                    TextComponent accept = new TextComponent();
+                                    accept.setText("§a§lHyväksy");
+                                    accept.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§bKlikkaa minua hyväksyäksesi!").create())); //display text msg when hovering
+                                    accept.setClickEvent(new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND, "/tpaccept")); //runs command when they click the text
+
+                                    TextComponent deny = new TextComponent();
+                                    deny.setText("§c§lkieltäydy");
+                                    deny.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§bKlikkaa minua kieltäytyäksesi!").create())); //display text msg when hovering
+                                    deny.setClickEvent(new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND, "/tpadeny")); //runs command when they click the text
+
+                                    TextComponent text = new TextComponent();
+                                    text.setText(" §7tai ");
+
+                                    tpareceiver.sendMessage("§r");
+                                    tpareceiver.sendMessage("§e" + tpasender.getName() + "§r §7lähetti sinulle TPA-Pyynnön");
+                                    tpareceiver.sendMessage("§7Hyväksyäksesi, suorita komento §e/tpaccept");
+                                    tpareceiver.sendMessage("§7Kieltäytyäksesi, suorita komento §e/tpadeny");
+                                    tpareceiver.sendMessage("§7Pyyntö vanhenee §e40 sekunnin §7kuluttua.");
+                                    tpareceiver.spigot().sendMessage(accept, text, deny);
+                                    tpareceiver.playSound(tpasender.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 2F, 1F);
+
+
+                                    //Both
+                                    tpa.put(tpareceiver, tpasender);
+                                    tpa.put(tpasender, tpareceiver);
+                                } else {
+                                    tpasender.sendMessage("§fEt voi lähettää pelaajalle §e" + tpareceiver.getName() + "§r §fTPA-pyyntöä, koska olet jo lähettänyt hänelle pyynnön.");
+                                }
+                            }
+                        }
+                    } else {
+                        tpasender.sendMessage("§fHupsista! Tuota komentoa käytetään näin: §e/tpa (pelaajan nimi)§f.");
                     }
                     break;
                 case "tpaccept":
-                    if (tpa.get(p1) != null) {
-                        Player player = tpa.get(p1);
-
-                        if (player.getGameMode().equals(GameMode.ADVENTURE)) {
-                            player.setGameMode(GameMode.SURVIVAL);
-                        }
-                        player.teleportAsync(p1.getLocation());
-                        p1.sendMessage("§a§lSurvival §8> §fHyväksyit TPA-Pyynnön pelaajalta §e" + player.getName() + "§f.");
-                        player.sendMessage("§a§lSurvival §8> §fTeleporttasit pelaajaan §e" + p1.getName() + "§f.");
-                        player.playSound(p1.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 2F, 1F);
-                        p1.playSound(p1.getLocation(), Sound.ENTITY_VILLAGER_YES, 2F, 1F);
-                        tpa.remove(p1);
-                        tpa.remove(player);
+                    if (tpa.get(tpasender) != null) {
+                        Player tpareceiver = tpa.get(tpasender);
+                        tpareceiver.teleportAsync(tpasender.getLocation());
+                        tpasender.sendMessage("§fHyväksyit TPA-Pyynnön pelaajalta §e" + tpareceiver.getName() + "§f.");
+                        tpareceiver.sendMessage("§fTeleporttasit pelaajaan §e" + tpasender.getName() + "§f.");
+                        tpareceiver.playSound(tpasender.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 2F, 1F);
+                        tpasender.playSound(tpasender.getLocation(), Sound.ENTITY_VILLAGER_YES, 2F, 1F);
+                        tpa.remove(tpasender);
+                        tpa.remove(tpareceiver);
                     } else {
-                        p1.sendMessage("§a§lSurvival §8> §fSinulla ei ole TPA-Pyyntöjä.");
+                        tpasender.sendMessage("§fSinulla ei ole TPA-Pyyntöjä.");
                     }
                     break;
                 case "tpadeny":
-                    if (tpa.get(p1) != null) {
-                        Player player = tpa.get(p1);
-                        p1.sendMessage("§a§lSurvival §8> §fKieltäydyit TPA-Pyynnöstä.");
-                        player.sendMessage("§a§lSurvival §8> §fSinua ei teleportattu koska §e" + p1.getName() + "§r §fkieltäytyi siitä.");
-                        tpa.remove(p1);
+                    if (tpa.get(tpasender) != null) {
+                        Player player = tpa.get(tpasender);
+                        tpasender.sendMessage("§fKieltäydyit TPA-Pyynnöstä.");
+                        player.sendMessage("§fSinua ei teleportattu koska §e" + tpasender.getName() + "§r §fkieltäytyi siitä.");
+                        tpa.remove(tpasender);
                         tpa.remove(player);
+                    }
+                    break;
+                case "tpacancel":
+                    if (tpa.get(tpasender) != null) {
+                        Player player = tpa.get(tpasender);
+                        tpasender.sendMessage("Peruit TPA-pyynnön.");
+                        player.sendMessage("§e" + tpasender.getName() + " §fperui lähettämänsä TPA-pyynnön.");
+                        tpa.remove(player, tpasender);
+                        tpa.remove(tpasender, player);
                     }
                     break;
 

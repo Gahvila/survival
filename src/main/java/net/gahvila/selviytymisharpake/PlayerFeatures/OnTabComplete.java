@@ -21,8 +21,6 @@ public class OnTabComplete implements TabCompleter {
 
 
         switch (command.getName()) {
-            case "rtp":
-                return List.of("normaali", "spawn");
             case "warp", "delwarp":
                 if (WarpManager.getWarps().isEmpty()) {
                     return null;
@@ -31,14 +29,12 @@ public class OnTabComplete implements TabCompleter {
                 }return WarpManager.getWarps();
             case "home", "delhome":
                 if (HomeManager.getHomes(player).isEmpty()) {
-                    return null;
+                    return Collections.singletonList("");
                 }
                 for (int i = 0; i < HomeManager.getHomes(player).size(); i++) {
                 }return HomeManager.getHomes(player);
             case "sethome":
                 return Collections.singletonList("");
-            case "addon":
-                return List.of("enderchest", "craft", "feed");
         }return null;
 
     }

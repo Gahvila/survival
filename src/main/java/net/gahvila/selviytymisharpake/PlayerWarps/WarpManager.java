@@ -1,10 +1,16 @@
 package net.gahvila.selviytymisharpake.PlayerWarps;
 
 import de.leonhard.storage.Json;
+import de.leonhard.storage.Toml;
+import de.leonhard.storage.Yaml;
+import it.unimi.dsi.fastutil.Hash;
+import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -12,10 +18,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static net.gahvila.selviytymisharpake.SelviytymisHarpake.instance;
 
@@ -28,16 +31,77 @@ public class WarpManager {
     public static HashMap<UUID, String> settingWarpName = new HashMap<UUID, String>();
     public static HashMap<UUID, Integer> settingWarpPrice = new HashMap<UUID, Integer>();
 
+
+    public static HashSet<Material> bad_blocks = new HashSet<>();
+    static {
+        bad_blocks.add(Material.LAVA);
+        bad_blocks.add(Material.FIRE);
+        bad_blocks.add(Material.CACTUS);
+        bad_blocks.add(Material.MAGMA_BLOCK);
+    }
+    public static HashSet<Material> ground_blocks = new HashSet<>();
+    static {
+        bad_blocks.add(Material.AIR);
+        bad_blocks.add(Material.LAVA);
+        bad_blocks.add(Material.FIRE);
+        bad_blocks.add(Material.CACTUS);
+        bad_blocks.add(Material.MAGMA_BLOCK);
+    }
+
+
+    public static boolean isLocationSafe(Location location) {
+
+        int x = location.getBlockX();
+        int y = location.getBlockY();
+        int z = location.getBlockZ();
+        //Get instances of the blocks around where the player would spawn
+        Block block = location.getWorld().getBlockAt(x, y, z);
+        Block below = location.getWorld().getBlockAt(x, y - 1, z);
+        Block above = location.getWorld().getBlockAt(x, y + 1, z);
+        //spawnrtp
+        if (!ground_blocks.contains(below.getType())){
+            return !(bad_blocks.contains(below.getType())) || (block.isSolid()) || (above.getType().isSolid());
+        }else{
+            return false;
+        }
+    }
+
+    //
+
+    //0 eli default: uusimmat warpit ensin
+    //1 vanhimmat warpit ensin
+    //2 aakkosjärjestys
+
+    public static String changeSorting(Player player) {
+        Json warpData = new Json("playerdata.json", instance.getDataFolder() + "/data/");
+        UUID uuid = player.getUniqueId();
+        if (getSorting(player) == null || getSorting(player) == 0) {
+            warpData.set(uuid + ".sorting", 1);
+        } else if (getSorting(player) == 1){
+            warpData.set(uuid + ".sorting", 2);
+        } else if (getSorting(player) == 2){
+            warpData.set(uuid + ".sorting", 0);
+        }
+        return null;
+    }
+
+    public static Integer getSorting(Player player) {
+        Json warpData = new Json("playerdata.json", instance.getDataFolder() + "/data/");
+        UUID uuid = player.getUniqueId();
+        Integer uses = warpData.getInt(uuid + ".sorting");
+        return uses;
+    }
+
     //
     public static String updateWarpPrice(Player player, String name, Integer price) {
-        Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
+        Json warpData = new Json("warpdata.toml", instance.getDataFolder() + "/data/");
         warpData.set(name + ".price", price);
         return null;
     }
 
     //
     public static String updateWarpLocation(Player player, String warp, Location location) {
-        Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
+        Json warpData = new Json("warpdata.toml", instance.getDataFolder() + "/data/");
         warpData.getFileData().insert(warp + ".world", location.getWorld().getName());
         warpData.getFileData().insert(warp + ".x", location.getX());
         warpData.getFileData().insert(warp + ".y", location.getY());
@@ -48,12 +112,13 @@ public class WarpManager {
     }
 
     public static void saveWarp(Player player, String warp, Location location, Integer price) {
-        Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
+        Json warpData = new Json("warpdata.toml", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         warpData.getFileData().insert(warp + ".owner", uuid);
         warpData.getFileData().insert(warp + ".currentOwnerName", player.getName());
         warpData.getFileData().insert(warp + ".price", price);
         warpData.getFileData().insert(warp + ".uses", 0);
+        warpData.getFileData().insert(warp + ".creationdate", System.currentTimeMillis());
         warpData.getFileData().insert(warp + ".world", location.getWorld().getName());
         warpData.getFileData().insert(warp + ".x", location.getX());
         warpData.getFileData().insert(warp + ".y", location.getY());
@@ -65,19 +130,27 @@ public class WarpManager {
     //
 
     public static Integer getUses(String warp) {
-        Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
+        Json warpData = new Json("warpdata.toml", instance.getDataFolder() + "/data/");
         Integer uses = warpData.getInt(warp + ".uses");
         return uses;
     }
 
     public static void addUses(String warp) {
-        Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
+        Json warpData = new Json("warpdata.toml", instance.getDataFolder() + "/data/");
         warpData.set(warp + ".uses", getUses(warp) + 1);
     }
 
     //
+
+    public static Long getCreationDate(String warp) {
+        Json warpData = new Json("warpdata.toml", instance.getDataFolder() + "/data/");
+        Long date = warpData.getLong(warp + ".creationdate");
+        return date;
+    }
+
+    //
     public static void deleteWarp(String warp) {
-        Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
+        Json warpData = new Json("warpdata.toml", instance.getDataFolder() + "/data/");
         if (warpData.contains(warp)) {
             warpData.set(warp, null);
         }
@@ -85,7 +158,7 @@ public class WarpManager {
 
     //
     public static String getWarpOwnerUUID(String warp) {
-        Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
+        Json warpData = new Json("warpdata.toml", instance.getDataFolder() + "/data/");
         if (warpData.getFileData().containsKey(warp)) {
             String UUID = warpData.getString((warp + ".owner"));
             return UUID;
@@ -93,7 +166,7 @@ public class WarpManager {
         return null;
     }
     public static String getWarpOwnerName(String warp) {
-        Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
+        Json warpData = new Json("warpdata.toml", instance.getDataFolder() + "/data/");
         if (warpData.getFileData().containsKey(warp)) {
             String name = warpData.getString((warp + ".currentOwnerName"));
             return name;
@@ -102,7 +175,7 @@ public class WarpManager {
     }
 
     public static String updateWarpOwnerName(Player player) {
-        Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
+        Json warpData = new Json("warpdata.toml", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         warpData.getFileData().toMap().forEach((k,v) -> {
             if (v.toString().contains("owner=" + uuid)){
@@ -116,7 +189,7 @@ public class WarpManager {
     }
 
     public static Integer getWarpPrice(String warp) {
-        Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
+        Json warpData = new Json("warpdata.toml", instance.getDataFolder() + "/data/");
         if (warpData.getFileData().containsKey(warp)) {
             Integer integer = warpData.getInt((warp + ".price"));
             return integer;
@@ -144,20 +217,33 @@ public class WarpManager {
     }
 
 
-    public static ArrayList<String> getWarps(){
+    public static ArrayList<String> getWarps() {
         Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
         ArrayList<String> warps = new ArrayList<>();
-        //warpData.getFileData().singleLayerKeySet().forEach((warp) -> warps.add(warp));
-
-        //TODO
-        //CHECK IF WORKING!
         warps.addAll(warpData.getFileData().singleLayerKeySet());
+
+        //retrieve and store the timestamps in a separate list
+        ArrayList<Long> timestamps = new ArrayList<>();
+        for (String warp : warps) {
+            long timestamp = getCreationDate(warp);
+            timestamps.add(timestamp);
+        }
+
+        //sort the warps based on the stored timestamps
+        Collections.sort(warps, (warp1, warp2) -> {
+            int index1 = warps.indexOf(warp1);
+            int index2 = warps.indexOf(warp2);
+            long timestamp1 = timestamps.get(index1);
+            long timestamp2 = timestamps.get(index2);
+            return Long.compare(timestamp1, timestamp2);
+        });
+
         return warps;
     }
 
     //
     public static ArrayList<String> getOwnedWarps(Player player){
-        Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
+        Json warpData = new Json("warpdata.toml", instance.getDataFolder() + "/data/");
         ArrayList<String> warps = new ArrayList<>();
         String uuid = player.getUniqueId().toString();
 

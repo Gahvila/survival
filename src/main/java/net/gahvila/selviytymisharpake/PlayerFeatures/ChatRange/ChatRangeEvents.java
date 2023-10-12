@@ -1,4 +1,4 @@
-package net.gahvila.selviytymisharpake.Chat.ChatRange;
+package net.gahvila.selviytymisharpake.PlayerFeatures.ChatRange;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

@@ -1,4 +1,4 @@
-package net.gahvila.selviytymisharpake.PlayerWarps.MenuSystem;
+package net.gahvila.selviytymisharpake.Utils;
 
 import org.bukkit.entity.Player;
 

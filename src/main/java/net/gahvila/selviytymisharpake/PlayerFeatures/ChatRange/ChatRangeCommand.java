@@ -1,4 +1,4 @@
-package net.gahvila.selviytymisharpake.Chat.ChatRange;
+package net.gahvila.selviytymisharpake.PlayerFeatures.ChatRange;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
-public class ChatRangeCommand implements CommandExecutor {
+public class ChatRangeCommand implements CommandExecutor{
 
     public static ArrayList<Player> kuiskaus = new ArrayList<>();
     public static ArrayList<Player> huuto = new ArrayList<>();

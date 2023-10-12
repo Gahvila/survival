@@ -41,7 +41,7 @@ public class WarpEvents implements Listener {
                                         p.sendMessage("OK! Warpin nimeksi tulee §e" + e.getMessage());
                                         p.sendMessage("");
                                         p.sendMessage("§fHaluatko että warpin käyttö maksaa kultaa?");
-                                        p.sendMessage("§fVoit syöttää hinnan §e0-50 §fväliltä.");
+                                        p.sendMessage("§fVoit syöttää hinnan §e0-100 §fväliltä.");
                                         p.sendMessage("§7Jos haluat perua warpin luonnin, kirjoita '§elopeta§7' chattiin.");
                                     }else{
                                         p.sendMessage("Tuolla nimellä on jo warppi.");
@@ -57,7 +57,7 @@ public class WarpEvents implements Listener {
                             e.setCancelled(true);
                             if (e.getMessage().matches("[0-9]*")) {
                                 Integer price = Integer.valueOf(e.getMessage());
-                                if (price > -1 && price < 51) {
+                                if (price > -1 && price < 101) {
                                     WarpManager.settingWarp.put(p.getUniqueId(), 3);
                                     WarpManager.settingWarpPrice.put(p.getUniqueId(), Integer.valueOf(e.getMessage()));
                                     p.sendMessage("");
@@ -100,7 +100,11 @@ public class WarpEvents implements Listener {
                                 WarpManager.settingWarpPrice.remove(p.getUniqueId());
                                 WarpManager.settingWarpName.remove(p.getUniqueId());
                             } else {
-                                p.sendMessage("Sinulla ei ole tarpeeksi rahaa! Tarvitset 500 kolikkoa.");
+                                p.sendMessage("");
+                                p.sendMessage("§cVarmista, että olet sijainnissa johon haluat warpin tulevan.");
+                                p.sendMessage("");
+                                p.sendMessage("Kun kaikki on valmista, kirjoita '§evarmista§f' chattiin, ja warppi asetetaan.");
+                                p.sendMessage("§7Jos haluat perua warpin luonnin, kirjoita '§elopeta§7' chattiin.");
                             }
                             break;
                     }
@@ -192,7 +196,7 @@ public class WarpEvents implements Listener {
             Integer toBePaid = WarpManager.getMoneyInQueue(String.valueOf(p.getUniqueId()));
             WarpManager.setMoneyInQueue(p.getUniqueId().toString(), 0);
             SelviytymisHarpake.getEconomy().depositPlayer(p, toBePaid);
-            p.sendMessage("Sinun maksullista warppia käytettiin kun olit poissa, sait §e" + toBePaid + " §fkultaa.");
+            p.sendMessage("Sinun maksullista warppia käytettiin kun olit poissa, sait §e" + toBePaid + "Ⓖ§f.");
         }
 
         //WarpManager.setAllowedWarps(p);

@@ -2,6 +2,7 @@ package net.gahvila.selviytymisharpake.NewSeason.EndBlocker;
 
 import net.gahvila.selviytymisharpake.PlayerFeatures.Spawn.SpawnTeleport;
 import net.gahvila.selviytymisharpake.SelviytymisHarpake;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,7 +19,7 @@ public class PortalEnterEvent implements Listener {
                 if (SelviytymisHarpake.instance.getConfig().getBoolean("end-enabled")) return;
                 e.setCancelled(true);
                 SpawnTeleport.teleportSpawn(p);
-                p.sendMessage("End on suljettu.");
+                p.sendMessage(Component.text("End on suljettu."));
             }
         }
     }

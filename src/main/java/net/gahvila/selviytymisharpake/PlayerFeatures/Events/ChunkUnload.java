@@ -1,5 +1,6 @@
 package net.gahvila.selviytymisharpake.PlayerFeatures.Events;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,7 +21,6 @@ public class ChunkUnload implements Listener {
         for (int i = 0; i < ents.length; ++i)
         {
             Entity ent = ents[i];
-
             // Get pets that can teleport with you
             if (ent.getType() == EntityType.WOLF || ent.getType() == EntityType.CAT || ent.getType() == EntityType.PARROT)
             {
@@ -52,7 +52,6 @@ public class ChunkUnload implements Listener {
         for (int i = 0; i < ents.size(); ++i)
         {
             Entity ent = ents.get(i);
-
             // Get pets that can teleport with you
             if (ent.getType() == EntityType.WOLF || ent.getType() == EntityType.CAT || ent.getType() == EntityType.PARROT)
             {

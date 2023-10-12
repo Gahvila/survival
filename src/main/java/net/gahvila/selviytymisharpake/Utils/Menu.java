@@ -1,5 +1,6 @@
-package net.gahvila.selviytymisharpake.PlayerWarps.MenuSystem;
+package net.gahvila.selviytymisharpake.Utils;
 
+import net.gahvila.selviytymisharpake.Utils.PlayerMenuUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -21,7 +22,7 @@ public abstract class Menu implements InventoryHolder {
     protected ItemStack FILLER_GLASS = makeItem(Material.GRAY_STAINED_GLASS_PANE, " ");
 
     //Constructor for Menu. Pass in a PlayerMenuUtility so that
-    // we have information on who's menu this is and
+    // we have information on whose menu this is and
     // what info is to be transfered
     public Menu(PlayerMenuUtility playerMenuUtility) {
         this.playerMenuUtility = playerMenuUtility;
@@ -38,6 +39,7 @@ public abstract class Menu implements InventoryHolder {
 
     //let each menu decide what items are to be placed in the inventory menu
     public abstract void setMenuItems();
+
 
     //When called, an inventory is created and opened for the player
     public void open() {

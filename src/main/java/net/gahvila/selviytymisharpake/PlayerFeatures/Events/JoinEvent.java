@@ -20,28 +20,17 @@ public class JoinEvent implements Listener {
         Player p = e.getPlayer();
 
         p.setInvulnerable(false);
-        if (p.getWorld().getName().equals("spawn")){
-            Bukkit.getWorld("spawn").setTime(Bukkit.getWorld("world").getTime());
-        }
         if (!p.hasPlayedBefore()){
 
             SpawnTeleport.teleportSpawn(p);
-            Bukkit.getWorld("spawn").setTime(Bukkit.getWorld("world").getTime());
 
-            e.setJoinMessage("§a§lSurvival §8> §e" + p.getName() + "§r §fliittyi Survivaliin ensimmäistä kertaa, tervetuloa!");
+            e.setJoinMessage("§e" + p.getName() + "§r §fliittyi Survivaliin ensimmäistä kertaa, tervetuloa!");
 
             //join kit
 
             p.getInventory().addItem(new ItemStack(Material.APPLE, 4));
-            p.getInventory().addItem(new ItemStack(Material.GOLDEN_SHOVEL, 1));
-            HomeManager.setAllowedHomes(p);
-            return;
+            p.getInventory().addItem(new ItemStack(Material.GOLDEN_AXE, 1));
         }else{
-            if (!HomeManager.getIfDefaulted(p)) {
-                HomeManager.setIfDefaulted(p);
-                HomeManager.setAllowedHomes(p);
-            }
-
             e.setJoinMessage(null);
         }
     }

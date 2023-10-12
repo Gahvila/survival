@@ -1,9 +1,10 @@
-package net.gahvila.selviytymisharpake.PlayerWarps.MenuSystem.menu;
+package net.gahvila.selviytymisharpake.PlayerFeatures.Back;
 
-import net.gahvila.selviytymisharpake.Utils.Menu;
-import net.gahvila.selviytymisharpake.Utils.PlayerMenuUtility;
+import net.gahvila.selviytymisharpake.PlayerWarps.MenuSystem.menu.WarpMenu;
 import net.gahvila.selviytymisharpake.PlayerWarps.WarpManager;
 import net.gahvila.selviytymisharpake.SelviytymisHarpake;
+import net.gahvila.selviytymisharpake.Utils.Menu;
+import net.gahvila.selviytymisharpake.Utils.PlayerMenuUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -15,16 +16,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class WarpConfirmMenu extends Menu {
-
-
-    public WarpConfirmMenu(PlayerMenuUtility playerMenuUtility) {
+public class BackMenuConfirm extends Menu {
+    public BackMenuConfirm(PlayerMenuUtility playerMenuUtility) {
         super(playerMenuUtility);
     }
 
     @Override
     public String getMenuName() {
-        return "Teleporttaa: " + playerMenuUtility.getWarpToTeleport();
+        return "Hyväksytkö maksun?";
     }
 
     @Override
@@ -34,29 +33,16 @@ public class WarpConfirmMenu extends Menu {
 
     @Override
     public void handleMenu(InventoryClickEvent e) {
-        Integer price = WarpManager.getWarpPrice(playerMenuUtility.getWarpToTeleport());
         Player p = (Player) e.getWhoClicked();
+        Double price = BackManager.calculateDeathPrice(p);
         switch (e.getCurrentItem().getType()){
             case GREEN_STAINED_GLASS_PANE:
                 if (SelviytymisHarpake.getEconomy().getBalance(p) >= price) {
                     SelviytymisHarpake.getEconomy().withdrawPlayer(p, price);
                     p.sendMessage("Tililtäsi veloitettiin §e" + price + "Ⓖ§f.");
                     p.closeInventory();
-                    p.teleportAsync(WarpManager.getWarp(playerMenuUtility.getWarpToTeleport()));
-                    p.sendMessage("Sinut teleportattiin warppiin §e" + playerMenuUtility.getWarpToTeleport() + "§f.");
-
-                    if (!p.getName().equals(WarpManager.getWarpOwnerName(e.getCurrentItem().getItemMeta().getDisplayName()))){
-                        WarpManager.addUses(playerMenuUtility.getWarpToTeleport());
-                    }
-                    //
-                    String ownerUUID = WarpManager.getWarpOwnerUUID(playerMenuUtility.getWarpToTeleport());
-                    if (Bukkit.getPlayer(UUID.fromString(ownerUUID)) == null){
-                        WarpManager.addMoneyToQueue(WarpManager.getWarpOwnerUUID(playerMenuUtility.getWarpToTeleport()), price);
-                    }else{
-                        Player owner = Bukkit.getPlayer(UUID.fromString(ownerUUID));
-                        SelviytymisHarpake.getEconomy().depositPlayer(owner, price);
-                        owner.sendMessage("Sinun maksullista warppia käytettiin, sait §e" + price + "Ⓖ§f.");
-                    }
+                    p.teleportAsync(BackManager.getDeath(p));
+                    p.sendMessage("Sinut teleportattiin sinun viimeisimpään kuolinpaikkaan§f.");
                 }else{
                     p.closeInventory();
                     p.sendMessage("Sinulla ei ole tarpeeksi Ⓖ!");
@@ -65,7 +51,7 @@ public class WarpConfirmMenu extends Menu {
             case RED_STAINED_GLASS_PANE:
 
                 //go back to the previous menu
-                new WarpMenu(playerMenuUtility).open();
+                new BackMenu(playerMenuUtility).open();
 
                 break;
         }
@@ -74,7 +60,7 @@ public class WarpConfirmMenu extends Menu {
 
     @Override
     public void setMenuItems() {
-        Integer price = WarpManager.getWarpPrice(playerMenuUtility.getWarpToTeleport());
+        Double price = BackManager.calculateDeathPrice(playerMenuUtility.getOwner());
         ItemStack yes = new ItemStack(Material.GREEN_STAINED_GLASS_PANE, 1);
         ItemMeta yes_meta = yes.getItemMeta();
         yes_meta.setDisplayName(ChatColor.GREEN + "Kyllä");

@@ -1,14 +1,15 @@
-package net.gahvila.selviytymisharpake.PlayerWarps.MenuSystem.Listeners;
+package net.gahvila.selviytymisharpake.Utils;
 
-import net.gahvila.selviytymisharpake.PlayerWarps.MenuSystem.Menu;
+import net.gahvila.selviytymisharpake.Utils.Menu;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.InventoryHolder;
 
-public class WarpMenuListener implements Listener {
-
-
+public class MenuListener implements Listener {
     @EventHandler
     public void onMenuClick(InventoryClickEvent e){
 
@@ -17,6 +18,8 @@ public class WarpMenuListener implements Listener {
         // is an instance of Menu, then gg. The reason that
         // an InventoryHolder can be a Menu is because our Menu
         // class implements InventoryHolder!!
+
+
         if (holder instanceof Menu) {
             e.setCancelled(true); //prevent them from fucking with the inventory
             if (e.getCurrentItem() == null) { //deal with null exceptions

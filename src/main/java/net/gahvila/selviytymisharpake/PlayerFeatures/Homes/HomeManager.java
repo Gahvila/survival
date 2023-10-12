@@ -1,6 +1,7 @@
 package net.gahvila.selviytymisharpake.PlayerFeatures.Homes;
 
 import de.leonhard.storage.Json;
+import net.gahvila.selviytymisharpake.PlayerWarps.WarpManager;
 import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -13,6 +14,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static net.gahvila.selviytymisharpake.SelviytymisHarpake.instance;
 
@@ -38,6 +40,26 @@ public class HomeManager {
         }
     }
 
+    //
+    public static void deleteHomesInWorld(String worldName) {
+        Json homeData = new Json("homedata.json", instance.getDataFolder() + "/data/");
+
+        List<String> homeowners = new ArrayList<>(homeData.getFileData().singleLayerKeySet());
+
+        for (String homeowner : homeowners) {
+            List<String> homes = new ArrayList<>(homeData.getFileData().singleLayerKeySet(homeowner));
+
+            for (String home : homes) {
+                String world = homeData.getString(homeowner + "." + home + ".world");
+
+                if (world != null && world.equalsIgnoreCase(worldName)) {
+                    if (homeData.contains(homeowner + "." + home)) {
+                        homeData.remove(homeowner + "." + home);
+                    }
+                }
+            }
+        }
+    }
     //
     public static Location getHome(Player player, String home) {
         Json homeData = new Json("homedata.json", instance.getDataFolder() + "/data/");
@@ -70,44 +92,44 @@ public class HomeManager {
     }
 
 
-    public static void addAllowedHomes(Player player) {
+    public static void addAdditionalHomes(Player player) {
         Json homeData = new Json("allowedhomes.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
-        homeData.set(uuid + ".allowed", getAllowedHomes(player) + 1);
+        homeData.set(uuid + ".additionalHomes", homeData.getInt(uuid + ".additionalHomes") + 1);
     }
 
     public static Integer getAllowedHomes(Player player) {
         Json homeData = new Json("allowedhomes.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
-        Integer allowedHomes = homeData.getInt(uuid + ".allowed");
-        return allowedHomes;
-    }
-
-    public static void setAllowedHomes(Player player) {
-        Json homeData = new Json("allowedhomes.json", instance.getDataFolder() + "/data/");
-        String uuid = player.getUniqueId().toString();
-        if (player.hasPermission("survival.homes.9")) {
-            homeData.set(uuid + ".allowed", 9);
-        } else if (player.hasPermission("survival.homes.5")) {
-            homeData.set(uuid + ".allowed", 6);
-        } else if (player.hasPermission("survival.homes.4")) {
-            homeData.set(uuid + ".allowed", 4);
-        } else if (player.hasPermission("survival.homes.3")) {
-            homeData.set(uuid  + ".allowed", 3);
+        if (homeData.contains(uuid)){
+            Integer allowedHomes = homeData.getInt(uuid + ".additionalHomes") + getAllowedHomesOfRank(player);
+            return allowedHomes;
+        }else{
+            Integer allowedHomes = getAllowedHomesOfRank(player);
+            return allowedHomes;
         }
     }
 
-    public static Boolean getIfDefaulted(Player player) {
+    public static Integer getAllowedAdditionalHomes(Player player) {
         Json homeData = new Json("allowedhomes.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
-        Boolean allowedHomes = homeData.getBoolean(uuid + ".default");
-        return allowedHomes;
+        if (homeData.contains(uuid)){
+            Integer allowedHomes = homeData.getInt(uuid + ".additionalHomes");
+            return allowedHomes;
+        }else{
+            return 0;
+        }
     }
 
-    public static Boolean setIfDefaulted(Player player) {
-        Json homeData = new Json("allowedhomes.json", instance.getDataFolder() + "/data/");
-        String uuid = player.getUniqueId().toString();
-        homeData.set(uuid + ".default", true);
-        return null;
+    public static Integer getAllowedHomesOfRank(Player player) {
+        if (player.hasPermission("survival.homes.pro")) {
+            return 9;
+        } else if (player.hasPermission("survival.homes.mvp")) {
+            return 7;
+        } else if (player.hasPermission("survival.homes.vip")) {
+            return 5;
+        }else{
+            return 3;
+        }
     }
 }

@@ -1,9 +1,7 @@
-package net.gahvila.selviytymisharpake.PlayerWarps.MenuSystem;
+package net.gahvila.selviytymisharpake.Utils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 /*
 
@@ -35,6 +33,7 @@ public abstract class PaginatedMenu extends Menu {
         inventory.setItem(49, makeItem(Material.BARRIER, ChatColor.DARK_RED + "Sulje"));
 
         inventory.setItem(50, makeItem(Material.DARK_OAK_BUTTON, ChatColor.GREEN + "Seuraava sivu"));
+
 
         for (int i = 0; i < 10; i++) {
             if (inventory.getItem(i) == null) {

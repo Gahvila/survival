@@ -1,7 +1,7 @@
 package net.gahvila.selviytymisharpake.PlayerFeatures.Back;
 
-import org.bukkit.GameMode;
-import org.bukkit.Location;
+import net.gahvila.selviytymisharpake.PlayerWarps.MenuSystem.menu.WarpMenu;
+import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,22 +13,19 @@ public class BackCommand implements CommandExecutor {
         if (cmd.getName().equalsIgnoreCase("back")) {
             if (sender instanceof Player) {
                 Player p = (Player) sender;
-                if (!p.getWorld().getName().equalsIgnoreCase("rules")) {
-                    String prefix = "§a§lSurvival §8> §r";
-                    if (BackListener.back.get(p) == null) {
-                        p.sendMessage("Minne matka? Et ole vielä teleportannut minnekään, joten sinulla ei ole aikaisempaa sijaintia.");
-                    } else {
-                        Location loc = BackListener.back.get(p);
-                        p.teleportAsync(loc);
-                        p.setGameMode(GameMode.SURVIVAL);
-                        p.sendMessage(prefix + "Sinut teleportattiin aiempaan sijaintiin.");
-                    }
-                    return true;
-                }
+                new BackMenu(SelviytymisHarpake.getPlayerMenuUtility(p)).open();
+                return true;
             }
-        }
-        return false;
+        }else if (cmd.getName().equalsIgnoreCase("fback")) {
+            if (sender instanceof Player) {
+                Player p = (Player) sender;
+                if (BackManager.getBack(p, 1) != null){
+                    p.teleportAsync(BackManager.getBack(p, 1));
+                }else{
+                    p.sendMessage("Sijaintia ei ole.");
+                }
+                return true;
+            }
+        }return true;
     }
-
-
 }
