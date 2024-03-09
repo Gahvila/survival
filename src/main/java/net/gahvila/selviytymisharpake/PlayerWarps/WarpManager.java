@@ -4,7 +4,6 @@ import de.leonhard.storage.Json;
 import de.leonhard.storage.Toml;
 import de.leonhard.storage.Yaml;
 import it.unimi.dsi.fastutil.Hash;
-import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

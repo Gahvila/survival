@@ -45,7 +45,9 @@ public class BackListener implements Listener {
                             if (!(e.getCause().equals(PlayerTeleportEvent.TeleportCause.NETHER_PORTAL))){
                                 if (!(e.getCause().equals(PlayerTeleportEvent.TeleportCause.SPECTATE))){
                                     if (!e.getFrom().getWorld().equals(Bukkit.getWorld("spawn"))){
-                                        BackManager.saveBackLocation(p, e.getFrom());
+                                        if (distanceChecker(e.getFrom(), e.getTo())){
+                                            BackManager.saveBackLocation(p, e.getFrom());
+                                        }
                                     }
                                 }
                             }
@@ -55,6 +57,13 @@ public class BackListener implements Listener {
             }
         }
 
+    }
+
+    public boolean distanceChecker(Location oldLoc, Location newLoc) {
+        double distance = oldLoc.distance(newLoc);
+        double maxDistance = 50.0;
+
+        return distance <= maxDistance;
     }
 
     @EventHandler

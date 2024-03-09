@@ -137,7 +137,7 @@ public class BackManager {
             default:
                 break;
         }
-        return price;
+        return price / 3;
     }
 
     public static Double getXdeath(Player player) {
