@@ -45,7 +45,7 @@ public class BackListener implements Listener {
                             if (!(e.getCause().equals(PlayerTeleportEvent.TeleportCause.NETHER_PORTAL))){
                                 if (!(e.getCause().equals(PlayerTeleportEvent.TeleportCause.SPECTATE))){
                                     if (!e.getFrom().getWorld().equals(Bukkit.getWorld("spawn"))){
-                                        if (distanceChecker(e.getFrom(), e.getTo(), p)){
+                                        if (!distanceChecker(e.getTo(), p)){
                                             BackManager.saveBackLocation(p, e.getFrom());
                                         }
                                     }
@@ -59,33 +59,51 @@ public class BackListener implements Listener {
 
     }
 
-    public boolean distanceChecker(Location oldLoc, Location newLoc, Player player) {
-        double distance = newLoc.distance(oldLoc);
-
+    //returns true if new location is within 50 blocks of a previous location
+    public boolean distanceChecker(Location newLoc, Player player) {
         double savedDistance1 = Integer.MAX_VALUE;
         double savedDistance2 = Integer.MAX_VALUE;
         double savedDistance3 = Integer.MAX_VALUE;
         double savedDistance4 = Integer.MAX_VALUE;
 
         if (BackManager.getBack(player, 1) != null) {
-            savedDistance1 = newLoc.distance(BackManager.getBack(player, 1));
+            Location location = BackManager.getBack(player, 1);
+            if (newLoc.getWorld() == location.getWorld()){
+                savedDistance1 = newLoc.distance(location);
+            }
         }
         if (BackManager.getBack(player, 2) != null) {
-            savedDistance2 = newLoc.distance(BackManager.getBack(player, 2));
+            Location location = BackManager.getBack(player, 2);
+            if (newLoc.getWorld() == location.getWorld()){
+                savedDistance2 = newLoc.distance(location);
+            }
         }
         if (BackManager.getBack(player, 3) != null) {
-            savedDistance3 = newLoc.distance(BackManager.getBack(player, 3));
+            Location location = BackManager.getBack(player, 3);
+            if (newLoc.getWorld() == location.getWorld()){
+                savedDistance3 = newLoc.distance(location);
+            }
         }
         if (BackManager.getBack(player, 4) != null) {
-            savedDistance4 = newLoc.distance(BackManager.getBack(player, 4));
+            Location location = BackManager.getBack(player, 4);
+            if (newLoc.getWorld() == location.getWorld()){
+                savedDistance4 = newLoc.distance(location);
+            }
         }
+
+        System.err.println(savedDistance1);
+        System.err.println(savedDistance2);
+        System.err.println(savedDistance3);
+        System.err.println(savedDistance4);
 
         double maxDistance = 50.0;
 
-        boolean withinMaxDistance = !(savedDistance1 > maxDistance) && !(savedDistance2 > maxDistance) &&
+        boolean distanceBoolean = !(savedDistance1 > maxDistance) && !(savedDistance2 > maxDistance) &&
                 !(savedDistance3 > maxDistance) && !(savedDistance4 > maxDistance);
 
-        return distance <= maxDistance && withinMaxDistance;
+        System.err.println(distanceBoolean);
+
+        return distanceBoolean;
     }
 
     @EventHandler

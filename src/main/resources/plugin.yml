@@ -3,7 +3,7 @@ version: 1.20
 main: net.gahvila.selviytymisharpake.SelviytymisHarpake
 api-version: 1.19
 authors: [ Jokni ]
-depend: [ Vulcan ]
+depend: [ Vault,  ]
 description: Lisäosa Gahvilan survival 1.18-palvelimelle.
 commands:
   fback:
