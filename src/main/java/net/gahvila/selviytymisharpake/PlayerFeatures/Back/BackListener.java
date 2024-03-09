@@ -91,17 +91,10 @@ public class BackListener implements Listener {
             }
         }
 
-        System.err.println(savedDistance1);
-        System.err.println(savedDistance2);
-        System.err.println(savedDistance3);
-        System.err.println(savedDistance4);
-
         double maxDistance = 50.0;
 
         boolean distanceBoolean = !(savedDistance1 > maxDistance) && !(savedDistance2 > maxDistance) &&
                 !(savedDistance3 > maxDistance) && !(savedDistance4 > maxDistance);
-
-        System.err.println(distanceBoolean);
 
         return distanceBoolean;
     }
