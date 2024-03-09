@@ -45,7 +45,7 @@ public class BackListener implements Listener {
                             if (!(e.getCause().equals(PlayerTeleportEvent.TeleportCause.NETHER_PORTAL))){
                                 if (!(e.getCause().equals(PlayerTeleportEvent.TeleportCause.SPECTATE))){
                                     if (!e.getFrom().getWorld().equals(Bukkit.getWorld("spawn"))){
-                                        if (distanceChecker(e.getFrom(), e.getTo())){
+                                        if (!distanceChecker(e.getFrom(), e.getTo())){
                                             BackManager.saveBackLocation(p, e.getFrom());
                                         }
                                     }
