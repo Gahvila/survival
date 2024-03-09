@@ -45,7 +45,7 @@ public class BackListener implements Listener {
                             if (!(e.getCause().equals(PlayerTeleportEvent.TeleportCause.NETHER_PORTAL))){
                                 if (!(e.getCause().equals(PlayerTeleportEvent.TeleportCause.SPECTATE))){
                                     if (!e.getFrom().getWorld().equals(Bukkit.getWorld("spawn"))){
-                                        if (!distanceChecker(e.getFrom(), e.getTo())){
+                                        if (distanceChecker(e.getFrom(), e.getTo(), p)){
                                             BackManager.saveBackLocation(p, e.getFrom());
                                         }
                                     }
@@ -59,11 +59,33 @@ public class BackListener implements Listener {
 
     }
 
-    public boolean distanceChecker(Location oldLoc, Location newLoc) {
-        double distance = oldLoc.distance(newLoc);
+    public boolean distanceChecker(Location oldLoc, Location newLoc, Player player) {
+        double distance = newLoc.distance(oldLoc);
+
+        double savedDistance1 = Integer.MAX_VALUE;
+        double savedDistance2 = Integer.MAX_VALUE;
+        double savedDistance3 = Integer.MAX_VALUE;
+        double savedDistance4 = Integer.MAX_VALUE;
+
+        if (BackManager.getBack(player, 1) != null) {
+            savedDistance1 = newLoc.distance(BackManager.getBack(player, 1));
+        }
+        if (BackManager.getBack(player, 2) != null) {
+            savedDistance2 = newLoc.distance(BackManager.getBack(player, 2));
+        }
+        if (BackManager.getBack(player, 3) != null) {
+            savedDistance3 = newLoc.distance(BackManager.getBack(player, 3));
+        }
+        if (BackManager.getBack(player, 4) != null) {
+            savedDistance4 = newLoc.distance(BackManager.getBack(player, 4));
+        }
+
         double maxDistance = 50.0;
 
-        return distance <= maxDistance;
+        boolean withinMaxDistance = !(savedDistance1 > maxDistance) && !(savedDistance2 > maxDistance) &&
+                !(savedDistance3 > maxDistance) && !(savedDistance4 > maxDistance);
+
+        return distance <= maxDistance && withinMaxDistance;
     }
 
     @EventHandler

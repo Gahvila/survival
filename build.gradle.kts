@@ -7,7 +7,7 @@
 plugins {
     java
     `maven-publish`
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("io.github.goooler.shadow") version "8.1.7"
 }
 
 repositories {
@@ -52,7 +52,7 @@ dependencies {
     compileOnly ("net.luckperms:api:5.4")
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     implementation ("com.github.simplix-softworks:simplixstorage:3.2.7")
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+    //implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 }
 
 group = "net.gahvila"
@@ -78,20 +78,9 @@ tasks {
         dependsOn(shadowJar)
     }
     shadowJar {
-        dependencies {
-            include("com.github.simplix-softworks:simplixstorage:3.2.7")
-        }
+        archiveFileName.set("${rootProject.name}-${version}.jar")
         relocate("de.leonhard.storage", "net.gahvila.selviytymisharpake.shaded.storage")
-        relocate("me.frap.vulcan.api", "net.gahvila.selviytymisharpake.shaded.vulcan.api")
-    }
-    shadowJar {
-        dependencies {
-            include(dependency("com.github.simplix-softworks:simplixstorage:3.2.7"))
-        }
-
-        relocate("de.leonhard.storage", "net.gahvila.selviytymisharpake.shaded.storage")
-
-        relocate("me.frap.vulcan.api", "net.gahvila.selviytymisharpake.shaded.vulcan.api")
+        //relocate("me.frap.vulcan.api", "net.gahvila.selviytymisharpake.shaded.vulcan.api")
     }
 
     java {

@@ -15,7 +15,6 @@ import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackListener;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Commands.*;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Events.*;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Homes.*;
-import net.gahvila.selviytymisharpake.PlayerFeatures.VehicleBuffs.BoatBuff;
 import net.gahvila.selviytymisharpake.PlayerFeatures.VehicleBuffs.MinecartBuff;
 import net.gahvila.selviytymisharpake.PlayerFeatures.OnTabComplete;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Spawn.SpawnTeleport;
@@ -138,7 +137,7 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         getCommand("resurssinether").setExecutor(new ResourceNetherCMD());
         getCommand("kauppa").setExecutor(new ShopCMD());
 
-        registerListeners(new PlayerDeath(), new JoinEvent(), new QuitEvent(), new PortalEnterEvent(), new BackListener(), new ChatRangeEvents(), new ChunkUnload(), new WarpEvents(), new MenuListener(), new AddonMenuEvents(), new RNPortalDisabler(), new ExplodeEvent(), new MinecartBuff(), new BoatBuff());
+        registerListeners(new PlayerDeath(), new JoinEvent(), new QuitEvent(), new PortalEnterEvent(), new BackListener(), new ChatRangeEvents(), new ChunkUnload(), new WarpEvents(), new MenuListener(), new AddonMenuEvents(), new RNPortalDisabler(), new ExplodeEvent(), new MinecartBuff());
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         if (!setupEconomy() ) {
             getServer().shutdown();
