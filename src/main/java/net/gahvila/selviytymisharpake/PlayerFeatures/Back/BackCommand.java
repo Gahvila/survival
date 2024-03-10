@@ -11,14 +11,12 @@ public class BackCommand implements CommandExecutor {
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("back")) {
-            if (sender instanceof Player) {
-                Player p = (Player) sender;
+            if (sender instanceof Player p) {
                 new BackMenu(SelviytymisHarpake.getPlayerMenuUtility(p)).open();
                 return true;
             }
         }else if (cmd.getName().equalsIgnoreCase("fback")) {
-            if (sender instanceof Player) {
-                Player p = (Player) sender;
+            if (sender instanceof Player p) {
                 if (BackManager.getBack(p, 1) != null){
                     p.teleportAsync(BackManager.getBack(p, 1));
                 }else{

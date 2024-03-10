@@ -4,6 +4,7 @@ import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.block.Block;
@@ -37,26 +38,27 @@ public class BackListener implements Listener {
     @EventHandler
     public void onTeleport(PlayerTeleportEvent e) {
         Player p = e.getPlayer();
-        if (!died.contains(p.getUniqueId())){
-            if (!(e.getCause().equals(PlayerTeleportEvent.TeleportCause.DISMOUNT))){
-                if (!(e.getCause().equals(PlayerTeleportEvent.TeleportCause.END_GATEWAY))){
-                    if (!(e.getCause().equals(PlayerTeleportEvent.TeleportCause.END_PORTAL))){
-                        if (!(e.getCause().equals(PlayerTeleportEvent.TeleportCause.ENDER_PEARL))){
-                            if (!(e.getCause().equals(PlayerTeleportEvent.TeleportCause.NETHER_PORTAL))){
-                                if (!(e.getCause().equals(PlayerTeleportEvent.TeleportCause.SPECTATE))){
-                                    if (!e.getFrom().getWorld().equals(Bukkit.getWorld("spawn"))){
-                                        if (!distanceChecker(e.getTo(), p)){
-                                            BackManager.saveBackLocation(p, e.getFrom());
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+        PlayerTeleportEvent.TeleportCause cause = e.getCause();
+
+        // Make sure teleport isnt due to a death, and due to the causes listed
+        if (!died.contains(p.getUniqueId()) &&
+                cause != PlayerTeleportEvent.TeleportCause.DISMOUNT &&
+                cause != PlayerTeleportEvent.TeleportCause.END_GATEWAY &&
+                cause != PlayerTeleportEvent.TeleportCause.END_PORTAL &&
+                cause != PlayerTeleportEvent.TeleportCause.ENDER_PEARL &&
+                cause != PlayerTeleportEvent.TeleportCause.NETHER_PORTAL &&
+                cause != PlayerTeleportEvent.TeleportCause.SPECTATE) {
+
+            World fromWorld = e.getFrom().getWorld();
+            Location toLocation = e.getTo();
+
+            if (!fromWorld.equals(Bukkit.getWorld("spawn"))) {
+                // make sure the back locations arent too close to each other
+                if (!distanceChecker(toLocation, p)) {
+                    BackManager.saveBackLocation(p, e.getFrom());
                 }
             }
         }
-
     }
 
     //returns true if new location is within 50 blocks of a previous location

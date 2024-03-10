@@ -14,26 +14,26 @@ public class ChatRangeCommand implements CommandExecutor{
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
-        if (sender instanceof Player) {
-            Player p = (Player) sender;
-
-            if (kuiskaus.contains(p)) {
-                kuiskaus.remove(p);
-                huuto.add(p);
-                p.sendMessage("Huudat nyt! [100m]");
-                return true;
-            } else {
-                if (huuto.contains(p)) {
-                    huuto.remove(p);
-                    p.sendMessage("Puhut nyt maailmanlaajuisesti! [∞]");
-                    return true;
-                } else {
-                    kuiskaus.add(p);
-                    p.sendMessage("Kuiskaat nyt! [10m]");
-                    return true;
-                }
-            }
+        if (!(sender instanceof Player)) {
+            return false; // Exit if command sender is not a player
         }
-        return false;
+
+        Player p = (Player) sender;
+        boolean inKuiskaus = kuiskaus.contains(p);
+        boolean inHuuto = huuto.contains(p);
+
+        if (inKuiskaus) {
+            kuiskaus.remove(p);
+            huuto.add(p);
+            p.sendMessage("Huudat nyt! [100m]");
+        } else if (inHuuto) {
+            huuto.remove(p);
+            p.sendMessage("Puhut nyt maailmanlaajuisesti! [∞]");
+        } else {
+            kuiskaus.add(p);
+            p.sendMessage("Kuiskaat nyt! [10m]");
+        }
+
+        return true;
     }
 }

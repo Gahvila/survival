@@ -13,56 +13,22 @@ public class ChatRangeEvents implements Listener {
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e) {
         Player p = e.getPlayer();
-        if (ChatRangeCommand.kuiskaus.contains(p)) {
-            e.setCancelled(true);
-            for (Player other : Bukkit.getOnlinePlayers()) {
+        int chatRange = ChatRangeCommand.kuiskaus.contains(p) ? 10 : (ChatRangeCommand.huuto.contains(p) ? 100 : 0);
 
-                if (other.hasPermission("chatrange.see")) {
-                    if (other.getWorld() == p.getWorld()) {
-                        if (!(other.getLocation().distance(p.getLocation()) <= 10)) {
-                            other.sendMessage(ChatColor.GRAY + "[SPY] " + p.getName() + "" + ChatColor.BOLD + " > " + ChatColor.GRAY + e.getMessage());
-                        }
-                    } else {
-                        other.sendMessage(ChatColor.GRAY + "[SPY] " + p.getName() + "" + ChatColor.BOLD + " > " + ChatColor.GRAY + e.getMessage());
-                    }
-                }
+        if (chatRange == 0) {
+            return;
+        }
 
-                if (other.getWorld() == p.getWorld()) {
-                    if (other.getLocation().distance(p.getLocation()) <= 10) {
-                        if (other.getPlayer().equals(p)){
-                            other.sendMessage("§8[§e10m§8] §f" + p.getName() + " §e§l> §r" + e.getMessage());
-                        }else{
-                            Long distance = Math.round(p.getLocation().distance(other.getLocation()));
-                            other.sendMessage("§8[§e"+ distance + "§7/§e10m§8] §f" + p.getName() + " §e§l> §r" + e.getMessage());
-                        }
-                    }
-                }
-            }
+        e.setCancelled(true);
 
+        for (Player recipient : Bukkit.getOnlinePlayers()) {
+            if (recipient.getWorld() == p.getWorld()) {
+                double distance = recipient.getLocation().distance(p.getLocation());
 
-        } else if (ChatRangeCommand.huuto.contains(p)) {
-            e.setCancelled(true);
-            for (Player other : Bukkit.getOnlinePlayers()) {
-
-                if (other.hasPermission("chatrange.see")) {
-                    if (other.getWorld() == p.getWorld()) {
-                        if (!(other.getLocation().distance(p.getLocation()) <= 100)) {
-                            other.sendMessage(ChatColor.GRAY + "[SPY] " + p.getName() + "" + ChatColor.BOLD + " > " + ChatColor.GRAY + e.getMessage());
-                        }
-                    } else {
-                        other.sendMessage(ChatColor.GRAY + "[SPY] " + p.getName() + "" + ChatColor.BOLD + " > " + ChatColor.GRAY + e.getMessage());
-                    }
-                }
-
-                if (other.getWorld() == p.getWorld()) {
-                    if (other.getLocation().distance(p.getLocation()) <= 100) {
-                        if (other.getPlayer().equals(p)){
-                            other.sendMessage("§8[§e100m§8] §f" + p.getName() + " §e§l> §r" + e.getMessage());
-                        }else{
-                            Long distance = Math.round(p.getLocation().distance(other.getLocation()));
-                            other.sendMessage("§8[§e"+ distance + "§7/§e100m§8] §f" + p.getName() + " §e§l> §r" + e.getMessage());
-                        }
-                    }
+                Bukkit.getLogger().info("[LC SPY] " + p.getName() + " > " + e.getMessage());
+                if (distance <= chatRange) {
+                    String rangeIndicator = (chatRange == 10) ? "[§e10m§8] " : "[§e100m§8] ";
+                    recipient.sendMessage("§8" + rangeIndicator + "§f" + p.getName() + " §e§l> §r" + e.getMessage());
                 }
             }
         }

@@ -23,7 +23,7 @@ public class CraftCMD implements CommandExecutor {
                 p.openWorkbench(null, true);
                 p.playSound(p.getLocation(), Sound.BLOCK_CHEST_OPEN, 2F, 1F);
             }else{
-                Component message = toMiniMessage("<white>Käytä</white <yellow>/addon</yellow> <white>komentoa saadaksesi oikeudet tähän.");
+                Component message = toMiniMessage("<white>Käytä</white> <yellow>/addon</yellow> <white>komentoa saadaksesi oikeudet tähän.");
                 p.sendMessage(message);
             }
         }

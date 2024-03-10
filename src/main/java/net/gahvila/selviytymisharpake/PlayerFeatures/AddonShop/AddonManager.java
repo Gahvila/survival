@@ -13,7 +13,6 @@ public class AddonManager {
 
 
 
-    //TODO: CHANGE TO JSON
     //ENDERCHEST
     public static Integer setShop(Player player) {
         File addons = new File(instance.getDataFolder(), "addons.yml");

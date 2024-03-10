@@ -40,7 +40,7 @@ public class FeedCMD implements CommandExecutor {
                 p.sendMessage(toMiniMessage("<yellow>" + secondsleft + " sekuntia</yellow><white> kunnes voit käyttää komentoa uudelleen."));
             }
         }else{
-            p.sendMessage(toMiniMessage("<white>Käytä</white <yellow>/addon</yellow> <white>komentoa saadaksesi oikeudet tähän."));
+            p.sendMessage(toMiniMessage("<white>Käytä</white> <yellow>/addon</yellow> <white>komentoa saadaksesi oikeudet tähän."));
         }return true;
     }
 
