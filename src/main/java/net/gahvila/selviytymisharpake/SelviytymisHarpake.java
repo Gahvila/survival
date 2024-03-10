@@ -123,7 +123,6 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
 
 
         getCommand("puhu").setExecutor(new ChatRangeCommand());
-        getCommand("komennot").setExecutor(new UsefulCommandsCMD());
 
         getCommand("warp").setTabCompleter(new OnTabComplete());
         getCommand("delwarp").setTabCompleter(new OnTabComplete());

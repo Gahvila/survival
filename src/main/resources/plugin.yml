@@ -3,8 +3,8 @@ version: 1.20
 main: net.gahvila.selviytymisharpake.SelviytymisHarpake
 api-version: 1.19
 authors: [ Jokni ]
-depend: [ Vault,  ]
-description: Lisäosa Gahvilan survival 1.18-palvelimelle.
+depend: [ Vault ]
+description: Lisäosa Gahvilan survival palvelimelle.
 commands:
   fback:
   kauppa:
@@ -17,9 +17,8 @@ commands:
   setwarp:
   feed:
   craft:
-  komennot:
   puhu:
-    aliases: [ph]
+    aliases: [localchat]
   enderchest:
     aliases: ec
   addon:

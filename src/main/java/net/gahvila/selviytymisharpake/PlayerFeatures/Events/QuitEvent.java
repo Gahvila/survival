@@ -13,6 +13,6 @@ public class QuitEvent implements Listener {
     public void onQuit(PlayerQuitEvent e){
         Player p = e.getPlayer();
         e.setQuitMessage(null);
-        p.setInvulnerable(true);
+        p.setInvulnerable(false);
     }
 }
