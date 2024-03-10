@@ -40,7 +40,7 @@ public class BackListener implements Listener {
         Player p = e.getPlayer();
         PlayerTeleportEvent.TeleportCause cause = e.getCause();
 
-        // Make sure teleport isnt due to a death, and due to the causes listed
+        // make sure teleport isn't due to a death, and not due to the causes listed
         if (!died.contains(p.getUniqueId()) &&
                 cause != PlayerTeleportEvent.TeleportCause.DISMOUNT &&
                 cause != PlayerTeleportEvent.TeleportCause.END_GATEWAY &&
@@ -52,6 +52,7 @@ public class BackListener implements Listener {
             World fromWorld = e.getFrom().getWorld();
             Location toLocation = e.getTo();
 
+            //not spawn
             if (!fromWorld.equals(Bukkit.getWorld("spawn"))) {
                 // make sure the back locations arent too close to each other
                 if (!distanceChecker(toLocation, p)) {
@@ -95,10 +96,9 @@ public class BackListener implements Listener {
 
         double maxDistance = 50.0;
 
-        boolean distanceBoolean = !(savedDistance1 > maxDistance) && !(savedDistance2 > maxDistance) &&
+        //checks that the saved distances are within the maxDistance
+        return !(savedDistance1 > maxDistance) && !(savedDistance2 > maxDistance) &&
                 !(savedDistance3 > maxDistance) && !(savedDistance4 > maxDistance);
-
-        return distanceBoolean;
     }
 
     @EventHandler
