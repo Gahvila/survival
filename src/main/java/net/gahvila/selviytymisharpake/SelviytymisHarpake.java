@@ -6,16 +6,22 @@ import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.AddonCommands;
 import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.AddonManager;
 import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.Menu.AddonMenuEvents;
+import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackCommand;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackManager;
-import net.gahvila.selviytymisharpake.PlayerFeatures.ChatRange.ChatRangeEvents;
+import net.gahvila.selviytymisharpake.PlayerFeatures.ChatRange;
 import net.gahvila.selviytymisharpake.NewSeason.EndBlocker.PortalEnterEvent;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackListener;
+import net.gahvila.selviytymisharpake.PlayerFeatures.Commands.MainCMD;
+import net.gahvila.selviytymisharpake.PlayerFeatures.Commands.SpawnCMD;
+import net.gahvila.selviytymisharpake.PlayerFeatures.Commands.TPACMD;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Events.*;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Homes.*;
+import net.gahvila.selviytymisharpake.PlayerFeatures.OnTabComplete;
 import net.gahvila.selviytymisharpake.PlayerFeatures.VehicleBuffs.MinecartBuff;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Spawn.SpawnTeleport;
 import net.gahvila.selviytymisharpake.PlayerWarps.*;
 import net.gahvila.selviytymisharpake.Resurssinether.RNPortalDisabler;
+import net.gahvila.selviytymisharpake.Resurssinether.ResourceNetherCMD;
 import net.gahvila.selviytymisharpake.Utils.MenuListener;
 import net.gahvila.selviytymisharpake.Utils.PlayerMenuUtility;
 import net.milkbowl.vault.economy.Economy;
@@ -43,8 +49,9 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
     private static Economy econ = null;
     private static SelviytymisHarpake plugin;
 
-    private static AddonManager addonManager;
-    private static BackManager backManager;
+    private AddonManager addonManager;
+    private BackManager backManager;
+    private HomeManager homeManager;
 
 
     private static final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
@@ -94,44 +101,36 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         pluginManager = Bukkit.getPluginManager();
         instance = this;
 
+        backManager = new BackManager();
+        addonManager = new AddonManager();
+        homeManager = new HomeManager();
+
         // Command
         CommandAPI.onLoad(new CommandAPIBukkitConfig(this).verboseOutput(false).silentLogs(true));
 
         AddonCommands addonCommands = new AddonCommands(addonManager);
         addonCommands.registerCommands();
 
+        BackCommand backCommand = new BackCommand(backManager);
+        backCommand.registerCommands();
 
+        MainCMD mainCMD = new MainCMD();
+        mainCMD.registerCommands();
 
-        /*
-        getCommand("spawn").setExecutor(new SpawnCMD());
-        getCommand("tpaccept").setExecutor(new TPACMD());
-        getCommand("tpadeny").setExecutor(new TPACMD());
-        getCommand("tpacancel").setExecutor(new TPACMD());
-        getCommand("tpa").setExecutor(new TPACMD());
-        //HOME
-        getCommand("addhome").setExecutor(new AddHomes());
-        getCommand("sethome").setExecutor(new SetHomeCMD());
-        getCommand("delhome").setExecutor(new DelHomeCMD());
-        getCommand("home").setExecutor(new HomeCMD());
-        getCommand("home").setTabCompleter(new OnTabComplete());
-        getCommand("delhome").setTabCompleter(new OnTabComplete());
-        getCommand("sethome").setTabCompleter(new OnTabComplete());
-        Bukkit.getPluginManager().registerEvents(new HomeCMD(), this);
+        ChatRange chatRange = new ChatRange();
+        chatRange.registerCommands();
+
+        SpawnCMD spawnCMD = new SpawnCMD();
+        spawnCMD.registerCommands();
+
+        TPACMD tpacmd = new TPACMD();
+        tpacmd.registerCommands();
+
+        HomeCommands homeCommands = new HomeCommands(homeManager);
+        homeCommands.registerCommands();
 
 
         saveDefaultConfig();
-        getCommand("back").setExecutor(new BackCommand());
-        getCommand("fback").setExecutor(new BackCommand());
-        getCommand("selviytymishärpäke").setExecutor(new MainCMD());
-        //addons
-        getCommand("feed").setExecutor(new FeedCMD());
-        getCommand("addon").setExecutor(new AddonCommand());
-        getCommand("enderchest").setExecutor(new EnderchestCMD());
-        getCommand("craft").setExecutor(new CraftCMD());
-        getCommand("addon").setTabCompleter(new OnTabComplete());
-
-
-        getCommand("puhu").setExecutor(new ChatRangeCommand());
 
         getCommand("warp").setTabCompleter(new OnTabComplete());
         getCommand("delwarp").setTabCompleter(new OnTabComplete());
@@ -143,11 +142,8 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         getCommand("editwarp").setExecutor(new EditWarpCMD());
 
         getCommand("resurssinether").setExecutor(new ResourceNetherCMD());
-        getCommand("kauppa").setExecutor(new ShopCMD());
 
-         */
-
-        registerListeners(new PlayerDeath(), new JoinEvent(), new QuitEvent(), new PortalEnterEvent(), new BackListener(backManager), new ChatRangeEvents(), new ChunkUnload(), new WarpEvents(), new MenuListener(), new AddonMenuEvents(addonManager), new RNPortalDisabler(), new ExplodeEvent(), new MinecartBuff());
+        registerListeners(new PlayerDeath(), new JoinEvent(), new QuitEvent(), new PortalEnterEvent(), new BackListener(backManager), new ChatRange(), new ChunkUnload(), new WarpEvents(), new MenuListener(), new AddonMenuEvents(addonManager), new RNPortalDisabler(), new ExplodeEvent(), new MinecartBuff());
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         if (!setupEconomy() ) {
             getServer().shutdown();
@@ -199,7 +195,7 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
             Bukkit.unloadWorld("resurssinether", false);
 
             Bukkit.broadcastMessage("§7Poistetaan kaikki kodit resurssinetherissä...");
-            HomeManager.deleteHomesInWorld("resurssinether");
+            homeManager.deleteHomesInWorld("resurssinether");
 
             Bukkit.broadcastMessage("§7Poistetaan resurssinetherin kartta...");
             deleteWorld(new File("resurssinether/DIM-1"));
@@ -253,14 +249,6 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
 
     public static Economy getEconomy() {
         return econ;
-    }
-
-    public static AddonManager getAddonManager() {
-        return addonManager;
-    }
-
-    public static BackManager getBackManager() {
-        return backManager;
     }
 
     private void registerListeners(Listener...listeners){

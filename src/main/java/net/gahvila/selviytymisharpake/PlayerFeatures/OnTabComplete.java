@@ -27,14 +27,6 @@ public class OnTabComplete implements TabCompleter {
                 }
                 for (int i = 0; i < WarpManager.getWarps().size(); i++) {
                 }return WarpManager.getWarps();
-            case "home", "delhome":
-                if (HomeManager.getHomes(player).isEmpty()) {
-                    return Collections.singletonList("");
-                }
-                for (int i = 0; i < HomeManager.getHomes(player).size(); i++) {
-                }return HomeManager.getHomes(player);
-            case "sethome":
-                return Collections.singletonList("");
         }return null;
 
     }

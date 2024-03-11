@@ -20,7 +20,7 @@ import static net.gahvila.selviytymisharpake.SelviytymisHarpake.instance;
 
 public class HomeManager {
 
-    public static void saveHome(Player player, String home, Location location) {
+    public void saveHome(Player player, String home, Location location) {
         Json homeData = new Json("homedata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         homeData.getFileData().insert(uuid + "." + home + ".world", location.getWorld().getName());
@@ -32,7 +32,7 @@ public class HomeManager {
     }
 
     //
-    public static void deleteHome(Player player, String home) {
+    public void deleteHome(Player player, String home) {
         Json homeData = new Json("homedata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         if (homeData.contains(uuid + "." + home)) {
@@ -41,7 +41,7 @@ public class HomeManager {
     }
 
     //
-    public static void deleteHomesInWorld(String worldName) {
+    public void deleteHomesInWorld(String worldName) {
         Json homeData = new Json("homedata.json", instance.getDataFolder() + "/data/");
 
         List<String> homeowners = new ArrayList<>(homeData.getFileData().singleLayerKeySet());
@@ -61,7 +61,7 @@ public class HomeManager {
         }
     }
     //
-    public static Location getHome(Player player, String home) {
+    public Location getHome(Player player, String home) {
         Json homeData = new Json("homedata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         if (homeData.getFileData().containsKey(uuid + "." + home)) {
@@ -80,7 +80,7 @@ public class HomeManager {
     }
 
     //
-    public static ArrayList<String> getHomes(Player player) {
+    public ArrayList<String> getHomes(Player player) {
         Json homeData = new Json("homedata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         if (homeData.contains(uuid)) {
@@ -92,13 +92,13 @@ public class HomeManager {
     }
 
 
-    public static void addAdditionalHomes(Player player) {
+    public void addAdditionalHomes(Player player) {
         Json homeData = new Json("allowedhomes.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         homeData.set(uuid + ".additionalHomes", homeData.getInt(uuid + ".additionalHomes") + 1);
     }
 
-    public static Integer getAllowedHomes(Player player) {
+    public Integer getAllowedHomes(Player player) {
         Json homeData = new Json("allowedhomes.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         if (homeData.contains(uuid)){
@@ -110,7 +110,7 @@ public class HomeManager {
         }
     }
 
-    public static Integer getAllowedAdditionalHomes(Player player) {
+    public Integer getAllowedAdditionalHomes(Player player) {
         Json homeData = new Json("allowedhomes.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         if (homeData.contains(uuid)){
@@ -121,7 +121,7 @@ public class HomeManager {
         }
     }
 
-    public static Integer getAllowedHomesOfRank(Player player) {
+    public Integer getAllowedHomesOfRank(Player player) {
         if (player.hasPermission("survival.homes.pro")) {
             return 9;
         } else if (player.hasPermission("survival.homes.mvp")) {

@@ -1,5 +1,6 @@
 package net.gahvila.selviytymisharpake.PlayerFeatures.Commands;
 
+import dev.jorel.commandapi.CommandAPICommand;
 import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -16,22 +17,22 @@ import org.bukkit.persistence.PersistentDataType;
 import java.io.IOException;
 import java.util.Arrays;
 
-public class MainCMD implements CommandExecutor {
+public class MainCMD {
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    public void registerCommands() {
+        new CommandAPICommand("selviytymishärpäke")
+                .withPermission("sh.admin")
+                .withSubcommand(new CommandAPICommand("reload")
+                        .executes((sender, args) -> {
+                            SelviytymisHarpake.instance.reloadConfig();
+                            sender.sendMessage("ladattu uusiks toivotaan että servu ei lahonnut");
+                        }))
+                .withSubcommand(new CommandAPICommand("resetnether")
+                        .executes((sender, args) -> {
+                            sender.sendMessage("nether reset alotettu toivottavasti");
+                            SelviytymisHarpake.instance.performNetherReset();
+                        }))
+                .register();
 
-        if (args.length == 1) {
-            if (!sender.hasPermission("sh.admin")) return true;
-            if (args[0].equalsIgnoreCase("reload")) {
-                SelviytymisHarpake.instance.reloadConfig();
-                sender.sendMessage("Ya did it boeh!");
-                return true;
-            }
-            if (args[0].equalsIgnoreCase("resetnether")) {
-                SelviytymisHarpake.instance.performNetherReset();
-                return true;
-            }
-        }return true;
     }
 }

@@ -6,33 +6,11 @@ authors: [ Jokni ]
 depend: [ Vault ]
 description: Lisäosa Gahvilan survival palvelimelle.
 commands:
-  fback:
   kauppa:
   resurssinether:
-  tpacancel:
   editwarp:
   delwarp:
   warp:
   buywarp:
   setwarp:
-  feed:
-  craft:
-  puhu:
-    aliases: [localchat]
-  enderchest:
-    aliases: ec
-  addon:
-  tpadeny:
-  back:
-  addhome:
-    aliases: [buyhomes, ostakoti]
-  selviytymishärpäke:
-    permission: sh.admin
-  spawn:
-  delhome:
-  sethome:
-  home:
-  tpaccept:
-    aliases: tpy
-  tpa:
 

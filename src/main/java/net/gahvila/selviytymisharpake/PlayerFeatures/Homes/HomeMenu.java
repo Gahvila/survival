@@ -18,8 +18,11 @@ import static org.bukkit.Bukkit.getServer;
 
 public class HomeMenu extends PaginatedMenu implements Listener {
 
-    public HomeMenu(PlayerMenuUtility playerMenuUtility) {
+    private final HomeManager homeManager;
+
+    public HomeMenu(PlayerMenuUtility playerMenuUtility, HomeManager homeManager) {
         super(playerMenuUtility);
+        this.homeManager = homeManager;
     }
 
     @Override
@@ -39,8 +42,8 @@ public class HomeMenu extends PaginatedMenu implements Listener {
         ArrayList<Player> players = new ArrayList<Player>(getServer().getOnlinePlayers());
 
         if (e.getCurrentItem().getType().equals(Material.GREEN_BED)) {
-            if (HomeManager.getHome(p, e.getCurrentItem().getItemMeta().getDisplayName()) != null){
-                p.teleportAsync(HomeManager.getHome(p, e.getCurrentItem().getItemMeta().getDisplayName()));
+            if (homeManager.getHome(p, e.getCurrentItem().getItemMeta().getDisplayName()) != null){
+                p.teleportAsync(homeManager.getHome(p, e.getCurrentItem().getItemMeta().getDisplayName()));
                 p.sendMessage("Sinut teleportattiin kotiin §e" + e.getCurrentItem().getItemMeta().getDisplayName() + "§f.");
             }else {
                 p.closeInventory();
@@ -78,7 +81,7 @@ public class HomeMenu extends PaginatedMenu implements Listener {
         addMenuBorder();
 
         //The thing you will be looping through to place items
-        ArrayList<String> homes = new ArrayList<String>(HomeManager.getHomes(playerMenuUtility.getOwner()));
+        ArrayList<String> homes = new ArrayList<String>(homeManager.getHomes(playerMenuUtility.getOwner()));
 
         ///////////////////////////////////// Pagination loop template
         if(homes != null && !homes.isEmpty()) {
@@ -91,7 +94,7 @@ public class HomeMenu extends PaginatedMenu implements Listener {
                     //Create an item from our collection and place it into the inventory
                     ItemStack homeItem = new ItemStack(Material.GREEN_BED, 1);
                     ItemMeta homeMeta = homeItem.getItemMeta();
-                    homeMeta.setDisplayName(HomeManager.getHomes(playerMenuUtility.getOwner()).get(i));
+                    homeMeta.setDisplayName(homeManager.getHomes(playerMenuUtility.getOwner()).get(i));
                     homeMeta.setLore(List.of("§fKlikkaa teleportataksesi"));
                     homeItem.setItemMeta(homeMeta);
 
