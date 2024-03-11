@@ -14,7 +14,7 @@ public class AddonManager {
 
 
     //ENDERCHEST
-    public static Integer setShop(Player player) {
+    public Integer setShop(Player player) {
         File addons = new File(instance.getDataFolder(), "addons.yml");
         FileConfiguration f = YamlConfiguration.loadConfiguration(addons);
         try {
@@ -27,7 +27,7 @@ public class AddonManager {
         return null;
     }
 
-    public static Boolean getShop(Player player) {
+    public Boolean getShop(Player player) {
         File addons = new File(instance.getDataFolder(), "addons.yml");
         FileConfiguration f = YamlConfiguration.loadConfiguration(addons);
         String uuid = player.getUniqueId().toString();
@@ -37,7 +37,7 @@ public class AddonManager {
 
 
     //ENDERCHEST
-    public static Integer setEnderchest(Player player) {
+    public Integer setEnderchest(Player player) {
         File addons = new File(instance.getDataFolder(), "addons.yml");
         FileConfiguration f = YamlConfiguration.loadConfiguration(addons);
         try {
@@ -50,7 +50,7 @@ public class AddonManager {
         return null;
     }
 
-    public static Boolean getEnderchest(Player player) {
+    public Boolean getEnderchest(Player player) {
         File addons = new File(instance.getDataFolder(), "addons.yml");
         FileConfiguration f = YamlConfiguration.loadConfiguration(addons);
         String uuid = player.getUniqueId().toString();
@@ -59,7 +59,7 @@ public class AddonManager {
     }
 
     //CRAFT
-    public static Integer setCraft(Player player) {
+    public Integer setCraft(Player player) {
         File addons = new File(instance.getDataFolder(), "addons.yml");
         FileConfiguration f = YamlConfiguration.loadConfiguration(addons);
         try {
@@ -72,7 +72,7 @@ public class AddonManager {
         return null;
     }
 
-    public static Boolean getCraft(Player player) {
+    public Boolean getCraft(Player player) {
         File addons = new File(instance.getDataFolder(), "addons.yml");
         FileConfiguration f = YamlConfiguration.loadConfiguration(addons);
         String uuid = player.getUniqueId().toString();
@@ -82,7 +82,7 @@ public class AddonManager {
 
     //FEED
     //CRAFT
-    public static Integer setFeed(Player player) {
+    public Integer setFeed(Player player) {
         File addons = new File(instance.getDataFolder(), "addons.yml");
         FileConfiguration f = YamlConfiguration.loadConfiguration(addons);
         try {
@@ -95,7 +95,7 @@ public class AddonManager {
         return null;
     }
 
-    public static Boolean getFeed(Player player) {
+    public Boolean getFeed(Player player) {
         File addons = new File(instance.getDataFolder(), "addons.yml");
         FileConfiguration f = YamlConfiguration.loadConfiguration(addons);
         String uuid = player.getUniqueId().toString();

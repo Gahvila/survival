@@ -13,10 +13,10 @@ plugins {
 repositories {
     mavenLocal()
     mavenCentral()
-
-    maven { url = uri("https://repo.extendedclip.com/content/repositories/placeholderapi/") }
     maven { url = uri("https://jitpack.io") }
+    maven { url = uri("https://repo.codemc.org/repository/maven-public/") }
     maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
+    maven { url = uri("https://repo.extendedclip.com/content/repositories/placeholderapi/") }
 }
 
 dependencies {
@@ -25,6 +25,11 @@ dependencies {
     compileOnly ("net.luckperms:api:5.4")
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     implementation ("com.github.simplix-softworks:simplixstorage:3.2.7")
+
+    //commandapi
+    implementation("dev.jorel:commandapi-bukkit-shade:9.3.0")
+    compileOnly("dev.jorel:commandapi-annotations:9.3.0")
+    annotationProcessor("dev.jorel:commandapi-annotations:9.3.0")
 }
 
 group = "net.gahvila"
@@ -51,6 +56,12 @@ tasks {
     }
     shadowJar {
         archiveFileName.set("${rootProject.name}-${version}.jar")
+        dependencies {
+            include(dependency("dev.jorel:commandapi-bukkit-shade:9.3.0"))
+            include(dependency("com.github.simplix-softworks:simplixstorage:3.2.7"))
+
+        }
+        relocate("dev.jorel.commandapi", "net.gahvila.selviytymisharpake.shaded.commandapi")
         relocate("de.leonhard.storage", "net.gahvila.selviytymisharpake.shaded.storage")
     }
 

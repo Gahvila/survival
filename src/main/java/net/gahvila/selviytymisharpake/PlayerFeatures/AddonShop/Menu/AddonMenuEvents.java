@@ -13,6 +13,13 @@ import org.bukkit.potion.PotionEffectType;
 
 public class AddonMenuEvents implements Listener {
 
+    private final AddonManager addonManager;
+
+
+    public AddonMenuEvents(AddonManager addonManager) {
+        this.addonManager = addonManager;
+    }
+
     @EventHandler
     private void inventoryClick(InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
@@ -21,12 +28,12 @@ public class AddonMenuEvents implements Listener {
                 e.setCancelled(true);
                 switch (e.getSlot()) {
                     case 0, 1, 2, 3, 9, 10, 11, 12:
-                        if (!AddonManager.getShop(p)) {
+                        if (!addonManager.getShop(p)) {
                             if (SelviytymisHarpake.getEconomy().getBalance(p) >= 2000) {
                                 p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.5F, 1F);
                                 SelviytymisHarpake.getEconomy().withdrawPlayer(p, 2000);
                                 p.sendMessage("Jee! Ostit kauppa päivityksen.");
-                                AddonManager.setShop(p);
+                                addonManager.setShop(p);
                                 p.closeInventory();
                             } else {
                                 p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
@@ -45,12 +52,12 @@ public class AddonMenuEvents implements Listener {
                 e.setCancelled(true);
                 switch (e.getSlot()) {
                     case 0, 1, 2, 3, 9, 10, 11, 12:
-                        if (!AddonManager.getFeed(p)) {
+                        if (!addonManager.getFeed(p)) {
                             if (SelviytymisHarpake.getEconomy().getBalance(p) >= 2000) {
                                 p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.5F, 1F);
                                 SelviytymisHarpake.getEconomy().withdrawPlayer(p, 2000);
                                 p.sendMessage("Jee! Ostit feed päivityksen.");
-                                AddonManager.setFeed(p);
+                                addonManager.setFeed(p);
                                 p.closeInventory();
                             } else {
                                 p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
@@ -69,12 +76,12 @@ public class AddonMenuEvents implements Listener {
                 e.setCancelled(true);
                 switch (e.getSlot()) {
                     case 0, 1, 2, 3, 9, 10, 11, 12:
-                        if (!AddonManager.getEnderchest(p)) {
+                        if (!addonManager.getEnderchest(p)) {
                             if (SelviytymisHarpake.getEconomy().getBalance(p) >= 1500) {
                                 p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.5F, 1F);
                                 SelviytymisHarpake.getEconomy().withdrawPlayer(p, 1500);
                                 p.sendMessage("Jee! Ostit enderchest päivityksen.");
-                                AddonManager.setEnderchest(p);
+                                addonManager.setEnderchest(p);
                                 p.closeInventory();
                             } else {
                                 p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
@@ -93,12 +100,12 @@ public class AddonMenuEvents implements Listener {
                 e.setCancelled(true);
                 switch (e.getSlot()) {
                     case 0, 1, 2, 3, 9, 10, 11, 12:
-                        if (!AddonManager.getCraft(p)) {
+                        if (!addonManager.getCraft(p)) {
                             if (SelviytymisHarpake.getEconomy().getBalance(p) >= 1000) {
                                 p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.5F, 1F);
                                 SelviytymisHarpake.getEconomy().withdrawPlayer(p, 1000);
                                 p.sendMessage("Jee! Ostit craft päivityksen.");
-                                AddonManager.setCraft(p);
+                                addonManager.setCraft(p);
                                 p.closeInventory();
                             } else {
                                 p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
@@ -122,7 +129,7 @@ public class AddonMenuEvents implements Listener {
                 switch (e.getSlot()) {
                     case 1:
                         p.closeInventory();
-                        if (!AddonManager.getCraft(p)) {
+                        if (!addonManager.getCraft(p)) {
                             AddonCraftMenu.openGui(p);
                         }else{
                             p.sendMessage("Sinulla on jo tuo lisäosa.");
@@ -130,7 +137,7 @@ public class AddonMenuEvents implements Listener {
                         break;
                     case 3:
                         p.closeInventory();
-                        if (!AddonManager.getEnderchest(p)) {
+                        if (!addonManager.getEnderchest(p)) {
                             AddonEnderchestMenu.openGui(p);
                         }else{
                             p.sendMessage("Sinulla on jo tuo lisäosa.");
@@ -138,7 +145,7 @@ public class AddonMenuEvents implements Listener {
                         break;
                     case 5:
                         p.closeInventory();
-                        if (!AddonManager.getFeed(p)) {
+                        if (!addonManager.getFeed(p)) {
                             AddonFeedMenu.openGui(p);
                         }else{
                             p.sendMessage("Sinulla on jo tuo lisäosa.");
@@ -146,7 +153,7 @@ public class AddonMenuEvents implements Listener {
                         break;
                     case 7:
                         p.closeInventory();
-                        if (!AddonManager.getShop(p)) {
+                        if (!addonManager.getShop(p)) {
                             AddonShopMenu.openGui(p);
                         }else{
                             p.sendMessage("Sinulla on jo tuo lisäosa.");

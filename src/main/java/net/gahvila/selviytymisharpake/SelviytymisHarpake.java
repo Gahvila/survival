@@ -1,26 +1,21 @@
 package net.gahvila.selviytymisharpake;
 
 import de.leonhard.storage.Json;
-import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.Addons.ShopCMD;
+import dev.jorel.commandapi.CommandAPI;
+import dev.jorel.commandapi.CommandAPIBukkitConfig;
+import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.AddonCommands;
+import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.AddonManager;
 import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.Menu.AddonMenuEvents;
-import net.gahvila.selviytymisharpake.PlayerFeatures.ChatRange.ChatRangeCommand;
+import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackManager;
 import net.gahvila.selviytymisharpake.PlayerFeatures.ChatRange.ChatRangeEvents;
 import net.gahvila.selviytymisharpake.NewSeason.EndBlocker.PortalEnterEvent;
-import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.AddonCommand;
-import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.Addons.CraftCMD;
-import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.Addons.EnderchestCMD;
-import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.Addons.FeedCMD;
-import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackCommand;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackListener;
-import net.gahvila.selviytymisharpake.PlayerFeatures.Commands.*;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Events.*;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Homes.*;
 import net.gahvila.selviytymisharpake.PlayerFeatures.VehicleBuffs.MinecartBuff;
-import net.gahvila.selviytymisharpake.PlayerFeatures.OnTabComplete;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Spawn.SpawnTeleport;
 import net.gahvila.selviytymisharpake.PlayerWarps.*;
 import net.gahvila.selviytymisharpake.Resurssinether.RNPortalDisabler;
-import net.gahvila.selviytymisharpake.Resurssinether.ResourceNetherCMD;
 import net.gahvila.selviytymisharpake.Utils.MenuListener;
 import net.gahvila.selviytymisharpake.Utils.PlayerMenuUtility;
 import net.milkbowl.vault.economy.Economy;
@@ -47,6 +42,10 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
     private PluginManager pluginManager;
     private static Economy econ = null;
     private static SelviytymisHarpake plugin;
+
+    private static AddonManager addonManager;
+    private static BackManager backManager;
+
 
     private static final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
 
@@ -94,6 +93,16 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
 
         pluginManager = Bukkit.getPluginManager();
         instance = this;
+
+        // Command
+        CommandAPI.onLoad(new CommandAPIBukkitConfig(this).verboseOutput(false).silentLogs(true));
+
+        AddonCommands addonCommands = new AddonCommands(addonManager);
+        addonCommands.registerCommands();
+
+
+
+        /*
         getCommand("spawn").setExecutor(new SpawnCMD());
         getCommand("tpaccept").setExecutor(new TPACMD());
         getCommand("tpadeny").setExecutor(new TPACMD());
@@ -136,7 +145,9 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         getCommand("resurssinether").setExecutor(new ResourceNetherCMD());
         getCommand("kauppa").setExecutor(new ShopCMD());
 
-        registerListeners(new PlayerDeath(), new JoinEvent(), new QuitEvent(), new PortalEnterEvent(), new BackListener(), new ChatRangeEvents(), new ChunkUnload(), new WarpEvents(), new MenuListener(), new AddonMenuEvents(), new RNPortalDisabler(), new ExplodeEvent(), new MinecartBuff());
+         */
+
+        registerListeners(new PlayerDeath(), new JoinEvent(), new QuitEvent(), new PortalEnterEvent(), new BackListener(backManager), new ChatRangeEvents(), new ChunkUnload(), new WarpEvents(), new MenuListener(), new AddonMenuEvents(addonManager), new RNPortalDisabler(), new ExplodeEvent(), new MinecartBuff());
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         if (!setupEconomy() ) {
             getServer().shutdown();
@@ -242,6 +253,14 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
 
     public static Economy getEconomy() {
         return econ;
+    }
+
+    public static AddonManager getAddonManager() {
+        return addonManager;
+    }
+
+    public static BackManager getBackManager() {
+        return backManager;
     }
 
     private void registerListeners(Listener...listeners){

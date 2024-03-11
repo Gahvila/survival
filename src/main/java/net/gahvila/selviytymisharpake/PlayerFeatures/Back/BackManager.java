@@ -17,7 +17,7 @@ import static net.gahvila.selviytymisharpake.SelviytymisHarpake.instance;
 
 public class BackManager {
 
-    public static void saveDeath(Player player, Location location, String damageCause, Double balance, Boolean hasDiamond, Boolean hasElytra, Boolean hasNetherite, Boolean hasIron) {
+    public void saveDeath(Player player, Location location, String damageCause, Double balance, Boolean hasDiamond, Boolean hasElytra, Boolean hasNetherite, Boolean hasIron) {
         Json backData = new Json("backdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         backData.getFileData().insert(uuid + "." + "death" + ".cause", damageCause);
@@ -34,7 +34,7 @@ public class BackManager {
         backData.set(uuid + "." + "death" + ".pitch", location.getPitch());
     }
 
-    public static void saveBackLocation(Player player, Location location) {
+    public void saveBackLocation(Player player, Location location) {
         Json backData = new Json("backdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
 
@@ -61,7 +61,7 @@ public class BackManager {
         backData.set(uuid + "." + 1 + ".pitch", location.getPitch());
     }
 
-    public static Location getBack(Player player, Integer position) {
+    public Location getBack(Player player, Integer position) {
         Json backData = new Json("backdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         if (backData.getFileData().containsKey(uuid + "." + position)) {
@@ -79,7 +79,7 @@ public class BackManager {
         return null;
     }
 
-    public static Location getDeath(Player player) {
+    public Location getDeath(Player player) {
         Json backData = new Json("backdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         if (backData.getFileData().containsKey(uuid + "." + "death")) {
@@ -97,7 +97,7 @@ public class BackManager {
         return null;
     }
 
-    public static Double calculateDeathPrice(Player player) {
+    public Double calculateDeathPrice(Player player) {
         double price = 0.0;
         boolean isRich = false;
 
@@ -140,7 +140,7 @@ public class BackManager {
         return (double) Math.round(price / 3);
     }
 
-    public static Double getXdeath(Player player) {
+    public Double getXdeath(Player player) {
         Json backData = new Json("backdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         if (backData.getFileData().containsKey(uuid + "." + "death")) {
@@ -151,7 +151,7 @@ public class BackManager {
         return null;
     }
 
-    public static Double getZdeath(Player player) {
+    public Double getZdeath(Player player) {
         Json backData = new Json("backdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         if (backData.getFileData().containsKey(uuid + "." + "death")) {
@@ -162,7 +162,7 @@ public class BackManager {
         return null;
     }
 
-    public static Double getX(Player player, Integer position) {
+    public Double getX(Player player, Integer position) {
         Json backData = new Json("backdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         if (backData.getFileData().containsKey(uuid + "." + position)) {
@@ -173,7 +173,7 @@ public class BackManager {
         return null;
     }
 
-    public static Double getZ(Player player, Integer position) {
+    public Double getZ(Player player, Integer position) {
         Json backData = new Json("backdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         if (backData.getFileData().containsKey(uuid + "." + position)) {
@@ -185,7 +185,7 @@ public class BackManager {
     }
 
 
-    public static Double getDeathBalance(Player player) {
+    public Double getDeathBalance(Player player) {
         Json backData = new Json("backdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         if (backData.getFileData().containsKey(uuid + "." + "death")) {
@@ -194,7 +194,7 @@ public class BackManager {
         return null;
     }
 
-    public static String getDeathCause(Player player) {
+    public String getDeathCause(Player player) {
         Json backData = new Json("backdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         if (backData.getFileData().containsKey(uuid + "." + "death" + ".cause")) {
@@ -203,7 +203,7 @@ public class BackManager {
         return null;
     }
 
-    public static Boolean hasDiamond(Player player) {
+    public Boolean hasDiamond(Player player) {
         Json backData = new Json("backdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         if (backData.getFileData().containsKey(uuid + "." + "death" + ".hasDiamond")) {
@@ -211,7 +211,7 @@ public class BackManager {
         }
         return false;
     }
-    public static Boolean hasElytra(Player player) {
+    public Boolean hasElytra(Player player) {
         Json backData = new Json("backdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         if (backData.getFileData().containsKey(uuid + "." + "death" + ".hasElytra")) {
@@ -219,7 +219,7 @@ public class BackManager {
         }
         return false;
     }
-    public static Boolean hasNetherite(Player player) {
+    public Boolean hasNetherite(Player player) {
         Json backData = new Json("backdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         if (backData.getFileData().containsKey(uuid + "." + "death" + ".hasNetherite")) {
@@ -227,7 +227,7 @@ public class BackManager {
         }
         return false;
     }
-    public static Boolean hasIron(Player player) {
+    public Boolean hasIron(Player player) {
         Json backData = new Json("backdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         if (backData.getFileData().containsKey(uuid + "." + "death" + ".hasIron")) {

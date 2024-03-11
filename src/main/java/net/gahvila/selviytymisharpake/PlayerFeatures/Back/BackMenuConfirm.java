@@ -17,8 +17,12 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class BackMenuConfirm extends Menu {
-    public BackMenuConfirm(PlayerMenuUtility playerMenuUtility) {
+
+    private final BackManager backManager;
+
+    public BackMenuConfirm(PlayerMenuUtility playerMenuUtility, BackManager backManager) {
         super(playerMenuUtility);
+        this.backManager = backManager;
     }
 
     @Override
@@ -34,14 +38,14 @@ public class BackMenuConfirm extends Menu {
     @Override
     public void handleMenu(InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
-        Double price = BackManager.calculateDeathPrice(p);
+        Double price = backManager.calculateDeathPrice(p);
         switch (e.getCurrentItem().getType()){
             case GREEN_STAINED_GLASS_PANE:
                 if (SelviytymisHarpake.getEconomy().getBalance(p) >= price) {
                     SelviytymisHarpake.getEconomy().withdrawPlayer(p, price);
                     p.sendMessage("Tililtäsi veloitettiin §e" + price + "Ⓖ§f.");
                     p.closeInventory();
-                    p.teleportAsync(BackManager.getDeath(p));
+                    p.teleportAsync(backManager.getDeath(p));
                     p.sendMessage("Sinut teleportattiin sinun viimeisimpään kuolinpaikkaan§f.");
                 }else{
                     p.closeInventory();
@@ -51,7 +55,7 @@ public class BackMenuConfirm extends Menu {
             case RED_STAINED_GLASS_PANE:
 
                 //go back to the previous menu
-                new BackMenu(playerMenuUtility).open();
+                new BackMenu(playerMenuUtility, backManager).open();
 
                 break;
         }
@@ -60,7 +64,7 @@ public class BackMenuConfirm extends Menu {
 
     @Override
     public void setMenuItems() {
-        Double price = BackManager.calculateDeathPrice(playerMenuUtility.getOwner());
+        Double price = backManager.calculateDeathPrice(playerMenuUtility.getOwner());
         ItemStack yes = new ItemStack(Material.GREEN_STAINED_GLASS_PANE, 1);
         ItemMeta yes_meta = yes.getItemMeta();
         yes_meta.setDisplayName(ChatColor.GREEN + "Kyllä");

@@ -23,6 +23,13 @@ import java.util.UUID;
 
 public class BackListener implements Listener {
 
+    private final BackManager backManager;
+
+
+    public BackListener(BackManager backManager) {
+        this.backManager = backManager;
+    }
+
     public static HashMap<Player, Location> back = new HashMap<>();
     public static ArrayList<UUID> died = new ArrayList<UUID>();
     @EventHandler
@@ -32,7 +39,7 @@ public class BackListener implements Listener {
         EntityDamageEvent.DamageCause damageCause = e.getEntity().getLastDamageCause().getCause();
         died.add(p.getUniqueId());
 
-        BackManager.saveDeath(p, loc, damageCause.toString(), SelviytymisHarpake.getEconomy().getBalance(p), hasDiamondArmorAdvancement(p), hasElytraAdvancement(p), hasNetheriteAdvancement(p), hasIronArmor(p));
+        backManager.saveDeath(p, loc, damageCause.toString(), SelviytymisHarpake.getEconomy().getBalance(p), hasDiamondArmorAdvancement(p), hasElytraAdvancement(p), hasNetheriteAdvancement(p), hasIronArmor(p));
 
     }
     @EventHandler
@@ -56,7 +63,7 @@ public class BackListener implements Listener {
             if (!fromWorld.equals(Bukkit.getWorld("spawn"))) {
                 // make sure the back locations arent too close to each other
                 if (!distanceChecker(toLocation, p)) {
-                    BackManager.saveBackLocation(p, e.getFrom());
+                    backManager.saveBackLocation(p, e.getFrom());
                 }
             }
         }
@@ -69,26 +76,26 @@ public class BackListener implements Listener {
         double savedDistance3 = Integer.MAX_VALUE;
         double savedDistance4 = Integer.MAX_VALUE;
 
-        if (BackManager.getBack(player, 1) != null) {
-            Location location = BackManager.getBack(player, 1);
+        if (backManager.getBack(player, 1) != null) {
+            Location location = backManager.getBack(player, 1);
             if (newLoc.getWorld() == location.getWorld()){
                 savedDistance1 = newLoc.distance(location);
             }
         }
-        if (BackManager.getBack(player, 2) != null) {
-            Location location = BackManager.getBack(player, 2);
+        if (backManager.getBack(player, 2) != null) {
+            Location location = backManager.getBack(player, 2);
             if (newLoc.getWorld() == location.getWorld()){
                 savedDistance2 = newLoc.distance(location);
             }
         }
-        if (BackManager.getBack(player, 3) != null) {
-            Location location = BackManager.getBack(player, 3);
+        if (backManager.getBack(player, 3) != null) {
+            Location location = backManager.getBack(player, 3);
             if (newLoc.getWorld() == location.getWorld()){
                 savedDistance3 = newLoc.distance(location);
             }
         }
-        if (BackManager.getBack(player, 4) != null) {
-            Location location = BackManager.getBack(player, 4);
+        if (backManager.getBack(player, 4) != null) {
+            Location location = backManager.getBack(player, 4);
             if (newLoc.getWorld() == location.getWorld()){
                 savedDistance4 = newLoc.distance(location);
             }
