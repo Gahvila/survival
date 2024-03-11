@@ -1,8 +1,8 @@
 package net.gahvila.selviytymisharpake.PlayerWarps.MenuSystem.menu;
 
+import net.gahvila.selviytymisharpake.PlayerWarps.WarpManager;
 import net.gahvila.selviytymisharpake.Utils.Menu;
 import net.gahvila.selviytymisharpake.Utils.PlayerMenuUtility;
-import net.gahvila.selviytymisharpake.PlayerWarps.WarpManager;
 import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,10 +16,11 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class WarpConfirmMenu extends Menu {
+    private final WarpManager warpManager;
 
-
-    public WarpConfirmMenu(PlayerMenuUtility playerMenuUtility) {
+    public WarpConfirmMenu(PlayerMenuUtility playerMenuUtility, WarpManager warpManager) {
         super(playerMenuUtility);
+        this.warpManager = warpManager;
     }
 
     @Override
@@ -34,7 +35,7 @@ public class WarpConfirmMenu extends Menu {
 
     @Override
     public void handleMenu(InventoryClickEvent e) {
-        Integer price = WarpManager.getWarpPrice(playerMenuUtility.getWarpToTeleport());
+        Integer price = warpManager.getWarpPrice(playerMenuUtility.getWarpToTeleport());
         Player p = (Player) e.getWhoClicked();
         switch (e.getCurrentItem().getType()){
             case GREEN_STAINED_GLASS_PANE:
@@ -42,16 +43,16 @@ public class WarpConfirmMenu extends Menu {
                     SelviytymisHarpake.getEconomy().withdrawPlayer(p, price);
                     p.sendMessage("Tililtäsi veloitettiin §e" + price + "Ⓖ§f.");
                     p.closeInventory();
-                    p.teleportAsync(WarpManager.getWarp(playerMenuUtility.getWarpToTeleport()));
+                    p.teleportAsync(warpManager.getWarp(playerMenuUtility.getWarpToTeleport()));
                     p.sendMessage("Sinut teleportattiin warppiin §e" + playerMenuUtility.getWarpToTeleport() + "§f.");
 
-                    if (!p.getName().equals(WarpManager.getWarpOwnerName(e.getCurrentItem().getItemMeta().getDisplayName()))){
-                        WarpManager.addUses(playerMenuUtility.getWarpToTeleport());
+                    if (!p.getName().equals(warpManager.getWarpOwnerName(e.getCurrentItem().getItemMeta().getDisplayName()))){
+                        warpManager.addUses(playerMenuUtility.getWarpToTeleport());
                     }
                     //
-                    String ownerUUID = WarpManager.getWarpOwnerUUID(playerMenuUtility.getWarpToTeleport());
+                    String ownerUUID = warpManager.getWarpOwnerUUID(playerMenuUtility.getWarpToTeleport());
                     if (Bukkit.getPlayer(UUID.fromString(ownerUUID)) == null){
-                        WarpManager.addMoneyToQueue(WarpManager.getWarpOwnerUUID(playerMenuUtility.getWarpToTeleport()), price);
+                        warpManager.addMoneyToQueue(warpManager.getWarpOwnerUUID(playerMenuUtility.getWarpToTeleport()), price);
                     }else{
                         Player owner = Bukkit.getPlayer(UUID.fromString(ownerUUID));
                         SelviytymisHarpake.getEconomy().depositPlayer(owner, price);
@@ -65,7 +66,7 @@ public class WarpConfirmMenu extends Menu {
             case RED_STAINED_GLASS_PANE:
 
                 //go back to the previous menu
-                new WarpMenu(playerMenuUtility).open();
+                new WarpMenu(playerMenuUtility, warpManager).open();
 
                 break;
         }
@@ -74,7 +75,7 @@ public class WarpConfirmMenu extends Menu {
 
     @Override
     public void setMenuItems() {
-        Integer price = WarpManager.getWarpPrice(playerMenuUtility.getWarpToTeleport());
+        Integer price = warpManager.getWarpPrice(playerMenuUtility.getWarpToTeleport());
         ItemStack yes = new ItemStack(Material.GREEN_STAINED_GLASS_PANE, 1);
         ItemMeta yes_meta = yes.getItemMeta();
         yes_meta.setDisplayName(ChatColor.GREEN + "Kyllä");

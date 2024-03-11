@@ -28,9 +28,11 @@ import java.util.List;
 import static org.bukkit.Bukkit.getServer;
 
 public class WarpMenu extends PaginatedMenu implements Listener {
+    private final WarpManager warpManager;
 
-    public WarpMenu(PlayerMenuUtility playerMenuUtility) {
+    public WarpMenu(PlayerMenuUtility playerMenuUtility, WarpManager warpManager) {
         super(playerMenuUtility);
+        this.warpManager = warpManager;
     }
 
     @Override
@@ -50,18 +52,18 @@ public class WarpMenu extends PaginatedMenu implements Listener {
         ArrayList<Player> players = new ArrayList<Player>(getServer().getOnlinePlayers());
 
         if (e.getCurrentItem().getType().equals(Material.GREEN_WOOL)) {
-            Integer price = WarpManager.getWarpPrice(e.getCurrentItem().getItemMeta().getDisplayName());
+            Integer price = warpManager.getWarpPrice(e.getCurrentItem().getItemMeta().getDisplayName());
             if (price > 0 && price < 51){
                 playerMenuUtility.setWarpToTeleport(e.getCurrentItem().getItemMeta().getDisplayName());
 
-                new WarpConfirmMenu(playerMenuUtility).open();
+                new WarpConfirmMenu(playerMenuUtility, warpManager).open();
             }else{
                 p.closeInventory();
-                if (WarpManager.isLocationSafe(WarpManager.getWarp(e.getCurrentItem().getItemMeta().getDisplayName()))) {
-                    if (!p.getName().equals(WarpManager.getWarpOwnerName(e.getCurrentItem().getItemMeta().getDisplayName()))) {
-                        WarpManager.addUses(e.getCurrentItem().getItemMeta().getDisplayName());
+                if (warpManager.isLocationSafe(warpManager.getWarp(e.getCurrentItem().getItemMeta().getDisplayName()))) {
+                    if (!p.getName().equals(warpManager.getWarpOwnerName(e.getCurrentItem().getItemMeta().getDisplayName()))) {
+                        warpManager.addUses(e.getCurrentItem().getItemMeta().getDisplayName());
                     }
-                    p.teleportAsync(WarpManager.getWarp(e.getCurrentItem().getItemMeta().getDisplayName()));
+                    p.teleportAsync(warpManager.getWarp(e.getCurrentItem().getItemMeta().getDisplayName()));
                     p.sendMessage("Sinut teleportattiin warppiin §e" + e.getCurrentItem().getItemMeta().getDisplayName() + "§f.");
                 }else{
                     p.sendMessage("Warpin sijainti ei ole turvallinen. Teleportti peruttu.");
@@ -86,7 +88,7 @@ public class WarpMenu extends PaginatedMenu implements Listener {
             } else if (ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Seuraava sivu")) {
                 int maxItemsPerPage = getMaxItemsPerPage();
                 int startIndex = (page + 1) * maxItemsPerPage;
-                ArrayList<String> warps = new ArrayList<String>(WarpManager.getWarps());
+                ArrayList<String> warps = new ArrayList<String>(warpManager.getWarps());
                 if (startIndex >= warps.size()) {
                     p.sendMessage(ChatColor.GRAY + "Olet viimeisellä sivulla.");
                 } else {
@@ -95,10 +97,10 @@ public class WarpMenu extends PaginatedMenu implements Listener {
                 }
             }
         }else if(e.getCurrentItem().getType().equals(Material.NETHER_STAR)){
-            WarpManager.changeSorting(p);
+            warpManager.changeSorting(p);
 
             p.closeInventory();
-            new WarpMenu(SelviytymisHarpake.getPlayerMenuUtility(p)).open();
+            new WarpMenu(SelviytymisHarpake.getPlayerMenuUtility(p), warpManager).open();
         }
     }
 
@@ -108,19 +110,19 @@ public class WarpMenu extends PaginatedMenu implements Listener {
         addMenuBorder();
 
         //The thing you will be looping through to place items
-        ArrayList<String> warps = new ArrayList<String>(WarpManager.getWarps());
+        ArrayList<String> warps = new ArrayList<String>(warpManager.getWarps());
 
         ItemStack orderItem = new ItemStack(Material.NETHER_STAR, 1);
         ItemMeta orderMeta = orderItem.getItemMeta();
 
         orderMeta.setDisplayName("§aJärjestys");
 
-        if (WarpManager.getSorting(playerMenuUtility.getOwner()) == 0 || WarpManager.getSorting(playerMenuUtility.getOwner()) == null){
+        if (warpManager.getSorting(playerMenuUtility.getOwner()) == 0 || warpManager.getSorting(playerMenuUtility.getOwner()) == null){
             orderMeta.setLore(List.of("§fNykyinen järjestys:", "§eUusin ensin"));
             Collections.reverse(warps);
-        }else if (WarpManager.getSorting(playerMenuUtility.getOwner()) == 1){
+        }else if (warpManager.getSorting(playerMenuUtility.getOwner()) == 1){
             orderMeta.setLore(List.of("§fNykyinen järjestys:", "§eVanhin ensin"));
-        }else if (WarpManager.getSorting(playerMenuUtility.getOwner()) == 2){
+        }else if (warpManager.getSorting(playerMenuUtility.getOwner()) == 2){
             orderMeta.setLore(List.of("§fNykyinen järjestys:", "§eAakkosjärjestys"));
             warps.sort(String::compareToIgnoreCase);
         }
@@ -141,14 +143,14 @@ public class WarpMenu extends PaginatedMenu implements Listener {
             ItemMeta warpMeta = warpItem.getItemMeta();
 
             String currWarp = warps.get(i);
-            String warpOwner = WarpManager.getWarpOwnerName(currWarp);
+            String warpOwner = warpManager.getWarpOwnerName(currWarp);
 
-            Date currentTime = new Date(WarpManager.getCreationDate(currWarp));
+            Date currentTime = new Date(warpManager.getCreationDate(currWarp));
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String dateString = formatter.format(currentTime);
 
             warpMeta.setDisplayName(currWarp);
-            warpMeta.setLore(List.of("§fOmistaja: §e" + warpOwner, "§fKäyttökerrat: §e" + WarpManager.getUses(currWarp), "§fHinta: §e" + WarpManager.getWarpPrice(currWarp) + "Ⓖ§f", "§7§o" + dateString));
+            warpMeta.setLore(List.of("§fOmistaja: §e" + warpOwner, "§fKäyttökerrat: §e" + warpManager.getUses(currWarp), "§fHinta: §e" + warpManager.getWarpPrice(currWarp) + "Ⓖ§f", "§7§o" + dateString));
             warpItem.setItemMeta(warpMeta);
 
             inventory.addItem(warpItem);

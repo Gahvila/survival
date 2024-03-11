@@ -1,6 +1,7 @@
 package net.gahvila.selviytymisharpake.PlayerWarps;
 
 import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.AddonManager;
+import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackManager;
 import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,23 +15,28 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.util.UUID;
 
 public class WarpEvents implements Listener {
+    private final WarpManager warpManager;
 
+
+    public WarpEvents(WarpManager warpManager) {
+        this.warpManager = warpManager;
+    }
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e){
         Player p = e.getPlayer();
-        if (WarpManager.settingWarp.containsKey(p.getUniqueId())) {
+        if (warpManager.settingWarp.containsKey(p.getUniqueId())) {
             if (p.hasPermission("warps.yes")) {
                 if (!e.getMessage().equals("lopeta")) {
-                    switch (WarpManager.settingWarp.get(p.getUniqueId())) {
+                    switch (warpManager.settingWarp.get(p.getUniqueId())) {
                         //Set komento kysyy haluaako asettaa warpin
                         case 1:
                             e.setCancelled(true);
                             if (e.getMessage().matches("[a-zA-ZöÖäÄåÅ0-9]*")) {
                                 if (e.getMessage().length() <= 32) {
-                                    if (!WarpManager.getWarps().contains(e.getMessage())){
-                                        WarpManager.settingWarp.put(p.getUniqueId(), 2);
-                                        WarpManager.settingWarpName.put(p.getUniqueId(), e.getMessage());
+                                    if (!warpManager.getWarps().contains(e.getMessage())){
+                                        warpManager.settingWarp.put(p.getUniqueId(), 2);
+                                        warpManager.settingWarpName.put(p.getUniqueId(), e.getMessage());
                                         p.sendMessage("");
                                         p.sendMessage("");
                                         p.sendMessage("");
@@ -58,8 +64,8 @@ public class WarpEvents implements Listener {
                             if (e.getMessage().matches("[0-9]*")) {
                                 Integer price = Integer.valueOf(e.getMessage());
                                 if (price > -1 && price < 101) {
-                                    WarpManager.settingWarp.put(p.getUniqueId(), 3);
-                                    WarpManager.settingWarpPrice.put(p.getUniqueId(), Integer.valueOf(e.getMessage()));
+                                    warpManager.settingWarp.put(p.getUniqueId(), 3);
+                                    warpManager.settingWarpPrice.put(p.getUniqueId(), Integer.valueOf(e.getMessage()));
                                     p.sendMessage("");
                                     p.sendMessage("");
                                     p.sendMessage("");
@@ -70,8 +76,8 @@ public class WarpEvents implements Listener {
                                     p.sendMessage("§fOK! Warppisi käyttöhinta tulee olemaan §e" + e.getMessage());
                                     p.sendMessage("");
                                     p.sendMessage("§fValmista, nyt sinun vain täytyy varmistaa että kaikki tässä on oikein:");
-                                    p.sendMessage("§fWarpin käyttöhinta: §e" + WarpManager.settingWarpPrice.get(p.getUniqueId()));
-                                    p.sendMessage("§fWarpin nimi: §e" + WarpManager.settingWarpName.get(p.getUniqueId()));
+                                    p.sendMessage("§fWarpin käyttöhinta: §e" + warpManager.settingWarpPrice.get(p.getUniqueId()));
+                                    p.sendMessage("§fWarpin nimi: §e" + warpManager.settingWarpName.get(p.getUniqueId()));
                                     p.sendMessage("§cVarmista, että olet sijainnissa johon haluat warpin tulevan.");
                                     p.sendMessage("");
                                     p.sendMessage("Kun kaikki on valmista, kirjoita '§evarmista§f' chattiin, ja warppi asetetaan.");
@@ -93,12 +99,12 @@ public class WarpEvents implements Listener {
                                 p.sendMessage("");
                                 p.sendMessage("");
                                 p.sendMessage("§fKiitoksia! Warppisi on nyt julkisesti saatavilla koko palvelimelle.");
-                                WarpManager.saveWarp(p, WarpManager.settingWarpName.get(p.getUniqueId()), p.getLocation(), WarpManager.settingWarpPrice.get(p.getUniqueId()));
+                                warpManager.saveWarp(p, warpManager.settingWarpName.get(p.getUniqueId()), p.getLocation(), warpManager.settingWarpPrice.get(p.getUniqueId()));
 
                                 //
-                                WarpManager.settingWarp.remove(p.getUniqueId());
-                                WarpManager.settingWarpPrice.remove(p.getUniqueId());
-                                WarpManager.settingWarpName.remove(p.getUniqueId());
+                                warpManager.settingWarp.remove(p.getUniqueId());
+                                warpManager.settingWarpPrice.remove(p.getUniqueId());
+                                warpManager.settingWarpName.remove(p.getUniqueId());
                             } else {
                                 p.sendMessage("");
                                 p.sendMessage("§cVarmista, että olet sijainnissa johon haluat warpin tulevan.");
@@ -110,19 +116,19 @@ public class WarpEvents implements Listener {
                     }
                 } else {
                     e.setCancelled(true);
-                    WarpManager.settingWarp.remove(p.getUniqueId());
-                    WarpManager.settingWarpPrice.remove(p.getUniqueId());
-                    WarpManager.settingWarpName.remove(p.getUniqueId());
+                    warpManager.settingWarp.remove(p.getUniqueId());
+                    warpManager.settingWarpPrice.remove(p.getUniqueId());
+                    warpManager.settingWarpName.remove(p.getUniqueId());
                     p.sendMessage("Peruit warpin luonnin.");
                 }
             }
-        }else if (WarpManager.editingWarp.containsKey(p.getUniqueId())){
+        }else if (warpManager.editingWarp.containsKey(p.getUniqueId())){
             if (!e.getMessage().equals("lopeta")) {
-                switch (WarpManager.editingWarp.get(p.getUniqueId())) {
+                switch (warpManager.editingWarp.get(p.getUniqueId())) {
                     case 1:
                         e.setCancelled(true);
-                        if (WarpManager.getOwnedWarps(p).contains(e.getMessage())){
-                            WarpManager.editingWarp.put(p.getUniqueId(), 3);
+                        if (warpManager.getOwnedWarps(p).contains(e.getMessage())){
+                            warpManager.editingWarp.put(p.getUniqueId(), 3);
                             p.sendMessage("");
                             p.sendMessage("§fMihin vaihdetaan hinta?");
                             p.sendMessage("§fVoit syöttää hinnan §e0-50 §fväliltä.");
@@ -133,8 +139,8 @@ public class WarpEvents implements Listener {
                         break;
                     case 2:
                         e.setCancelled(true);
-                        if (WarpManager.getOwnedWarps(p).contains(e.getMessage())){
-                            WarpManager.editingWarp.put(p.getUniqueId(), 4);
+                        if (warpManager.getOwnedWarps(p).contains(e.getMessage())){
+                            warpManager.editingWarp.put(p.getUniqueId(), 4);
                             p.sendMessage("");
                             p.sendMessage("§fSeiso siellä mihin haluat vaihtaa sijainnin.");
                             p.sendMessage("§fKun olet valmis, kirjoita aivan mitä tahdot chattiin.");
@@ -148,7 +154,7 @@ public class WarpEvents implements Listener {
                         if (e.getMessage().matches("[0-9]*")) {
                             Integer price = Integer.valueOf(e.getMessage());
                             if (price > -1 && price < 51) {
-                                WarpManager.updateWarpPrice(p, WarpManager.settingWarpName.get(p.getUniqueId()), price);
+                                warpManager.updateWarpPrice(p, warpManager.settingWarpName.get(p.getUniqueId()), price);
                                 p.sendMessage("Warpin hinta muokattu.");
                             } else {
                                 p.sendMessage("Voit syöttää vain numeron §e0-50 §fväliltä.");
@@ -157,21 +163,21 @@ public class WarpEvents implements Listener {
                             p.sendMessage("Voit syöttää vain numeron §e0-50 §fväliltä.");
                         }
 
-                        WarpManager.editingWarp.remove(p.getUniqueId());
-                        WarpManager.editingWarpName.remove(p.getUniqueId());
+                        warpManager.editingWarp.remove(p.getUniqueId());
+                        warpManager.editingWarpName.remove(p.getUniqueId());
                         break;
                     case 4:
                         e.setCancelled(true);
                         p.sendMessage("Warpin sijainti muokattu.");
-                        WarpManager.updateWarpLocation(p, WarpManager.settingWarpName.get(p.getUniqueId()), p.getLocation());
+                        warpManager.updateWarpLocation(p, warpManager.settingWarpName.get(p.getUniqueId()), p.getLocation());
 
-                        WarpManager.editingWarp.remove(p.getUniqueId());
-                        WarpManager.editingWarpName.remove(p.getUniqueId());
+                        warpManager.editingWarp.remove(p.getUniqueId());
+                        warpManager.editingWarpName.remove(p.getUniqueId());
                         break;
                 }
             }else{
                 e.setCancelled(true);
-                WarpManager.editingWarp.remove(p.getUniqueId());
+                warpManager.editingWarp.remove(p.getUniqueId());
                 p.sendMessage("Peruit warpin muokkaamisen..");
             }
         }
@@ -180,29 +186,29 @@ public class WarpEvents implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e){
         Player p = e.getPlayer();
-        WarpManager.settingWarp.remove(p.getUniqueId());
-        WarpManager.settingWarpPrice.remove(p.getUniqueId());
-        WarpManager.settingWarpName.remove(p.getUniqueId());
+        warpManager.settingWarp.remove(p.getUniqueId());
+        warpManager.settingWarpPrice.remove(p.getUniqueId());
+        warpManager.settingWarpName.remove(p.getUniqueId());
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e){
         Player p = e.getPlayer();
 
-        WarpManager.updateWarpOwnerName(p);
+        warpManager.updateWarpOwnerName(p);
 
-        Integer money = WarpManager.getMoneyInQueue(p.getUniqueId().toString());
+        Integer money = warpManager.getMoneyInQueue(p.getUniqueId().toString());
         if (money > 0){
-            Integer toBePaid = WarpManager.getMoneyInQueue(String.valueOf(p.getUniqueId()));
-            WarpManager.setMoneyInQueue(p.getUniqueId().toString(), 0);
+            Integer toBePaid = warpManager.getMoneyInQueue(String.valueOf(p.getUniqueId()));
+            warpManager.setMoneyInQueue(p.getUniqueId().toString(), 0);
             SelviytymisHarpake.getEconomy().depositPlayer(p, toBePaid);
             p.sendMessage("Sinun maksullista warppia käytettiin kun olit poissa, sait §e" + toBePaid + "Ⓖ§f.");
         }
 
         //WarpManager.setAllowedWarps(p);
 
-        WarpManager.settingWarp.remove(p.getUniqueId());
-        WarpManager.settingWarpPrice.remove(p.getUniqueId());
-        WarpManager.settingWarpName.remove(p.getUniqueId());
+        warpManager.settingWarp.remove(p.getUniqueId());
+        warpManager.settingWarpPrice.remove(p.getUniqueId());
+        warpManager.settingWarpName.remove(p.getUniqueId());
     }
 }

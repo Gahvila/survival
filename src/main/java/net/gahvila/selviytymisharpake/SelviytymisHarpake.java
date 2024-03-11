@@ -16,7 +16,6 @@ import net.gahvila.selviytymisharpake.PlayerFeatures.Commands.SpawnCMD;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Commands.TPACMD;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Events.*;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Homes.*;
-import net.gahvila.selviytymisharpake.PlayerFeatures.OnTabComplete;
 import net.gahvila.selviytymisharpake.PlayerFeatures.VehicleBuffs.MinecartBuff;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Spawn.SpawnTeleport;
 import net.gahvila.selviytymisharpake.PlayerWarps.*;
@@ -52,6 +51,10 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
     private AddonManager addonManager;
     private BackManager backManager;
     private HomeManager homeManager;
+    private WarpManager warpManager;
+
+    private PlayerMenuUtility playerMenuUtility;
+
 
 
     private static final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
@@ -104,6 +107,7 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         backManager = new BackManager();
         addonManager = new AddonManager();
         homeManager = new HomeManager();
+        warpManager = new WarpManager();
 
         // Command
         CommandAPI.onLoad(new CommandAPIBukkitConfig(this).verboseOutput(false).silentLogs(true));
@@ -129,9 +133,16 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         HomeCommands homeCommands = new HomeCommands(homeManager);
         homeCommands.registerCommands();
 
+        WarpCommands warpCommands = new WarpCommands(warpManager);
+        warpCommands.registerCommands();
+
+        ResourceNetherCMD resourceNetherCMD = new ResourceNetherCMD();
+        resourceNetherCMD.registerCommands();
+
 
         saveDefaultConfig();
 
+        /*
         getCommand("warp").setTabCompleter(new OnTabComplete());
         getCommand("delwarp").setTabCompleter(new OnTabComplete());
 
@@ -141,16 +152,17 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         getCommand("delwarp").setExecutor(new DelWarpCMD());
         getCommand("editwarp").setExecutor(new EditWarpCMD());
 
-        getCommand("resurssinether").setExecutor(new ResourceNetherCMD());
+         */
 
-        registerListeners(new PlayerDeath(), new JoinEvent(), new QuitEvent(), new PortalEnterEvent(), new BackListener(backManager), new ChatRange(), new ChunkUnload(), new WarpEvents(), new MenuListener(), new AddonMenuEvents(addonManager), new RNPortalDisabler(), new ExplodeEvent(), new MinecartBuff());
+        registerListeners(new PlayerDeath(), new JoinEvent(), new QuitEvent(), new PortalEnterEvent(), new BackListener(backManager), new ChatRange(), new ChunkUnload(),
+                new WarpEvents(warpManager), new MenuListener(), new AddonMenuEvents(addonManager), new RNPortalDisabler(), new ExplodeEvent(), new MinecartBuff());
+
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+
         if (!setupEconomy() ) {
             getServer().shutdown();
             return;
         }
-
-
     }
 
     public void schedule() {
