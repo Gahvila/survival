@@ -35,9 +35,9 @@ public class HomeCommands {
                                 SelviytymisHarpake.getEconomy().withdrawPlayer(p, price);
 
                                 homeManager.addAdditionalHomes(p);
-                                p.sendMessage("Sinulla on nyt §e" + homeManager.getAllowedHomes(p) + " §fkotia yhteensä. §7(Rank: " + homeManager.getAllowedHomesOfRank(p) + " §8| §7Lisäkodit: " + homeManager.getAllowedAdditionalHomes(p) + ")§r");
+                                p.sendMessage(toMiniMessage("<white>Sinulla on nyt</white> <#85FF00>" + homeManager.getAllowedHomes(p) + "</#85FF00> <white>kotia yhteensä.</white> <gray>(Rank: " + homeManager.getAllowedHomesOfRank(p) + "</gray> <dark_gray>|</dark_gray> <gray>Lisäkodit: " + homeManager.getAllowedAdditionalHomes(p) + ")</gray>"));
                             } else {
-                                p.sendMessage("Kodin osto maksaa §e" + price + "Ⓖ§f, ja sinulla on vain §e" + SelviytymisHarpake.getEconomy().getBalance(p));
+                                p.sendMessage(toMiniMessage("<white>Kodin osto maksaa</white> <#85FF00>" + price + "Ⓖ</#85FF00><white>, ja sinulla on vain</white> <#85FF00>" + SelviytymisHarpake.getEconomy().getBalance(p) + "</#85FF00>"));
                             }
                         }))
                 .executesPlayer((p, args) -> {
@@ -48,9 +48,9 @@ public class HomeCommands {
 
                     int price = getNextHomeCost(p);
 
-                    p.sendMessage("§fSinulla on §e" + homeManager.getAllowedHomes(p) + " §fkotia yhteensä. §7(Rank: " + homeManager.getAllowedHomesOfRank(p) + " §8| §7Lisäkodit: " + homeManager.getAllowedAdditionalHomes(p) + ")§r");
-                    p.sendMessage("Haluatko varmasti ostaa lisäkodin? \nHinta: §e" + price + "Ⓖ");
-                    p.sendMessage("§fJokaisen kodin osto nostaa hintaa §e10%§f.");
+                    p.sendMessage(toMiniMessage("<white>Sinulla on</white> <#85FF00>" + homeManager.getAllowedHomes(p) + "</#85FF00> <white>kotia yhteensä.</white> <gray>(Rank: " + homeManager.getAllowedHomesOfRank(p) + "</gray> <dark_gray>|</dark_gray> <gray>Lisäkodit: " + homeManager.getAllowedAdditionalHomes(p) + ")</gray>"));
+                    p.sendMessage(toMiniMessage("<white>Haluatko varmasti ostaa lisäkodin?\nHinta:</white> <#85FF00>" + price + "Ⓖ</#85FF00>"));
+                    p.sendMessage(toMiniMessage("<white>Jokaisen kodin osto nostaa hintaa</white> <#85FF00>10%</#85FF00><white>.</white>"));
                     p.sendMessage(accept);
                 })
 
@@ -60,7 +60,7 @@ public class HomeCommands {
                 .executesPlayer((p, args) -> {
                     String nimi = args.getRaw("koti");
                     if (homeManager.getHomes(p) == null) {
-                        p.sendMessage("Sinulla ei ole kotia nimellä §e" + nimi + "§f.");
+                        p.sendMessage(toMiniMessage("</white>Sinulla ei ole kotia nimellä <#85FF00>" + nimi + "</#85FF00><white>.</white>"));
                     } else if (homeManager.getHomes(p).contains(nimi)) {
                         Bukkit.getScheduler().runTaskAsynchronously(SelviytymisHarpake.instance, new Runnable() {
                             @Override
@@ -68,9 +68,9 @@ public class HomeCommands {
                                 homeManager.deleteHome(p, nimi);
                             }
                         });
-                        p.sendMessage("§fKoti §e" + nimi + " §fpoistettu.");
+                        p.sendMessage(toMiniMessage("<white>Koti nimellä</white> <#85FF00>" + nimi + "</#85FF00> <white>poistettu.</white>"));
                     } else {
-                        p.sendMessage("Sinulla ei ole kotia nimellä §e" + nimi + "§f.");
+                        p.sendMessage(toMiniMessage("<white>Sinulla ei ole kotia nimellä</white> <#85FF00>" + nimi + "</#85FF00><white>.</white>"));
                     }
                 })
                 .register();
@@ -81,7 +81,7 @@ public class HomeCommands {
                                 p.teleportAsync(p.getBedSpawnLocation());
                                 p.setWalkSpeed(0.2F);
                             }else{
-                                p.sendMessage("§a§lSurvival §8> §fSinulla ei ole sänkyä asetettuna.");
+                                p.sendMessage("Sinulla ei ole sänkyä asetettuna.");
                             }
                         }))
                 .withOptionalArguments(customHomeArgument("koti"))
@@ -90,7 +90,7 @@ public class HomeCommands {
                         if (homeManager.getHomes(p) != null) {
                             new HomeMenu(SelviytymisHarpake.getPlayerMenuUtility(p), homeManager).open();
                         }else{
-                            p.sendMessage("Sinulla ei ole kotia. Voit asettaa kodin komennolla §e/sethome§f.");
+                            p.sendMessage(toMiniMessage("<white>Sinulla ei ole kotia. Voit asettaa kodin komennolla</white> <#85FF00>/sethome</#85FF00><white>.</white>"));
                         }
                         return;
                     }
@@ -102,7 +102,7 @@ public class HomeCommands {
                             p.teleportAsync(homeManager.getHome(p, nimi));
                             p.setWalkSpeed(0.2F);
                         } else {
-                            p.sendMessage("§a§lSurvival §8> §fSinulla ei ole kotia nimellä §e" + nimi + "§f!");
+                            p.sendMessage(toMiniMessage("<white>Sinulla ei ole kotia nimellä</white> <#85FF00>" + nimi + "</#85FF00><white>!</white>"));
                         }
                     }
                 })
@@ -112,11 +112,10 @@ public class HomeCommands {
                 .withOptionalArguments(new GreedyStringArgument("nimi"))
                 .executesPlayer((p, args) -> {
                     if (args.get("nimi") == null){
-                        p.sendMessage("\n \n \n");
-                        p.sendMessage("§m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m ");
-                        p.sendMessage("§fKodin nimi voi olla maksimissaan §e16 kirjainta §fpitkä, ja se voi sisältää vain §eaakkosia §fja §enumeroita§f.\n \n§fKomento asettaa kodin tarkasti siihen kohtaan missä seisot, mukaanlukien sen, minne suuntaan katsot.");
-                        p.sendMessage("§m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m ");
-                        p.sendMessage("§fSuorita komento §e/sethome [kodin nimi] §fasettaaksesi kotisi.");
+                        p.sendMessage("\n");
+                        p.sendMessage(toMiniMessage("<white>Kodin nimi voi olla maksimissaan</white> <#85FF00>16 kirjainta</#85FF00> <white>pitkä, ja se voi sisältää vain <#85FF00>aakkosia</#85FF00> <white>ja</white> <#85FF00>numeroita<#85FF00/><white>.</white>"));
+                        p.sendMessage(toMiniMessage("Komento asettaa kodin tarkasti siihen kohtaan missä seisot, mukaanlukien sen, minne suuntaan katsot."));
+                        p.sendMessage(toMiniMessage("<white>Suorita komento</white> <#85FF00>/sethome [kodin nimi]</#85FF00> <white>asettaaksesi kotisi.</white>"));
                         return;
                     }
                     String nimi = (String) args.get("nimi");
@@ -130,15 +129,15 @@ public class HomeCommands {
                                             homeManager.saveHome(p, nimi, p.getLocation());
                                         }
                                     });
-                                    p.sendTitle("§a" + nimi, "§7Koti asetettu.", 1, 60, 1);
+                                    p.sendMessage(toMiniMessage("<white>Koti nimellä</white> <#85FF00>" + nimi + "</#85FF00> <white>asetettu.</white>"));
                                 } else {
                                     p.sendMessage("Et voi asettaa kotia tässä maassa.");
                                 }
                             } else {
                                 p.sendMessage("\n");
-                                p.sendMessage(toMiniMessage("<white>Kodin nimi voi olla maksimissaan</white> <yellow>16 kirjainta</yellow> <white>pitkä, ja se voi sisältää vain <yellow>aakkosia</yellow> <white>ja</white> <yellow>numeroita<yellow/><white>.</white>"));
+                                p.sendMessage(toMiniMessage("<white>Kodin nimi voi olla maksimissaan</white> <#85FF00>16 kirjainta</#85FF00> <white>pitkä, ja se voi sisältää vain <#85FF00>aakkosia</#85FF00> <white>ja</white> <#85FF00>numeroita<#85FF00/><white>.</white>"));
                                 p.sendMessage(toMiniMessage("Komento asettaa kodin tarkasti siihen kohtaan missä seisot, mukaanlukien sen, minne suuntaan katsot."));
-                                p.sendMessage(toMiniMessage("<white>Suorita komento</white> <yellow>/sethome [kodin nimi]</yellow> <white>asettaaksesi kotisi.</white>"));
+                                p.sendMessage(toMiniMessage("<white>Suorita komento</white> <#85FF00>/sethome [kodin nimi]</#85FF00> <white>asettaaksesi kotisi.</white>"));
                             }
                         }
                     }
