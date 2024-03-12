@@ -6,12 +6,15 @@ import dev.jorel.commandapi.arguments.*;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackManager;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Spawn.SpawnTeleport;
 import net.gahvila.selviytymisharpake.SelviytymisHarpake;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -117,7 +120,7 @@ public class HomeCommands {
                         return;
                     }
                     String nimi = (String) args.get("nimi");
-                    if (homeManager.getHomes(p).size() < homeManager.getAllowedHomes(p)) {
+                    if (homeManager.getHomes(p) == null || homeManager.getHomes(p).size() < homeManager.getAllowedHomes(p)) {
                         if (nimi.matches("[a-zA-ZöÖäÄåÅ0-9- ]*")) {
                             if (nimi.length() <= 16) {
                                 if (!p.getWorld().getName().equals("spawn") || (!p.getWorld().getName().equals("resurssinether"))) {
@@ -132,11 +135,10 @@ public class HomeCommands {
                                     p.sendMessage("Et voi asettaa kotia tässä maassa.");
                                 }
                             } else {
-                                p.sendMessage("\n \n \n");
-                                p.sendMessage("§m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m ");
-                                p.sendMessage("§fKodin nimi voi olla maksimissaan §e16 kirjainta §fpitkä, ja se voi sisältää vain §eaakkosia §fja §enumeroita§f.\n \n§fKomento asettaa kodin tarkasti siihen kohtaan missä seisot, mukaanlukien sen, minne suuntaan katsot.");
-                                p.sendMessage("§m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m §m ");
-                                p.sendMessage("§fSuorita komento §e/sethome [kodin nimi] §fasettaaksesi kotisi.");
+                                p.sendMessage("\n");
+                                p.sendMessage(toMiniMessage("<white>Kodin nimi voi olla maksimissaan</white> <yellow>16 kirjainta</yellow> <white>pitkä, ja se voi sisältää vain <yellow>aakkosia</yellow> <white>ja</white> <yellow>numeroita<yellow/><white>.</white>"));
+                                p.sendMessage(toMiniMessage("Komento asettaa kodin tarkasti siihen kohtaan missä seisot, mukaanlukien sen, minne suuntaan katsot."));
+                                p.sendMessage(toMiniMessage("<white>Suorita komento</white> <yellow>/sethome [kodin nimi]</yellow> <white>asettaaksesi kotisi.</white>"));
                             }
                         }
                     }
@@ -179,5 +181,9 @@ public class HomeCommands {
 
             return homeManager.getHomes((Player) info.sender()).toArray(new String[0]);
         }));
+    }
+
+    public @NotNull Component toMiniMessage(@NotNull String string) {
+        return MiniMessage.miniMessage().deserialize(string);
     }
 }

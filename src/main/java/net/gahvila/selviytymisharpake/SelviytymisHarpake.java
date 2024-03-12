@@ -18,9 +18,11 @@ import net.gahvila.selviytymisharpake.PlayerFeatures.Events.*;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Homes.*;
 import net.gahvila.selviytymisharpake.PlayerFeatures.VehicleBuffs.MinecartBuff;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Spawn.SpawnTeleport;
+import net.gahvila.selviytymisharpake.PlayerFeatures.VehicleBuffs.RidableBuff;
 import net.gahvila.selviytymisharpake.PlayerWarps.*;
 import net.gahvila.selviytymisharpake.Resurssinether.RNPortalDisabler;
 import net.gahvila.selviytymisharpake.Resurssinether.ResourceNetherCMD;
+import net.gahvila.selviytymisharpake.Resurssinether.ResurssinetherReset;
 import net.gahvila.selviytymisharpake.Utils.MenuListener;
 import net.gahvila.selviytymisharpake.Utils.PlayerMenuUtility;
 import net.milkbowl.vault.economy.Economy;
@@ -46,12 +48,13 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
     public static SelviytymisHarpake instance;
     private PluginManager pluginManager;
     private static Economy econ = null;
-    private static SelviytymisHarpake plugin;
+    private SelviytymisHarpake plugin;
 
     private AddonManager addonManager;
     private BackManager backManager;
     private HomeManager homeManager;
     private WarpManager warpManager;
+    private ResurssinetherReset resurssinetherReset;
 
     private PlayerMenuUtility playerMenuUtility;
 
@@ -91,23 +94,27 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         resurssinether.getWorldBorder().setSize(2000);
         resurssinether.setDifficulty(Difficulty.HARD);
 
-
-        //schedule resource-nether reset
-        schedule();
-
-        //schedule ridable swimming
-        ridableBuffScheduler();
-
         //CONFIG
         getConfig().options().copyDefaults();
 
-        pluginManager = Bukkit.getPluginManager();
+
+        // initialize managers for handling various functionalities
         instance = this;
 
+        pluginManager = Bukkit.getPluginManager();
         backManager = new BackManager();
         addonManager = new AddonManager();
         homeManager = new HomeManager();
         warpManager = new WarpManager();
+        resurssinetherReset = new ResurssinetherReset(homeManager, instance);
+
+        //schedule resource-nether reset
+        ResurssinetherReset resurssinetherReset = new ResurssinetherReset(homeManager, instance);
+        resurssinetherReset.schedule();
+
+        //schedule ridable swimming
+        RidableBuff ridableBuff = new RidableBuff();
+        ridableBuff.ridableBuffScheduler();
 
         // Command
         CommandAPI.onLoad(new CommandAPIBukkitConfig(this).verboseOutput(false).silentLogs(true));
@@ -142,18 +149,6 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
 
         saveDefaultConfig();
 
-        /*
-        getCommand("warp").setTabCompleter(new OnTabComplete());
-        getCommand("delwarp").setTabCompleter(new OnTabComplete());
-
-        getCommand("buywarp").setExecutor(new BuyWarpCMD());
-        getCommand("setwarp").setExecutor(new SetWarpCMD());
-        getCommand("warp").setExecutor(new WarpsCMD());
-        getCommand("delwarp").setExecutor(new DelWarpCMD());
-        getCommand("editwarp").setExecutor(new EditWarpCMD());
-
-         */
-
         registerListeners(new PlayerDeath(), new JoinEvent(), new QuitEvent(), new PortalEnterEvent(), new BackListener(backManager), new ChatRange(), new ChunkUnload(),
                 new WarpEvents(warpManager), new MenuListener(), new AddonMenuEvents(addonManager), new RNPortalDisabler(), new ExplodeEvent(), new MinecartBuff());
 
@@ -165,69 +160,14 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         }
     }
 
-    public void schedule() {
-        // get the time for the first day of the next month
-        ZonedDateTime nextTime = ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()).plusMonths(1L).withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);
-        // get the difference of time from now until the 1st day of the next month. multiply by 20 to convert from seconds to ticks.
-        long delay = Duration.between(ZonedDateTime.now(), nextTime).getSeconds() * 20;
-
-
-        getServer().getScheduler().runTaskLater(this, () -> {
-            performNetherReset();
-            schedule();
-        }, delay);
-    }
-
-    public boolean deleteWorld(File path) {
-        if(path.exists()) {
-            File files[] = path.listFiles();
-            for(int i=0; i<files.length; i++) {
-                if(files[i].isDirectory()) {
-                    deleteWorld(files[i]);
-                } else {
-                    files[i].delete();
-                }
-            }
+    //main class helpers
+    private void registerListeners(Listener...listeners){
+        for(Listener listener : listeners){
+            pluginManager.registerEvents(listener, this);
         }
-        return(path.delete());
-    }
-    public void performNetherReset() {
-        Bukkit.broadcastMessage("§c§lResurssinetherin nollaus on aloitettu!!");
-        for (Player p : Bukkit.getOnlinePlayers()){
-            if (p.getWorld().getName().equals("resurssinether")){
-                SpawnTeleport.teleportSpawn(p);
-                p.sendMessage("Sinut teleportattiin spawnille, koska olit resurssinetherissä, ja sen nollaus aloitettiin.");
-            }
-        }
-        getServer().getScheduler().runTaskLater(this, () -> {
-            Json warpData = new Json("netherdata.json", instance.getDataFolder() + "/data/");
-            warpData.set("generation", true);
-
-            Bukkit.broadcastMessage("§7Poistetaan resurssinether muistista...");
-            Bukkit.unloadWorld("resurssinether", false);
-
-            Bukkit.broadcastMessage("§7Poistetaan kaikki kodit resurssinetherissä...");
-            homeManager.deleteHomesInWorld("resurssinether");
-
-            Bukkit.broadcastMessage("§7Poistetaan resurssinetherin kartta...");
-            deleteWorld(new File("resurssinether/DIM-1"));
-            File leveldat = new File("resurssinether/level.dat");
-            leveldat.delete();
-
-
-            Bukkit.broadcastMessage("§7Luodaan uutta karttaa...");
-            WorldCreator resurssinethercreator = new WorldCreator("resurssinether");
-            resurssinethercreator.environment(World.Environment.NETHER);
-            resurssinethercreator.type(WorldType.NORMAL);
-            resurssinethercreator.createWorld();
-            ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-            Bukkit.dispatchCommand(console, "rtp-admin reload");
-            Bukkit.dispatchCommand(console, "chunky start resurssinether square 0 0 500 500 concentric");
-            Bukkit.broadcastMessage("§c§lResurssinether on nollattu onnistuneesti. Tervetuloa pelailemaan!");
-            warpData.set("generation", false);
-        }, 20);
     }
 
+    //getters
     public static PlayerMenuUtility getPlayerMenuUtility(Player p) {
         PlayerMenuUtility playerMenuUtility;
         if (!(playerMenuUtilityMap.containsKey(p))) { //See if the player has a playermenuutility "saved" for them
@@ -242,11 +182,19 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         }
     }
 
-    public static SelviytymisHarpake getPlugin() {
+    public SelviytymisHarpake getPlugin() {
         return plugin;
     }
 
+    public ResurssinetherReset getResurssinetherReset() {
+        return resurssinetherReset;
+    }
 
+    public static Economy getEconomy() {
+        return econ;
+    }
+
+    //setup
     private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;
@@ -259,53 +207,5 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         return econ != null;
     }
 
-    public static Economy getEconomy() {
-        return econ;
-    }
-
-    private void registerListeners(Listener...listeners){
-        for(Listener listener : listeners){
-            pluginManager.registerEvents(listener, this);
-        }
-    }
-
-    public void ridableBuffScheduler() {
-        getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
-            for (Player player : getServer().getOnlinePlayers()) {
-                if (player.getVehicle() != null && player.getVehicle() instanceof LivingEntity
-                        && !(player.getVehicle() instanceof Player)) {
-                    LivingEntity livingEntity = (LivingEntity) player.getVehicle();
-
-                    if (isInLiquid(livingEntity)) {
-                        if (hasLand(livingEntity)) {
-                            jump(livingEntity);
-                        } else {
-                            swim(livingEntity);
-                        }
-                    }
-                }
-            }
-        }, 0L, 1L);
-
-    }
-
-    public void jump(LivingEntity livingEntity) {
-        livingEntity.setVelocity(livingEntity.getVelocity().setY(0.20));
-    }
-
-    public void swim(LivingEntity livingEntity) {
-        livingEntity.setVelocity(livingEntity.getVelocity().setY(0.10));
-    }
-
-    public boolean hasLand(LivingEntity livingEntity) {
-        return livingEntity.getEyeLocation().add(livingEntity.getLocation().getDirection())
-                .getBlock().getType() != Material.WATER;
-    }
-
-    public boolean isInLiquid(LivingEntity livingEntity) {
-        Block block = livingEntity.getLocation().clone().add(0, 1, 0).getBlock();
-
-        return block.getType() == Material.WATER || block.getType() == Material.LAVA;
-    }
 
 }

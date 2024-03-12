@@ -17,6 +17,8 @@ import org.bukkit.persistence.PersistentDataType;
 import java.io.IOException;
 import java.util.Arrays;
 
+import static net.gahvila.selviytymisharpake.SelviytymisHarpake.instance;
+
 public class MainCMD {
 
     public void registerCommands() {
@@ -24,13 +26,13 @@ public class MainCMD {
                 .withPermission("sh.admin")
                 .withSubcommand(new CommandAPICommand("reload")
                         .executes((sender, args) -> {
-                            SelviytymisHarpake.instance.reloadConfig();
+                            instance.reloadConfig();
                             sender.sendMessage("ladattu uusiks toivotaan että servu ei lahonnut");
                         }))
                 .withSubcommand(new CommandAPICommand("resetnether")
                         .executes((sender, args) -> {
                             sender.sendMessage("nether reset alotettu toivottavasti");
-                            SelviytymisHarpake.instance.performNetherReset();
+                            instance.getResurssinetherReset().performNetherReset();
                         }))
                 .register();
 
