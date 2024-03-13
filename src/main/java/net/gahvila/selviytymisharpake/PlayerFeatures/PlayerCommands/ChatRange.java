@@ -1,4 +1,4 @@
-package net.gahvila.selviytymisharpake.PlayerFeatures;
+package net.gahvila.selviytymisharpake.PlayerFeatures.PlayerCommands;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import org.bukkit.Bukkit;

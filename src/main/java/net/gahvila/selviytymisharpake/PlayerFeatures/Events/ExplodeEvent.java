@@ -1,12 +1,9 @@
 package net.gahvila.selviytymisharpake.PlayerFeatures.Events;
 
-import org.bukkit.World;
 import org.bukkit.entity.Creeper;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.TNTPrimeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
 public class ExplodeEvent implements Listener {

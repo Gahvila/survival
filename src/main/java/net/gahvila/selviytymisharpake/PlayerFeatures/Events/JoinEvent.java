@@ -1,18 +1,12 @@
 package net.gahvila.selviytymisharpake.PlayerFeatures.Events;
 
-import net.gahvila.selviytymisharpake.PlayerFeatures.Homes.HomeManager;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Spawn.SpawnTeleport;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.ArrayList;
-import java.util.UUID;
 
 public class JoinEvent implements Listener {
     @EventHandler

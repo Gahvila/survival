@@ -2,19 +2,12 @@ package net.gahvila.selviytymisharpake.PlayerFeatures.Events;
 
 import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackListener;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Spawn.SpawnTeleport;
-import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import static java.lang.Long.MAX_VALUE;

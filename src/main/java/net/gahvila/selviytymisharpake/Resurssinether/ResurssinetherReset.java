@@ -18,8 +18,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
-import static net.gahvila.selviytymisharpake.SelviytymisHarpake.instance;
-
 public class ResurssinetherReset {
 
     private final HomeManager homeManager;

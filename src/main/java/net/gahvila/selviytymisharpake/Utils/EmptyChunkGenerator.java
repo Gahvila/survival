@@ -1,4 +1,4 @@
-package net.gahvila.selviytymisharpake;
+package net.gahvila.selviytymisharpake.Utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;

@@ -1,19 +1,14 @@
-package net.gahvila.selviytymisharpake.PlayerFeatures.Commands;
+package net.gahvila.selviytymisharpake.PlayerFeatures.PlayerCommands;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
-import dev.jorel.commandapi.arguments.OfflinePlayerArgument;
-import dev.jorel.commandapi.arguments.PlayerArgument;
-import net.gahvila.selviytymisharpake.PlayerFeatures.Spawn.SpawnTeleport;
 import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.*;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;

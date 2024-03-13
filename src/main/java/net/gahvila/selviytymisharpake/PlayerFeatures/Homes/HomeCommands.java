@@ -1,40 +1,31 @@
 package net.gahvila.selviytymisharpake.PlayerFeatures.Homes;
 
 import com.xxmicloxx.NoteBlockAPI.model.Song;
-import com.xxmicloxx.NoteBlockAPI.model.playmode.MonoMode;
 import com.xxmicloxx.NoteBlockAPI.model.playmode.MonoStereoMode;
 import com.xxmicloxx.NoteBlockAPI.songplayer.RadioSongPlayer;
 import com.xxmicloxx.NoteBlockAPI.utils.NBSDecoder;
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.CommandTree;
-import dev.jorel.commandapi.arguments.*;
-import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackManager;
-import net.gahvila.selviytymisharpake.PlayerFeatures.Spawn.SpawnTeleport;
+import dev.jorel.commandapi.arguments.Argument;
+import dev.jorel.commandapi.arguments.ArgumentSuggestions;
+import dev.jorel.commandapi.arguments.CustomArgument;
+import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 
-import static java.lang.Long.MAX_VALUE;
 import static net.gahvila.selviytymisharpake.SelviytymisHarpake.instance;
 
 public class HomeCommands {

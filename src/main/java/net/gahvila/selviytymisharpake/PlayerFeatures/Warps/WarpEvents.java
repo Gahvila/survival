@@ -1,18 +1,12 @@
-package net.gahvila.selviytymisharpake.PlayerWarps;
+package net.gahvila.selviytymisharpake.PlayerFeatures.Warps;
 
-import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.AddonManager;
-import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackManager;
 import net.gahvila.selviytymisharpake.SelviytymisHarpake;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import java.util.UUID;
 
 public class WarpEvents implements Listener {
     private final WarpManager warpManager;

@@ -1,9 +1,8 @@
-package net.gahvila.selviytymisharpake.PlayerWarps.MenuSystem.menu;
+package net.gahvila.selviytymisharpake.PlayerFeatures.Warps;
 
-import net.gahvila.selviytymisharpake.PlayerWarps.WarpManager;
+import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import net.gahvila.selviytymisharpake.Utils.Menu;
 import net.gahvila.selviytymisharpake.Utils.PlayerMenuUtility;
-import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

@@ -1,25 +1,15 @@
 package net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop;
 
 import dev.jorel.commandapi.CommandAPICommand;
-import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.AddonManager;
-import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.CooldownManager;
 import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.Menu.AddonMainMenu;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Random;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
-import static net.gahvila.selviytymisharpake.SelviytymisHarpake.instance;
 
 public class AddonCommands {
 

@@ -1,17 +1,10 @@
 package net.gahvila.selviytymisharpake.PlayerFeatures.Back;
 
 import de.leonhard.storage.Json;
-import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-
-import java.util.ArrayList;
 
 import static net.gahvila.selviytymisharpake.SelviytymisHarpake.instance;
 

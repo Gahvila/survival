@@ -6,8 +6,6 @@ import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.advancement.Advancement;
-import org.bukkit.advancement.AdvancementProgress;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,7 +16,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class BackListener implements Listener {

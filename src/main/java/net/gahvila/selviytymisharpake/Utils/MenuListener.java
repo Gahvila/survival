@@ -1,12 +1,8 @@
 package net.gahvila.selviytymisharpake.Utils;
 
-import net.gahvila.selviytymisharpake.Utils.Menu;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.InventoryHolder;
 
 public class MenuListener implements Listener {

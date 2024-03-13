@@ -1,6 +1,5 @@
 package net.gahvila.selviytymisharpake.Utils;
 
-import net.gahvila.selviytymisharpake.Utils.PlayerMenuUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
