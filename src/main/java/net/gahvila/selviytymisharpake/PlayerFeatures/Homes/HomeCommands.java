@@ -1,5 +1,10 @@
 package net.gahvila.selviytymisharpake.PlayerFeatures.Homes;
 
+import com.xxmicloxx.NoteBlockAPI.model.Song;
+import com.xxmicloxx.NoteBlockAPI.model.playmode.MonoMode;
+import com.xxmicloxx.NoteBlockAPI.model.playmode.MonoStereoMode;
+import com.xxmicloxx.NoteBlockAPI.songplayer.RadioSongPlayer;
+import com.xxmicloxx.NoteBlockAPI.utils.NBSDecoder;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
@@ -7,18 +12,34 @@ import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackManager;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Spawn.SpawnTeleport;
 import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.md_5.bungee.api.chat.ClickEvent;
+import net.kyori.adventure.title.Title;
+import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.*;
+
+import static java.lang.Long.MAX_VALUE;
+import static net.gahvila.selviytymisharpake.SelviytymisHarpake.instance;
 
 public class HomeCommands {
+
+    public static HashMap<Player, Integer> gambling = new HashMap<>();
     private final HomeManager homeManager;
 
 
@@ -26,7 +47,7 @@ public class HomeCommands {
         this.homeManager = homeManager;
     }
     public void registerCommands() {
-        new CommandAPICommand("buyhomes")
+        new CommandAPICommand("buyhome")
                 .withSubcommand(new CommandAPICommand("forcebuy")
                         .executesPlayer((p, args) -> {
                             int price = getNextHomeCost(p);
@@ -41,17 +62,15 @@ public class HomeCommands {
                             }
                         }))
                 .executesPlayer((p, args) -> {
-                    TextComponent accept = new TextComponent();
-                    accept.setText("§a§lHyväksy"); //set clickable text
-                    accept.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§bKlikkaa ostaaksesi.").create())); //display text msg when hovering
-                    accept.setClickEvent(new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND, "/buyhomes forcebuy")); //runs command when they click the text
 
                     int price = getNextHomeCost(p);
 
                     p.sendMessage(toMiniMessage("<white>Sinulla on</white> <#85FF00>" + homeManager.getAllowedHomes(p) + "</#85FF00> <white>kotia yhteensä.</white> <gray>(Rank: " + homeManager.getAllowedHomesOfRank(p) + "</gray> <dark_gray>|</dark_gray> <gray>Lisäkodit: " + homeManager.getAllowedAdditionalHomes(p) + ")</gray>"));
                     p.sendMessage(toMiniMessage("<white>Haluatko varmasti ostaa lisäkodin?\nHinta:</white> <#85FF00>" + price + "Ⓖ</#85FF00>"));
                     p.sendMessage(toMiniMessage("<white>Jokaisen kodin osto nostaa hintaa</white> <#85FF00>10%</#85FF00><white>.</white>"));
-                    p.sendMessage(accept);
+                    //accept button
+                    p.sendMessage(toMiniMessage("<#85FF00><b>Hyväksy</b></#85FF00>").hoverEvent(HoverEvent.showText(toMiniMessage("<#85FF00>Klikkaa ostaaksesi!</#85FF00>"))).clickEvent(ClickEvent.runCommand("/buyhomes forcebuy")));
+
                 })
 
                 .register();
@@ -71,6 +90,32 @@ public class HomeCommands {
                         p.sendMessage(toMiniMessage("<white>Koti nimellä</white> <#85FF00>" + nimi + "</#85FF00> <white>poistettu.</white>"));
                     } else {
                         p.sendMessage(toMiniMessage("<white>Sinulla ei ole kotia nimellä</white> <#85FF00>" + nimi + "</#85FF00><white>.</white>"));
+                    }
+                })
+                .register();
+        new CommandAPICommand("renamehome")
+                .withArguments(customHomeArgument("koti"))
+                .withOptionalArguments(new GreedyStringArgument("nimi"))
+                .executesPlayer((p, args) -> {
+                    String oldName = args.getRaw("koti");
+                    String newName = args.getRaw("nimi");
+                    if (args.get("nimi") == null){
+                        p.sendMessage("test");
+                        return;
+                    }
+
+                    if (homeManager.getHomes(p) == null) {
+                        p.sendMessage(toMiniMessage("</white>Sinulla ei ole kotia nimellä <#85FF00>" + oldName + "</#85FF00><white>.</white>"));
+                    } else if (homeManager.getHomes(p).contains(oldName) && !(homeManager.getHomes(p).contains(newName))) {
+                        Bukkit.getScheduler().runTaskAsynchronously(SelviytymisHarpake.instance, new Runnable() {
+                            @Override
+                            public void run() {
+                                homeManager.editHomeName(p, oldName, newName);
+                            }
+                        });
+                        p.sendMessage(toMiniMessage("<white>Kodin <#85FF00>" + oldName + " <white>nimi muutettu: <#85FF00>" + newName));
+                    } else {
+                        p.sendMessage(toMiniMessage("<white>Sinulla ei ole kotia nimellä</white> <#85FF00>" + oldName + "</#85FF00><white>.</white>"));
                     }
                 })
                 .register();
@@ -112,10 +157,23 @@ public class HomeCommands {
                 .withOptionalArguments(new GreedyStringArgument("nimi"))
                 .executesPlayer((p, args) -> {
                     if (args.get("nimi") == null){
-                        p.sendMessage("\n");
-                        p.sendMessage(toMiniMessage("<white>Kodin nimi voi olla maksimissaan</white> <#85FF00>16 kirjainta</#85FF00> <white>pitkä, ja se voi sisältää vain <#85FF00>aakkosia</#85FF00> <white>ja</white> <#85FF00>numeroita<#85FF00/><white>.</white>"));
-                        p.sendMessage(toMiniMessage("Komento asettaa kodin tarkasti siihen kohtaan missä seisot, mukaanlukien sen, minne suuntaan katsot."));
-                        p.sendMessage(toMiniMessage("<white>Suorita komento</white> <#85FF00>/sethome [kodin nimi]</#85FF00> <white>asettaaksesi kotisi.</white>"));
+                        if (homeManager.getHomes(p) == null || homeManager.getHomes(p).size() < homeManager.getAllowedHomes(p)) {
+                            if (gambling.containsKey(p)){
+                                p.sendMessage("Et voi asettaa kotia juuri nyt.");
+                                return;
+                            }
+                            p.sendMessage("Kotisi nimi arvotaan satunnaisesti koska et syöttänyt nimeä.");
+                            String randomName = generateRandomString();
+
+                            Bukkit.getScheduler().runTaskAsynchronously(SelviytymisHarpake.instance, new Runnable() {
+                                @Override
+                                public void run() {
+                                    homeManager.saveHome(p, randomName, p.getLocation());
+                                }
+                            });
+
+                            goGambaGoldGoldGold(p, randomName);
+                        }
                         return;
                     }
                     String nimi = (String) args.get("nimi");
@@ -156,7 +214,7 @@ public class HomeCommands {
 
     public Argument<ArrayList<String>> customHomeArgument(String nodeName) {
         // Construct our CustomArgument that takes in a String input and returns a list of home names
-        return new CustomArgument<ArrayList<String>, String>(new GreedyStringArgument(nodeName), info -> {
+        return new CustomArgument<ArrayList<String>, String>(new TextArgument(nodeName), info -> {
             // Retrieve the list of home names for the player
 
             Player player = (Player) info.sender();
@@ -185,4 +243,75 @@ public class HomeCommands {
     public @NotNull Component toMiniMessage(@NotNull String string) {
         return MiniMessage.miniMessage().deserialize(string);
     }
+
+    private String generateRandomString() {
+        Random random = new Random();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < 8; i++) {
+            char randomChar = (char) (random.nextInt(26) + 'a');
+            stringBuilder.append(randomChar);
+        }
+        return stringBuilder.toString();
+    }
+
+
+    int taskID;
+    private void goGambaGoldGoldGold(Player player, String name) {
+        if (gambling.containsKey(player)){
+            return;
+        }
+        Song song = NBSDecoder.parse(new File(instance.getDataFolder() + "/music/gamba.nbs"));
+        RadioSongPlayer rsp = new RadioSongPlayer(song);
+        rsp.setChannelMode(new MonoStereoMode());
+        rsp.setVolume((byte) 25);
+        rsp.addPlayer(player);
+        rsp.setAutoDestroy(true);
+
+        rsp.setPlaying(true);
+
+        taskID = Bukkit.getScheduler().runTaskTimer(instance, () -> {
+            int currentGamblingValue = gambling.getOrDefault(player, 0);
+            if (currentGamblingValue >= 91) {
+                Bukkit.getServer().getScheduler().runTask(instance, new Runnable() {
+                    @Override
+                    public void run() {
+                        //
+                        player.showTitle(Title.title(
+                                toMiniMessage("<#85FF00>" + name),
+                                toMiniMessage("<gradient:#FFF226:#F91526>max win!!</gradient:#FFF226:#F91526>"),
+                                Title.Times.times(
+                                        Duration.ofSeconds(0),
+                                        Duration.ofSeconds(8),
+                                        Duration.ofSeconds(1)
+                                ))
+                        );
+                        player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.5F, 1F);
+                        player.sendMessage(toMiniMessage("<white>Sinun uuden kotisi nimi on</white> <#85FF00>" + name + "</#85FF00><white>. Pääset sinne komennolla</white> <#85FF00>/home " + name + "</#85FF00><white>, tai klikkaamalla tätä viestiä.</white>").hoverEvent(HoverEvent.showText(toMiniMessage("<#85FF00>Klikkaa teleportataksesi!</#85FF00>"))).clickEvent(ClickEvent.runCommand("/home " + name)));
+                        gambling.remove(player);
+                        Bukkit.getScheduler().cancelTask(taskID);
+                        //
+
+                    }
+                });
+                return;
+            }
+
+            //code
+            gambling.put(player, currentGamblingValue + 1);
+
+
+            String randomName = generateRandomString();
+
+            player.showTitle(Title.title(
+                    toMiniMessage("<#FFD700>" + randomName),
+                    toMiniMessage("<#78e600>Arvotaan kodin nimeä...</#78e600>"),
+                    Title.Times.times(
+                            Duration.ofSeconds(0),
+                            Duration.ofSeconds(1),
+                            Duration.ofSeconds(1)
+                    ))
+            );
+        }, 0L, 2L).getTaskId();
+    }
+
 }

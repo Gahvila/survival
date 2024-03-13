@@ -7,14 +7,19 @@ import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.Menu.AddonMainMen
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+
+import static net.gahvila.selviytymisharpake.SelviytymisHarpake.instance;
 
 public class AddonCommands {
 
@@ -46,6 +51,7 @@ public class AddonCommands {
                 })
                 .register();
         new CommandAPICommand("ec")
+                .withAliases("enderchest")
                 .executesPlayer((p, args) -> {
                     if (addonManager.getEnderchest(p)){
                         p.openInventory(p.getEnderChest());

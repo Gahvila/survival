@@ -23,6 +23,7 @@ dependencies {
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
     compileOnly ("me.clip:placeholderapi:2.11.5")
     compileOnly ("net.luckperms:api:5.4")
+    compileOnly ("com.github.koca2000:NoteBlockAPI:1.6.2")
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     implementation ("com.github.simplix-softworks:simplixstorage:3.2.7")
 

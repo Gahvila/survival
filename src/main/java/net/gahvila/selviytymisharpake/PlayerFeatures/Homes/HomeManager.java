@@ -91,6 +91,15 @@ public class HomeManager {
         return null;
     }
 
+    public void editHomeName(Player player, String oldHome, String newHome) {
+        Json homeData = new Json("homedata.json", instance.getDataFolder() + "/data/");
+        String uuid = player.getUniqueId().toString();
+        if (homeData.getFileData().containsKey(uuid + "." + oldHome)) {
+            saveHome(player, newHome, getHome(player, oldHome));
+            deleteHome(player, oldHome);
+        }
+    }
+
 
     public void addAdditionalHomes(Player player) {
         Json homeData = new Json("allowedhomes.json", instance.getDataFolder() + "/data/");
