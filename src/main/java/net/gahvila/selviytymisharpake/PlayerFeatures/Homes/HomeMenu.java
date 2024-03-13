@@ -3,6 +3,8 @@ package net.gahvila.selviytymisharpake.PlayerFeatures.Homes;
 
 import net.gahvila.selviytymisharpake.Utils.PaginatedMenu;
 import net.gahvila.selviytymisharpake.Utils.PlayerMenuUtility;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -10,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +47,7 @@ public class HomeMenu extends PaginatedMenu implements Listener {
         if (e.getCurrentItem().getType().equals(Material.GREEN_BED)) {
             if (homeManager.getHome(p, e.getCurrentItem().getItemMeta().getDisplayName()) != null){
                 p.teleportAsync(homeManager.getHome(p, e.getCurrentItem().getItemMeta().getDisplayName()));
-                p.sendMessage("Sinut teleportattiin kotiin §e" + e.getCurrentItem().getItemMeta().getDisplayName() + "§f.");
+                p.sendMessage(toMiniMessage("<white>Sinut teleportattiin kotiin</white> <#85FF00>" + e.getCurrentItem().getItemMeta().getDisplayName() + "<#/85FF00>."));
             }else {
                 p.closeInventory();
                 p.sendMessage("Tuota kotia ei ole olemassa. Mitä duunaat?");
@@ -103,7 +106,9 @@ public class HomeMenu extends PaginatedMenu implements Listener {
                 }
             }
         }
+    }
 
-
+    public @NotNull Component toMiniMessage(@NotNull String string) {
+        return MiniMessage.miniMessage().deserialize(string);
     }
 }
