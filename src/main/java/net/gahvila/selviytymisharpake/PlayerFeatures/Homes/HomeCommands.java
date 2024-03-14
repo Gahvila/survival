@@ -103,7 +103,7 @@ public class HomeCommands {
                             if (p.getBedSpawnLocation() != null){
                                 p.teleportAsync(p.getBedSpawnLocation());
                                 p.setWalkSpeed(0.2F);
-                                p.sendMessage(toMiniMessage("<white>Sinut teleportattiin kotiin</white> <#85FF00>sänky<#/85FF00>."));
+                                p.sendMessage(toMiniMessage("<white>Sinut teleportattiin kotiin</white> <#85FF00>sänky</#85FF00>."));
                             }else{
                                 p.sendMessage("Sinulla ei ole sänkyä asetettuna.");
                             }
@@ -125,7 +125,7 @@ public class HomeCommands {
                         if (homeManager.getHomes(p).contains(nimi)) {
                             p.teleportAsync(homeManager.getHome(p, nimi));
                             p.setWalkSpeed(0.2F);
-                            p.sendMessage(toMiniMessage("<white>Sinut teleportattiin kotiin</white> <#85FF00>" + nimi + "<#/85FF00>."));
+                            p.sendMessage(toMiniMessage("<white>Sinut teleportattiin kotiin</white> <#85FF00>" + nimi + "</#85FF00>."));
 
                         } else {
                             p.sendMessage(toMiniMessage("<white>Sinulla ei ole kotia nimellä</white> <#85FF00>" + nimi + "</#85FF00><white>!</white>"));
@@ -198,7 +198,7 @@ public class HomeCommands {
 
             // Check if the home names list is not null and contains names
             if (homeNames == null || homeNames.isEmpty()) {
-                throw CustomArgument.CustomArgumentException.fromMessageBuilder(new CustomArgument.MessageBuilder("Pelaajalla ei ole koteja."));
+                throw CustomArgument.CustomArgumentException.fromMessageBuilder(new CustomArgument.MessageBuilder("Ei ole koteja."));
             } else {
                 return homeNames;
             }
@@ -253,7 +253,7 @@ public class HomeCommands {
                         //
                         player.showTitle(Title.title(
                                 toMiniMessage("<#85FF00>" + name),
-                                toMiniMessage("<gradient:#FFF226:#F91526>max win!!</gradient:#FFF226:#F91526>"),
+                                toMiniMessage("<gradient:#FFF226:#F91526>OIJJOI!! NYT NAUKAHTI!!</gradient:#FFF226:#F91526>"),
                                 Title.Times.times(
                                         Duration.ofSeconds(0),
                                         Duration.ofSeconds(8),
@@ -279,7 +279,7 @@ public class HomeCommands {
 
             player.showTitle(Title.title(
                     toMiniMessage("<#FFD700>" + randomName),
-                    toMiniMessage("<#78e600>Arvotaan kodin nimeä...</#78e600>"),
+                    toMiniMessage("<#78e600>Arvotaan... naukahtaako??</#78e600>"),
                     Title.Times.times(
                             Duration.ofSeconds(0),
                             Duration.ofSeconds(1),
