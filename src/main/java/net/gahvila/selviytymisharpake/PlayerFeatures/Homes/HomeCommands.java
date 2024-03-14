@@ -5,10 +5,7 @@ import com.xxmicloxx.NoteBlockAPI.model.playmode.MonoStereoMode;
 import com.xxmicloxx.NoteBlockAPI.songplayer.RadioSongPlayer;
 import com.xxmicloxx.NoteBlockAPI.utils.NBSDecoder;
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.arguments.Argument;
-import dev.jorel.commandapi.arguments.ArgumentSuggestions;
-import dev.jorel.commandapi.arguments.CustomArgument;
-import dev.jorel.commandapi.arguments.GreedyStringArgument;
+import dev.jorel.commandapi.arguments.*;
 import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -157,7 +154,7 @@ public class HomeCommands {
                     }
                     String nimi = (String) args.get("nimi");
                     if (homeManager.getHomes(p) == null || homeManager.getHomes(p).size() < homeManager.getAllowedHomes(p)) {
-                        if (nimi.matches("[a-zA-ZöÖäÄåÅ0-9- ]*") && nimi.length() <= 16) {
+                        if (nimi.matches("[a-zA-Z0-9]*") && nimi.length() <= 16) {
                             if (nimi.equals("sänky")) {
                                 p.sendMessage("Et voi käyttää tuota nimeä.");
                                 return;
@@ -192,7 +189,7 @@ public class HomeCommands {
 
     public Argument<ArrayList<String>> customHomeArgument(String nodeName) {
         // Construct our CustomArgument that takes in a String input and returns a list of home names
-        return new CustomArgument<ArrayList<String>, String>(new GreedyStringArgument(nodeName), info -> {
+        return new CustomArgument<ArrayList<String>, String>(new StringArgument(nodeName), info -> {
             // Retrieve the list of home names for the player
 
             Player player = (Player) info.sender();
