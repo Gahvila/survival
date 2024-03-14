@@ -62,10 +62,6 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         //load worlds
         setupWorlds();
 
-        //configuration
-        getConfig().options().copyDefaults();
-        saveDefaultConfig();
-
         //economy check
         if (!setupEconomy() ) {
             getServer().shutdown();
