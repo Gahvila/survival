@@ -65,6 +65,8 @@ public class TPACMD {
 
 
                         tpa.put(tpareceiver, tpasender);
+                        tpa.put(tpasender, tpareceiver);
+
                     } else {
                         tpasender.sendMessage("§fEt voi lähettää pelaajalle §e" + tpareceiver.getName() + "§r §fTPA-pyyntöä, koska olet jo lähettänyt hänelle pyynnön.");
                     }
