@@ -2,6 +2,8 @@ package net.gahvila.selviytymisharpake;
 
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
+import net.draycia.carbon.api.CarbonChat;
+import net.draycia.carbon.api.CarbonChatProvider;
 import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.AddonCommands;
 import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.AddonManager;
 import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.Menu.AddonMenuEvents;
@@ -16,7 +18,7 @@ import net.gahvila.selviytymisharpake.PlayerFeatures.Homes.HomeCommands;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Homes.HomeManager;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Pets;
 import net.gahvila.selviytymisharpake.PlayerFeatures.PlayerCommands.ChatRange;
-import net.gahvila.selviytymisharpake.PlayerFeatures.PlayerCommands.TPACMD;
+import net.gahvila.selviytymisharpake.PlayerFeatures.PlayerCommands.TpaCommands;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Spawn.SpawnCMD;
 import net.gahvila.selviytymisharpake.PlayerFeatures.VehicleBuffs.MinecartBuff;
 import net.gahvila.selviytymisharpake.PlayerFeatures.VehicleBuffs.RidableBuff;
@@ -51,7 +53,6 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
     private HomeManager homeManager;
     private WarpManager warpManager;
     private ResurssinetherReset resurssinetherReset;
-
     private PlayerMenuUtility playerMenuUtility;
 
 
@@ -105,8 +106,8 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         SpawnCMD spawnCMD = new SpawnCMD();
         spawnCMD.registerCommands();
 
-        TPACMD tpacmd = new TPACMD();
-        tpacmd.registerCommands();
+        TpaCommands tpaCommands = new TpaCommands();
+        tpaCommands.registerCommands();
 
         Pets pets = new Pets();
         pets.registerCommands();
