@@ -108,8 +108,8 @@ public class TpaCommands {
                         return;
                     }
                     if(Bukkit.getServer().getPluginManager().getPlugin("CarbonChat") != null) {
-                        CarbonPlayer carbonPlayer = (CarbonPlayer) tpasender;
-                        if (carbonPlayer.ignoring(tpareceiver.getUniqueId())) {
+                        CarbonPlayer carbonPlayer = CarbonChatProvider.carbonChat().userManager().user(tpareceiver.getUniqueId()).getNow(null);
+                        if (carbonPlayer.ignoring(tpasender.getUniqueId())) {
                             tpasender.sendMessage("Et voi lähettää TPA-pyyntöä tuolle pelaajalle.");
                             return;
                         }
