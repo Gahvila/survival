@@ -67,13 +67,12 @@ public class TpaCommands {
                     tpareceiver.playSound(tpareceiver.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 2F, 1F);
                     tpasender.sendMessage(toMiniMessage("Lähetit TPA-pyynnön <#85FF00>" + tpareceiver.getName() + ":lle</#85FF00>."));
 
-                    tpareceiver.sendMessage(toMiniMessage("\n| <#85FF00>" + tpasender.getName() + " </#85FF00>lähetti sinulle TPA-pyynnön."));
-                    tpareceiver.sendMessage(toMiniMessage("| <#85FF00><b>Hyväksy</b>: /tpayes " + tpasender.getName())
+                    tpareceiver.sendMessage(toMiniMessage("\n| <#85FF00>" + tpasender.getName() + " </#85FF00>lähetti sinulle <#85FF00>TPA-pyynnön</#85FF00>."));
+                    tpareceiver.sendMessage(toMiniMessage("<white>| Sinulla on <#85FF00>30 sekuntia</#85FF00> <white>aikaa hyväksyä."));
+                    tpareceiver.sendMessage(toMiniMessage("| <green><b>Hyväksy</b>: /tpayes " + tpasender.getName())
                             .hoverEvent(HoverEvent.showText(toMiniMessage("Klikkaa hyväksyäksesi."))).clickEvent(ClickEvent.runCommand("/tpayes " + tpasender.getName())));
-                    tpareceiver.sendMessage(toMiniMessage("| <#ff0d0d><b>Kieltäydy</b>: /tpano " + tpasender.getName())
+                    tpareceiver.sendMessage(toMiniMessage("| <red><b>Kieltäydy</b>: /tpano " + tpasender.getName())
                             .hoverEvent(HoverEvent.showText(toMiniMessage("Klikkaa kieltäytyäksesi"))).clickEvent(ClickEvent.runCommand("/tpano " + tpasender.getName())));
-                    tpareceiver.sendMessage(toMiniMessage("| <white>Pyyntö vanhentuu <#85FF00>30 sekunnin</#85FF00> <white>kuluessa."));
-
 
                     Bukkit.getServer().getScheduler().runTaskLater(SelviytymisHarpake.instance, new Runnable() {
                         @Override
@@ -120,13 +119,12 @@ public class TpaCommands {
                     tpareceiver.playSound(tpareceiver.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 2F, 1F);
                     tpasender.sendMessage(toMiniMessage("Lähetit TPAHere-pyynnön <#85FF00>" + tpareceiver.getName() + ":lle</#85FF00>."));
 
-                    tpareceiver.sendMessage(toMiniMessage("\n| <#85FF00>" + tpasender.getName() + " </#85FF00>lähetti sinulle TPAHere-pyynnön."));
-                    tpareceiver.sendMessage(toMiniMessage("| <#85FF00><b>Hyväksy</b>: /tpayes " + tpasender.getName())
+                    tpareceiver.sendMessage(toMiniMessage("\n<white>| <#85FF00>" + tpasender.getName() + " </#85FF00>lähetti sinulle <#85FF00>TPAHere-pyynnön</#85FF00>."));
+                    tpareceiver.sendMessage(toMiniMessage("<white>| Sinulla on <#85FF00>30 sekuntia</#85FF00> <white>aikaa hyväksyä."));
+                    tpareceiver.sendMessage(toMiniMessage("<white>| <green><b>Hyväksy</b>: /tpayes " + tpasender.getName())
                             .hoverEvent(HoverEvent.showText(toMiniMessage("Klikkaa hyväksyäksesi."))).clickEvent(ClickEvent.runCommand("/tpayes " + tpasender.getName())));
-                    tpareceiver.sendMessage(toMiniMessage("| <#ff0d0d><b>Kieltäydy</b>: /tpano " + tpasender.getName())
+                    tpareceiver.sendMessage(toMiniMessage("<white>| <red><b>Kieltäydy</b>: /tpano " + tpasender.getName())
                             .hoverEvent(HoverEvent.showText(toMiniMessage("Klikkaa kieltäytyäksesi"))).clickEvent(ClickEvent.runCommand("/tpano " + tpasender.getName())));
-                    tpareceiver.sendMessage(toMiniMessage("| <white>Pyyntö vanhentuu <#85FF00>30 sekunnin</#85FF00> <white>kuluessa."));
-
 
                     Bukkit.getServer().getScheduler().runTaskLater(SelviytymisHarpake.instance, new Runnable() {
                         @Override
