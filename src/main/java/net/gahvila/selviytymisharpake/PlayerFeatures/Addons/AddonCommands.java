@@ -32,7 +32,7 @@ public class AddonCommands {
                 .register();
         new CommandAPICommand("craft")
                 .executesPlayer((p, args) -> {
-                    if (addonManager.getCraft(p)){
+                    if (addonManager.getAddon(p, "craft")){
                         p.openWorkbench(null, true);
                         p.playSound(p.getLocation(), Sound.BLOCK_CHEST_OPEN, 2F, 1F);
                     }else{
@@ -44,7 +44,7 @@ public class AddonCommands {
         new CommandAPICommand("ec")
                 .withAliases("enderchest")
                 .executesPlayer((p, args) -> {
-                    if (addonManager.getEnderchest(p)){
+                    if (addonManager.getAddon(p, "enderchest")){
                         p.openInventory(p.getEnderChest());
                         p.sendMessage("§fSinun äärilaatikko avattiin!");
                         p.playSound(p.getLocation(), Sound.BLOCK_CHEST_OPEN, 2F, 1F);
@@ -56,7 +56,7 @@ public class AddonCommands {
                 .register();
         new CommandAPICommand("feed")
                 .executesPlayer((p, args) -> {
-                    if (addonManager.getFeed(p)){
+                    if (addonManager.getAddon(p, "feed")){
                         //Get the amount of milliseconds that have passed since the feature was last used.
                         long timeLeft = System.currentTimeMillis() - cooldownManager.getCooldown(p.getUniqueId());
                         if(TimeUnit.MILLISECONDS.toSeconds(timeLeft) >= CooldownManager.DEFAULT_COOLDOWN){
@@ -76,7 +76,7 @@ public class AddonCommands {
                 .register();
         new CommandAPICommand("kauppa")
                 .executesPlayer((p, args) -> {
-                    if (addonManager.getShop(p)){
+                    if (addonManager.getAddon(p, "shop")){
                         ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
                         Bukkit.dispatchCommand(console, "shop open menu kauppa " + p.getName());
                     }else{

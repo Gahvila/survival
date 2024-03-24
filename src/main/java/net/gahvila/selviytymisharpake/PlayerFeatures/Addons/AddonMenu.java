@@ -56,7 +56,7 @@ public class AddonMenu {
         craft.setItemMeta(craftMeta);
 
         navigationPane.addItem(new GuiItem(craft, event -> {
-            if (!addonManager.getCraft(player)) {
+            if (!addonManager.getAddon(player, "craft")) {
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
                 confirmMenu(player, craft, "craft");
             }else{
@@ -74,7 +74,7 @@ public class AddonMenu {
         enderchest.setItemMeta(enderchestMeta);
 
         navigationPane.addItem(new GuiItem(enderchest, event -> {
-            if (!addonManager.getEnderchest(player)) {
+            if (!addonManager.getAddon(player, "enderchest")) {
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
                 confirmMenu(player, enderchest, "enderchest");
             }else{
@@ -92,7 +92,7 @@ public class AddonMenu {
         feed.setItemMeta(feedMeta);
 
         navigationPane.addItem(new GuiItem(feed, event -> {
-            if (!addonManager.getFeed(player)) {
+            if (!addonManager.getAddon(player, "feed")) {
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
                 confirmMenu(player, feed, "feed");
             }else{
@@ -110,7 +110,7 @@ public class AddonMenu {
         shop.setItemMeta(shopMeta);
 
         navigationPane.addItem(new GuiItem(shop, event -> {
-            if (!addonManager.getShop(player)) {
+            if (!addonManager.getAddon(player, "shop")) {
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
                 confirmMenu(player, shop, "shop");
             }else{
@@ -175,20 +175,7 @@ public class AddonMenu {
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.5F, 1F);
                 SelviytymisHarpake.getEconomy().withdrawPlayer(player, 1000);
                 player.sendMessage("Jee! Ostit "+ addon +" päivityksen.");
-                switch (addon) {
-                    case "craft":
-                        addonManager.setCraft(player);
-                        break;
-                    case "enderchest":
-                        addonManager.setEnderchest(player);
-                        break;
-                    case "feed":
-                        addonManager.setFeed(player);
-                        break;
-                    case "shop":
-                        addonManager.setShop(player);
-                        break;
-                }
+                addonManager.setAddon(player, addon);
                 player.closeInventory();
             } else {
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
