@@ -1,4 +1,4 @@
-package net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop;
+package net.gahvila.selviytymisharpake.PlayerFeatures.Addons;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -11,7 +11,16 @@ import static net.gahvila.selviytymisharpake.SelviytymisHarpake.instance;
 
 public class AddonManager {
 
-
+    public Integer getPrice(String addon) {
+        switch (addon) {
+            case "craft":
+                return 1000;
+            case "enderchest", "feed", "shop":
+                return 1500;
+            default:
+                return 0;
+        }
+    }
 
     //ENDERCHEST
     public Integer setShop(Player player) {

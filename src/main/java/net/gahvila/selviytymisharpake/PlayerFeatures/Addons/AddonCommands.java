@@ -1,7 +1,6 @@
-package net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop;
+package net.gahvila.selviytymisharpake.PlayerFeatures.Addons;
 
 import dev.jorel.commandapi.CommandAPICommand;
-import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.Menu.AddonMainMenu;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -14,10 +13,12 @@ import java.util.concurrent.TimeUnit;
 public class AddonCommands {
 
     private final AddonManager addonManager;
+    private final AddonMenu addonMenu;
 
 
-    public AddonCommands(AddonManager addonManager) {
+    public AddonCommands(AddonManager addonManager, AddonMenu addonMenu) {
         this.addonManager = addonManager;
+        this.addonMenu = addonMenu;
     }
 
     private final CooldownManager cooldownManager = new CooldownManager();
@@ -25,7 +26,7 @@ public class AddonCommands {
     public void registerCommands() {
         new CommandAPICommand("addon")
                 .executesPlayer((p, args) -> {
-                    AddonMainMenu.openGui(p);
+                    addonMenu.showGUI(p);
                     p.playSound(p.getLocation(), Sound.ENTITY_LLAMA_SWAG, 2F, 1F);
                 })
                 .register();

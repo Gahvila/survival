@@ -2,11 +2,9 @@ package net.gahvila.selviytymisharpake;
 
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
-import net.draycia.carbon.api.CarbonChat;
-import net.draycia.carbon.api.CarbonChatProvider;
-import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.AddonCommands;
-import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.AddonManager;
-import net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop.Menu.AddonMenuEvents;
+import net.gahvila.selviytymisharpake.PlayerFeatures.Addons.AddonCommands;
+import net.gahvila.selviytymisharpake.PlayerFeatures.Addons.AddonManager;
+import net.gahvila.selviytymisharpake.PlayerFeatures.Addons.AddonMenu;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackCommand;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackListener;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackManager;
@@ -53,6 +51,7 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
     private HomeManager homeManager;
     private WarpManager warpManager;
     private ResurssinetherReset resurssinetherReset;
+    private AddonMenu addonMenu;
     private PlayerMenuUtility playerMenuUtility;
 
 
@@ -79,6 +78,7 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         homeManager = new HomeManager();
         warpManager = new WarpManager();
         resurssinetherReset = new ResurssinetherReset(homeManager, instance);
+        addonMenu = new AddonMenu(addonManager);
 
 
         //scheduling
@@ -91,7 +91,7 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         // Commands
         CommandAPI.onLoad(new CommandAPIBukkitConfig(this).verboseOutput(false).silentLogs(true));
 
-        AddonCommands addonCommands = new AddonCommands(addonManager);
+        AddonCommands addonCommands = new AddonCommands(addonManager, addonMenu);
         addonCommands.registerCommands();
 
         BackCommand backCommand = new BackCommand(backManager);
@@ -124,7 +124,7 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
 
         //register events
         registerListeners(new PlayerDeath(), new JoinEvent(), new QuitEvent(), new BackListener(backManager), new ChatRange(), new WarpEvents(warpManager),
-                new MenuListener(), new AddonMenuEvents(addonManager), new RNPortalDisabler(), new ExplodeEvent(), new MinecartBuff(), new Pets());
+                new MenuListener(), new RNPortalDisabler(), new ExplodeEvent(), new MinecartBuff(), new Pets());
     }
 
     //main class helpers

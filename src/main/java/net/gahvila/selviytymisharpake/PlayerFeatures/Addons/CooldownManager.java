@@ -1,4 +1,4 @@
-package net.gahvila.selviytymisharpake.PlayerFeatures.AddonShop;
+package net.gahvila.selviytymisharpake.PlayerFeatures.Addons;
 
 import java.util.HashMap;
 import java.util.Map;
