@@ -56,7 +56,7 @@ public class AddonMenu {
 
         ItemStack craft = new ItemStack(Material.CRAFTING_TABLE);
         ItemMeta craftMeta = craft.getItemMeta();
-        craftMeta.displayName(toMiniMessage("<white><b>Craft</b> <#85FF00>1000Ⓖ"));
+        craftMeta.displayName(toMiniMessage("<white><b>Craft</b> <#85FF00>" + addonManager.getPrice("craft") + "Ⓖ"));
         craftMeta.lore(List.of(toMiniMessage("<white>Antaa oikeudet <#85FF00>/craft <white>komentoon, "), toMiniMessage("<white>jolla voit craftata missä vain.")));
         craft.setItemMeta(craftMeta);
 
@@ -74,7 +74,7 @@ public class AddonMenu {
 
         ItemStack enderchest = new ItemStack(Material.ENDER_CHEST);
         ItemMeta enderchestMeta = enderchest.getItemMeta();
-        enderchestMeta.displayName(toMiniMessage("<white><b>Ender Chest</b> <#85FF00>1500Ⓖ"));
+        enderchestMeta.displayName(toMiniMessage("<white><b>Ender Chest</b> <#85FF00>" + addonManager.getPrice("enderchest") + "Ⓖ"));
         enderchestMeta.lore(List.of(toMiniMessage("<white>Antaa oikeudet <#85FF00>/ec <white>komentoon, "), toMiniMessage("<white>jolla voit avata enderchestin missä vain.")));
         enderchest.setItemMeta(enderchestMeta);
 
@@ -92,7 +92,7 @@ public class AddonMenu {
 
         ItemStack feed = new ItemStack(Material.COOKED_BEEF);
         ItemMeta feedMeta = feed.getItemMeta();
-        feedMeta.displayName(toMiniMessage("<white><b>Feed</b> <#85FF00>1500Ⓖ"));
+        feedMeta.displayName(toMiniMessage("<white><b>Feed</b> <#85FF00>" + addonManager.getPrice("feed") + "Ⓖ"));
         feedMeta.lore(List.of(toMiniMessage("<white>Antaa oikeudet <#85FF00>/feed <white>komentoon, "), toMiniMessage("<white>jolla voit täyttää ruokapalkkisi 2 minuutin välein.")));
         feed.setItemMeta(feedMeta);
 
@@ -110,7 +110,7 @@ public class AddonMenu {
 
         ItemStack shop = new ItemStack(Material.CHEST);
         ItemMeta shopMeta = shop.getItemMeta();
-        shopMeta.displayName(toMiniMessage("<white><b>Kauppa</b> <#85FF00>1500Ⓖ"));
+        shopMeta.displayName(toMiniMessage("<white><b>Kauppa</b> <#85FF00>" + addonManager.getPrice("shop") + "Ⓖ"));
         shopMeta.lore(List.of(toMiniMessage("<white>Antaa oikeudet <#85FF00>/kauppa <white>komentoon, "), toMiniMessage("<white>jolla voit avata kaupan valikon missä vain.")));
         shop.setItemMeta(shopMeta);
 
