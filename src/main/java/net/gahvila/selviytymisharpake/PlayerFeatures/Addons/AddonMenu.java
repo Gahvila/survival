@@ -181,7 +181,7 @@ public class AddonMenu {
             if (addon.equals("home")) {
                 int price = homeManager.getNextHomeCost(player);
                 if (SelviytymisHarpake.getEconomy().getBalance(player) >= price) {
-                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.5F, 1F);
+                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_CELEBRATE, 0.5F, 1F);
                     SelviytymisHarpake.getEconomy().withdrawPlayer(player, price);
                     homeManager.addAdditionalHomes(player);
                     player.sendMessage(toMiniMessage("<white>Ohhoh. Ostit lisäkodin hintaan <#85FF00>" + price +
@@ -198,7 +198,7 @@ public class AddonMenu {
             int price = addonManager.getPrice(addon);
 
             if (SelviytymisHarpake.getEconomy().getBalance(player) >= price) {
-                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.5F, 1F);
+                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_CELEBRATE, 0.5F, 1F);
                 SelviytymisHarpake.getEconomy().withdrawPlayer(player, price);
                 player.sendMessage(toMiniMessage("<white>Ohhoh. Ostit lisäosan <#85FF00>" + addon + "</#85FF00> <white>onnistuneesti."));
                 addonManager.setAddon(player, addon);
@@ -206,7 +206,7 @@ public class AddonMenu {
             } else {
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
                 player.sendMessage(toMiniMessage("Nyt kyllä loppu hilut kesken, tarviit <#85FF00>" + price + "Ⓖ</#85FF00> ostaaksesi tuon."));
-                showGUI(player);
+                player.closeInventory();
             }
         }));
 

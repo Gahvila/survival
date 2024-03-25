@@ -6,18 +6,22 @@ import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Tameable;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -74,6 +78,21 @@ public class Pets implements Listener {
         receiver.sendMessage(toMiniMessage("Pelaaja <#85FF00>" + currentOwner.getName() + "</#85FF00> siirsi lemmikin omistajuuden sinulle."));
 
         transferingPet.remove(currentOwner);
+    }
+
+    //pet teleport
+    @EventHandler
+    public void onTeleport(PlayerTeleportEvent e) {
+        Chunk teleportedFrom = e.getFrom().getChunk();
+        if (teleportedFrom.isForceLoaded()) return;
+
+        teleportedFrom.addPluginChunkTicket(SelviytymisHarpake.instance);
+        Bukkit.getServer().getScheduler().runTaskLater(SelviytymisHarpake.instance, new Runnable() {
+            @Override
+            public void run() {
+                teleportedFrom.removePluginChunkTicket(SelviytymisHarpake.instance);
+            }
+        },20L * 10);
     }
 
     public @NotNull Component toMiniMessage(@NotNull String string) {

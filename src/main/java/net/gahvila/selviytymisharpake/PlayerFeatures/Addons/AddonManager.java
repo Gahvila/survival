@@ -17,8 +17,12 @@ public class AddonManager {
         switch (addon) {
             case "craft":
                 return 1000;
-            case "enderchest", "feed", "shop":
-                return 1500;
+            case "enderchest":
+                return 2750;
+            case "feed":
+                return 5000;
+            case "shop":
+                return 2500;
             default:
                 return 0;
         }

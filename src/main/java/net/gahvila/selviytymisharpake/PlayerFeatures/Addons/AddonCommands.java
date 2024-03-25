@@ -8,6 +8,9 @@ import org.bukkit.Sound;
 import org.bukkit.command.ConsoleCommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class AddonCommands {
@@ -15,14 +18,13 @@ public class AddonCommands {
     private final AddonManager addonManager;
     private final AddonMenu addonMenu;
 
+    private final Map<UUID, Long> cooldowns = new HashMap<>();
+    public static final long DEFAULT_COOLDOWN = 120;
 
     public AddonCommands(AddonManager addonManager, AddonMenu addonMenu) {
         this.addonManager = addonManager;
         this.addonMenu = addonMenu;
     }
-
-    private final CooldownManager cooldownManager = new CooldownManager();
-
     public void registerCommands() {
         new CommandAPICommand("addon")
                 .withAliases("lisäosat")
@@ -59,15 +61,15 @@ public class AddonCommands {
                 .executesPlayer((p, args) -> {
                     if (addonManager.getAddon(p, "feed")){
                         //Get the amount of milliseconds that have passed since the feature was last used.
-                        long timeLeft = System.currentTimeMillis() - cooldownManager.getCooldown(p.getUniqueId());
-                        if(TimeUnit.MILLISECONDS.toSeconds(timeLeft) >= CooldownManager.DEFAULT_COOLDOWN){
+                        long timeLeft = System.currentTimeMillis() - getCooldown(p.getUniqueId());
+                        if(TimeUnit.MILLISECONDS.toSeconds(timeLeft) >= DEFAULT_COOLDOWN){
                             p.setFoodLevel(20);
                             p.setSaturation(20F);
                             p.sendMessage(toMiniMessage("<white>Täytit ruokapalkkisi. Voit käyttää komentoa uudelleen </white><#85FF00>kahden minuutin</#85FF00> <white>kuluttua."));
                             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_BURP, 2F, 1F);
-                            cooldownManager.setCooldown(p.getUniqueId(), System.currentTimeMillis());
+                            setCooldown(p.getUniqueId(), System.currentTimeMillis());
                         }else{
-                            String secondsleft = String.valueOf((CooldownManager.DEFAULT_COOLDOWN - TimeUnit.MILLISECONDS.toSeconds(timeLeft)));
+                            String secondsleft = String.valueOf((DEFAULT_COOLDOWN - TimeUnit.MILLISECONDS.toSeconds(timeLeft)));
                             p.sendMessage(toMiniMessage("<#85FF00>" + secondsleft + " sekuntia</#85FF00><white> kunnes voit käyttää komentoa uudelleen."));
                         }
                     }else{
@@ -90,5 +92,17 @@ public class AddonCommands {
 
     public @NotNull Component toMiniMessage(@NotNull String string) {
         return MiniMessage.miniMessage().deserialize(string);
+    }
+
+    public void setCooldown(UUID player, long time){
+        if(time < 1) {
+            cooldowns.remove(player);
+        } else {
+            cooldowns.put(player, time);
+        }
+    }
+
+    public Long getCooldown(UUID player){
+        return cooldowns.getOrDefault(player, 0L);
     }
 }
