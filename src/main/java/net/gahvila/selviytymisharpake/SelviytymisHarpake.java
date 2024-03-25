@@ -78,7 +78,7 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         homeManager = new HomeManager();
         warpManager = new WarpManager();
         resurssinetherReset = new ResurssinetherReset(homeManager, instance);
-        addonMenu = new AddonMenu(addonManager);
+        addonMenu = new AddonMenu(addonManager, homeManager);
 
 
         //scheduling

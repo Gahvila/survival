@@ -6,6 +6,7 @@ import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.PatternPane;
 import com.github.stefvanschie.inventoryframework.pane.util.Pattern;
+import net.gahvila.selviytymisharpake.PlayerFeatures.Homes.HomeManager;
 import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -22,10 +23,14 @@ import java.util.List;
 public class AddonMenu {
 
     private final AddonManager addonManager;
+    private final HomeManager homeManager;
 
 
-    public AddonMenu(AddonManager addonManager) {
+
+    public AddonMenu(AddonManager addonManager, HomeManager homeManager) {
         this.addonManager = addonManager;
+        this.homeManager = homeManager;
+
     }
 
     public void showGUI(Player player) {
@@ -88,7 +93,7 @@ public class AddonMenu {
         ItemStack feed = new ItemStack(Material.COOKED_BEEF);
         ItemMeta feedMeta = feed.getItemMeta();
         feedMeta.displayName(toMiniMessage("<white><b>Feed</b> <#85FF00>1500Ⓖ"));
-        feedMeta.lore(List.of(toMiniMessage("<white>Antaa oikeudet <#85FF00>/feed <white>komentoon, "), toMiniMessage("<white>jolla voit täyttää ruokapalkkisi minuutin välein.")));
+        feedMeta.lore(List.of(toMiniMessage("<white>Antaa oikeudet <#85FF00>/feed <white>komentoon, "), toMiniMessage("<white>jolla voit täyttää ruokapalkkisi 2 minuutin välein.")));
         feed.setItemMeta(feedMeta);
 
         navigationPane.addItem(new GuiItem(feed, event -> {
@@ -121,12 +126,16 @@ public class AddonMenu {
             }
         }));
 
-        ItemStack coming = new ItemStack(Material.BARRIER);
-        ItemMeta comingMeta = coming.getItemMeta();
-        comingMeta.displayName(toMiniMessage("<red><b>???"));
-        coming.setItemMeta(comingMeta);
+        ItemStack home = new ItemStack(Material.OAK_DOOR);
+        ItemMeta homeMeta = home.getItemMeta();
+        homeMeta.displayName(toMiniMessage("<white><b>Lisäkoti</b> <#85FF00>" + homeManager.getNextHomeCost(player) + "Ⓖ"));
+        homeMeta.lore(List.of(toMiniMessage("<white>Sinulla on</white> <#85FF00>" + homeManager.getAllowedHomes(player) + "</#85FF00> <white>kotia yhteensä.</white>"), toMiniMessage("<gray>(Rank: " + homeManager.getAllowedHomesOfRank(player) + "</gray> <dark_gray>|</dark_gray> <gray>Lisäkodit: " + homeManager.getAllowedAdditionalHomes(player) + ")</gray>"), toMiniMessage("<white>Ostamalla tämän saat yhden uuden kodin.")));
+        home.setItemMeta(homeMeta);
 
-        navigationPane.addItem(new GuiItem(coming));
+        navigationPane.addItem(new GuiItem(home, event -> {
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
+            confirmMenu(player, home, "home");
+        }));
 
 
         gui.addPane(navigationPane);
@@ -164,22 +173,39 @@ public class AddonMenu {
         background.setItemMeta(backgroundMeta);
 
         pane.bindItem('1', new GuiItem(background));
-        pane.bindItem('I', new GuiItem(background));
+        pane.bindItem('I', new GuiItem(item));
 
         pane.bindItem('A', new GuiItem(accept, event -> {
             player.closeInventory();
 
-            Integer price = addonManager.getPrice(addon);
+            if (addon.equals("home")) {
+                int price = homeManager.getNextHomeCost(player);
+                if (SelviytymisHarpake.getEconomy().getBalance(player) >= price) {
+                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.5F, 1F);
+                    SelviytymisHarpake.getEconomy().withdrawPlayer(player, price);
+                    homeManager.addAdditionalHomes(player);
+                    player.sendMessage(toMiniMessage("<white>Ohhoh. Ostit lisäkodin hintaan <#85FF00>" + price +
+                            "Ⓖ</#85FF00><white>. Sinulla on nyt <#85FF00>" + homeManager.getAllowedHomes(player) + " kotia</#85FF00> <white>yhteensä."));
+                    player.closeInventory();
+                } else {
+                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
+                    player.sendMessage(toMiniMessage("Nyt kyllä loppu hilut kesken, tarviit <#85FF00>" + price + "Ⓖ</#85FF00> ostaaksesi tuon."));
+                    showGUI(player);
+                }
+                return;
+            }
+
+            int price = addonManager.getPrice(addon);
 
             if (SelviytymisHarpake.getEconomy().getBalance(player) >= price) {
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.5F, 1F);
-                SelviytymisHarpake.getEconomy().withdrawPlayer(player, 1000);
-                player.sendMessage("Jee! Ostit "+ addon +" päivityksen.");
+                SelviytymisHarpake.getEconomy().withdrawPlayer(player, price);
+                player.sendMessage(toMiniMessage("<white>Ohhoh. Ostit lisäosan <#85FF00>" + addon + "</#85FF00> <white>onnistuneesti."));
                 addonManager.setAddon(player, addon);
                 player.closeInventory();
             } else {
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
-                player.sendMessage("Sinulla ei ole tarpeeksi rahaa! Tarvitset " + price + "Ⓖ.");
+                player.sendMessage(toMiniMessage("Nyt kyllä loppu hilut kesken, tarviit <#85FF00>" + price + "Ⓖ</#85FF00> ostaaksesi tuon."));
                 showGUI(player);
             }
         }));

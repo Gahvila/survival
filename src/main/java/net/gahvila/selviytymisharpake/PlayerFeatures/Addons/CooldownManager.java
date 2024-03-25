@@ -8,7 +8,7 @@ public class CooldownManager {
 
     private final Map<UUID, Long> cooldowns = new HashMap<>();
 
-    public static final long DEFAULT_COOLDOWN = 60;
+    public static final long DEFAULT_COOLDOWN = 120;
 
     public void setCooldown(UUID player, long time){
         if(time < 1) {

@@ -36,29 +36,8 @@ public class HomeCommands {
     }
     public void registerCommands() {
         new CommandAPICommand("buyhome")
-                .withSubcommand(new CommandAPICommand("forcebuy")
-                        .executesPlayer((p, args) -> {
-                            int price = getNextHomeCost(p);
-
-                            if (SelviytymisHarpake.getEconomy().getBalance(p) >= price) {
-                                SelviytymisHarpake.getEconomy().withdrawPlayer(p, price);
-
-                                homeManager.addAdditionalHomes(p);
-                                p.sendMessage(toMiniMessage("<white>Sinulla on nyt</white> <#85FF00>" + homeManager.getAllowedHomes(p) + "</#85FF00> <white>kotia yhteensä.</white> <gray>(Rank: " + homeManager.getAllowedHomesOfRank(p) + "</gray> <dark_gray>|</dark_gray> <gray>Lisäkodit: " + homeManager.getAllowedAdditionalHomes(p) + ")</gray>"));
-                            } else {
-                                p.sendMessage(toMiniMessage("<white>Kodin osto maksaa</white> <#85FF00>" + price + "Ⓖ</#85FF00><white>, ja sinulla on vain</white> <#85FF00>" + SelviytymisHarpake.getEconomy().getBalance(p) + "</#85FF00>"));
-                            }
-                        }))
                 .executesPlayer((p, args) -> {
-
-                    int price = getNextHomeCost(p);
-
-                    p.sendMessage(toMiniMessage("<white>Sinulla on</white> <#85FF00>" + homeManager.getAllowedHomes(p) + "</#85FF00> <white>kotia yhteensä.</white> <gray>(Rank: " + homeManager.getAllowedHomesOfRank(p) + "</gray> <dark_gray>|</dark_gray> <gray>Lisäkodit: " + homeManager.getAllowedAdditionalHomes(p) + ")</gray>"));
-                    p.sendMessage(toMiniMessage("<white>Haluatko varmasti ostaa lisäkodin?\nHinta:</white> <#85FF00>" + price + "Ⓖ</#85FF00>"));
-                    p.sendMessage(toMiniMessage("<white>Jokaisen kodin osto nostaa hintaa</white> <#85FF00>10%</#85FF00><white>.</white>"));
-                    //accept button
-                    p.sendMessage(toMiniMessage("<#85FF00><b>Hyväksy</b></#85FF00>").hoverEvent(HoverEvent.showText(toMiniMessage("<#85FF00>Klikkaa ostaaksesi!</#85FF00>"))).clickEvent(ClickEvent.runCommand("/buyhome forcebuy")));
-
+                    p.performCommand("addon");
                 })
 
                 .register();
@@ -178,13 +157,6 @@ public class HomeCommands {
 
                 .register();
 
-    }
-
-    public int getNextHomeCost(Player p) {
-        double rate = 0.10;
-        int initialCost = 5000;
-        double cost = initialCost * Math.pow(1 + rate, homeManager.getAllowedAdditionalHomes(p));
-        return (int) cost;
     }
 
     public Argument<ArrayList<String>> customHomeArgument(String nodeName) {

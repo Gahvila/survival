@@ -134,4 +134,11 @@ public class HomeManager {
             return 3;
         }
     }
+
+    public int getNextHomeCost(Player p) {
+        double rate = 0.10;
+        int initialCost = 5000;
+        double cost = initialCost * Math.pow(1 + rate, getAllowedAdditionalHomes(p));
+        return (int) cost;
+    }
 }

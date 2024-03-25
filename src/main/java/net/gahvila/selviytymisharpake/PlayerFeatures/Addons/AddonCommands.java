@@ -25,6 +25,7 @@ public class AddonCommands {
 
     public void registerCommands() {
         new CommandAPICommand("addon")
+                .withAliases("lisäosat")
                 .executesPlayer((p, args) -> {
                     addonMenu.showGUI(p);
                     p.playSound(p.getLocation(), Sound.ENTITY_LLAMA_SWAG, 2F, 1F);
@@ -36,7 +37,7 @@ public class AddonCommands {
                         p.openWorkbench(null, true);
                         p.playSound(p.getLocation(), Sound.BLOCK_CHEST_OPEN, 2F, 1F);
                     }else{
-                        Component message = toMiniMessage("<white>Käytä</white> <yellow>/addon</yellow> <white>komentoa saadaksesi oikeudet tähän.");
+                        Component message = toMiniMessage("<white>Käytä</white> <#85FF00>/addon</#85FF00> <white>komentoa saadaksesi oikeudet tähän.");
                         p.sendMessage(message);
                     }
                 })
@@ -49,7 +50,7 @@ public class AddonCommands {
                         p.sendMessage("§fSinun äärilaatikko avattiin!");
                         p.playSound(p.getLocation(), Sound.BLOCK_CHEST_OPEN, 2F, 1F);
                     }else{
-                        Component message = toMiniMessage("<white>Käytä</white> <yellow>/addon</yellow> <white>komentoa saadaksesi oikeudet tähän.");
+                        Component message = toMiniMessage("<white>Käytä</white> <#85FF00>/addon</#85FF00> <white>komentoa saadaksesi oikeudet tähän.");
                         p.sendMessage(message);
                     }
                 })
@@ -62,15 +63,15 @@ public class AddonCommands {
                         if(TimeUnit.MILLISECONDS.toSeconds(timeLeft) >= CooldownManager.DEFAULT_COOLDOWN){
                             p.setFoodLevel(20);
                             p.setSaturation(20F);
-                            p.sendMessage(toMiniMessage("<white>Täytit ruokapalkkisi. Voit käyttää komentoa uudelleen </white><yellow>yhden minuutin</yellow> <white>kuluttua."));
+                            p.sendMessage(toMiniMessage("<white>Täytit ruokapalkkisi. Voit käyttää komentoa uudelleen </white><#85FF00>kahden minuutin</#85FF00> <white>kuluttua."));
                             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_BURP, 2F, 1F);
                             cooldownManager.setCooldown(p.getUniqueId(), System.currentTimeMillis());
                         }else{
                             String secondsleft = String.valueOf((CooldownManager.DEFAULT_COOLDOWN - TimeUnit.MILLISECONDS.toSeconds(timeLeft)));
-                            p.sendMessage(toMiniMessage("<yellow>" + secondsleft + " sekuntia</yellow><white> kunnes voit käyttää komentoa uudelleen."));
+                            p.sendMessage(toMiniMessage("<#85FF00>" + secondsleft + " sekuntia</#85FF00><white> kunnes voit käyttää komentoa uudelleen."));
                         }
                     }else{
-                        p.sendMessage(toMiniMessage("<white>Käytä</white> <yellow>/addon</yellow> <white>komentoa saadaksesi oikeudet tähän."));
+                        p.sendMessage(toMiniMessage("<white>Käytä</white> <#85FF00>/addon</#85FF00> <white>komentoa saadaksesi oikeudet tähän."));
                     }
                 })
                 .register();
@@ -80,7 +81,7 @@ public class AddonCommands {
                         ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
                         Bukkit.dispatchCommand(console, "shop open menu kauppa " + p.getName());
                     }else{
-                        p.sendMessage(toMiniMessage("<white>Käytä </white><yellow>/addon</yellow> <white>komentoa saadaksesi oikeudet tähän.</white>"));
+                        p.sendMessage(toMiniMessage("<white>Käytä </white><#85FF00>/addon</#85FF00> <white>komentoa saadaksesi oikeudet tähän.</white>"));
                     }
                 })
                 .register();
