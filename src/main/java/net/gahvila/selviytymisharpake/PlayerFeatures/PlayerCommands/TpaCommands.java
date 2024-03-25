@@ -90,6 +90,7 @@ public class TpaCommands {
                 })
                 .register();
         new CommandAPICommand("tpahere")
+                .withAliases("tpah")
                 .withArguments(new PlayerArgument("nimi"))
                 .executesPlayer((tpasender, args) -> {
                     Player tpareceiver = (Player) args.get("nimi");
@@ -142,6 +143,7 @@ public class TpaCommands {
                 })
                 .register();
         new CommandAPICommand("tpacancel")
+                .withAliases("tpc")
                 .executesPlayer((tpasender, args) -> {
                     if (tpa.get(tpasender) != null) {
                         Player tpareceiver = tpa.get(tpasender);
@@ -204,7 +206,7 @@ public class TpaCommands {
                 })
                 .register();
         new CommandAPICommand("tpano")
-                .withAliases("tpadeny")
+                .withAliases("tpadeny", "tpn")
                 .withOptionalArguments(new PlayerArgument("nimi"))
                 .executesPlayer((tpareceiver, args) -> {
                     if (args.get("nimi") == null){

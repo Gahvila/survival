@@ -77,6 +77,7 @@ public class HomeCommands {
                 })
                 .register();
         new CommandAPICommand("home")
+                .withAliases("h")
                 .withSubcommand(new CommandAPICommand("sänky")
                         .executesPlayer((p, args) -> {
                             if (p.getBedSpawnLocation() != null){

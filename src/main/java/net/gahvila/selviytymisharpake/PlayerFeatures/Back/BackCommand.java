@@ -20,6 +20,7 @@ public class BackCommand {
                 })
                 .register();
         new CommandAPICommand("fback")
+                .withAliases("fb")
                 .executesPlayer((p, args) -> {
                     Location previousLocation = backManager.getBack(p, 1);
 
