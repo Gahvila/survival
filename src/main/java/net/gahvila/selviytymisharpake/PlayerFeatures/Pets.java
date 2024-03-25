@@ -11,6 +11,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -93,6 +94,22 @@ public class Pets implements Listener {
                 teleportedFrom.removePluginChunkTicket(SelviytymisHarpake.instance);
             }
         },20L * 10);
+    }
+
+    //anti kill
+    @EventHandler
+    public void onDamage(EntityDamageByEntityEvent e) {
+        if (!(e.getDamager() instanceof Player damager)) return;
+        if (!(e.getEntity() instanceof Tameable pet)) return;
+
+        UUID currentOwnerUUID = pet.getOwnerUniqueId();
+        UUID damagerUUID = damager.getUniqueId();
+
+        if (damagerUUID == currentOwnerUUID) return;
+
+        e.setCancelled(true);
+        damager.sendMessage("Et voi vahingoittaa tuota lemmikkiä.");
+
     }
 
     public @NotNull Component toMiniMessage(@NotNull String string) {
