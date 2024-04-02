@@ -12,7 +12,6 @@ import net.gahvila.selviytymisharpake.PlayerFeatures.Events.*;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Homes.HomeCommands;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Homes.HomeManager;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Pets;
-import net.gahvila.selviytymisharpake.PlayerFeatures.PlayerCommands.ChatRange;
 import net.gahvila.selviytymisharpake.PlayerFeatures.PlayerCommands.TpaCommands;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Spawn.SpawnCMD;
 import net.gahvila.selviytymisharpake.PlayerFeatures.VehicleBuffs.MinecartBuff;
@@ -97,9 +96,6 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         MainCommand mainCommand = new MainCommand();
         mainCommand.registerCommands();
 
-        ChatRange chatRange = new ChatRange();
-        chatRange.registerCommands();
-
         SpawnCMD spawnCMD = new SpawnCMD();
         spawnCMD.registerCommands();
 
@@ -120,7 +116,7 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
 
 
         //register events
-        registerListeners(new PlayerDeath(), new JoinEvent(), new QuitEvent(), new BackListener(backManager), new ChatRange(), new WarpEvents(warpManager),
+        registerListeners(new PlayerDeath(), new JoinEvent(), new QuitEvent(), new BackListener(backManager), new WarpEvents(warpManager),
                 new MenuListener(), new RNPortalDisabler(), new ExplodeEvent(), new MinecartBuff(), new Pets());
     }
 
