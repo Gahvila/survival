@@ -76,11 +76,6 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         resurssinetherReset = new ResurssinetherReset(homeManager, instance);
         addonMenu = new AddonMenu(addonManager, homeManager);
 
-
-        //scheduling
-        ResurssinetherReset resurssinetherReset = new ResurssinetherReset(homeManager, instance);
-        resurssinetherReset.schedule();
-
         RidableBuff ridableBuff = new RidableBuff();
         ridableBuff.ridableBuffScheduler();
 

@@ -28,19 +28,6 @@ public class ResurssinetherReset {
         this.plugin = plugin;
     }
 
-    public void schedule() {
-        // get the time for the first day of the next month
-        ZonedDateTime nextTime = ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()).plusMonths(1L).withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);
-        // get the difference of time from now until the 1st day of the next month. multiply by 20 to convert from seconds to ticks.
-        long delay = Duration.between(ZonedDateTime.now(), nextTime).getSeconds() * 20;
-
-
-        Bukkit.getServer().getScheduler().runTaskLater(plugin, () -> {
-            performNetherReset();
-            schedule();
-        }, delay);
-    }
-
     public boolean deleteWorld(File path) {
         if(path.exists()) {
             File files[] = path.listFiles();
