@@ -24,8 +24,6 @@ import net.gahvila.selviytymisharpake.Resurssinether.RNPortalDisabler;
 import net.gahvila.selviytymisharpake.Resurssinether.ResourceNetherCMD;
 import net.gahvila.selviytymisharpake.Resurssinether.ResurssinetherReset;
 import net.gahvila.selviytymisharpake.Utils.EmptyChunkGenerator;
-import net.gahvila.selviytymisharpake.Utils.MenuListener;
-import net.gahvila.selviytymisharpake.Utils.PlayerMenuUtility;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
 import org.bukkit.entity.Player;

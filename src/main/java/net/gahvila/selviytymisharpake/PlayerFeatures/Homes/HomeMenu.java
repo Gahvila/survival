@@ -1,8 +1,6 @@
 package net.gahvila.selviytymisharpake.PlayerFeatures.Homes;
 
 
-import net.gahvila.selviytymisharpake.Utils.PaginatedMenu;
-import net.gahvila.selviytymisharpake.Utils.PlayerMenuUtility;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.ChatColor;
