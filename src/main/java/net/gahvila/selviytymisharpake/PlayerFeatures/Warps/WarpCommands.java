@@ -17,10 +17,13 @@ import java.util.ArrayList;
 public class WarpCommands {
 
     private final WarpManager warpManager;
+    private final WarpMenu warpMenu;
 
 
-    public WarpCommands(WarpManager warpManager) {
+
+    public WarpCommands(WarpManager warpManager, WarpMenu warpMenu) {
         this.warpManager = warpManager;
+        this.warpMenu = warpMenu;
     }
 
     public void registerCommands() {
@@ -98,7 +101,7 @@ public class WarpCommands {
                     String nimi = args.getRaw("warp");
                     if (args.getRaw("warp") == null) {
                         if (warpManager.getWarps() != null) {
-                            new WarpMenu(SelviytymisHarpake.getPlayerMenuUtility(p), warpManager).open();
+                            warpMenu.showGUI(p);
                             return;
                         }
                         return;
@@ -117,7 +120,7 @@ public class WarpCommands {
                         }
 
                     } else {
-                        new WarpMenu(SelviytymisHarpake.getPlayerMenuUtility(p), warpManager).open();
+                        warpMenu.showGUI(p);
                     }
                 })
                 .register();

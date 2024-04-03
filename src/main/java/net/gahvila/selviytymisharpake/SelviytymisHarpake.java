@@ -19,6 +19,7 @@ import net.gahvila.selviytymisharpake.PlayerFeatures.VehicleBuffs.RidableBuff;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Warps.WarpCommands;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Warps.WarpEvents;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Warps.WarpManager;
+import net.gahvila.selviytymisharpake.PlayerFeatures.Warps.WarpMenu;
 import net.gahvila.selviytymisharpake.PluginCommands.MainCommand;
 import net.gahvila.selviytymisharpake.Resurssinether.RNPortalDisabler;
 import net.gahvila.selviytymisharpake.Resurssinether.ResourceNetherCMD;
@@ -46,6 +47,7 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
     private WarpManager warpManager;
     private ResurssinetherReset resurssinetherReset;
     private AddonMenu addonMenu;
+    private WarpMenu warpMenu;
 
     @Override
     public void onEnable() {
@@ -68,6 +70,7 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         warpManager = new WarpManager();
         resurssinetherReset = new ResurssinetherReset(homeManager, instance);
         addonMenu = new AddonMenu(addonManager, homeManager);
+        warpMenu = new WarpMenu(warpManager);
 
         RidableBuff ridableBuff = new RidableBuff();
         ridableBuff.ridableBuffScheduler();
@@ -96,7 +99,7 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         HomeCommands homeCommands = new HomeCommands(homeManager);
         homeCommands.registerCommands();
 
-        WarpCommands warpCommands = new WarpCommands(warpManager);
+        WarpCommands warpCommands = new WarpCommands(warpManager, warpMenu);
         warpCommands.registerCommands();
 
         ResourceNetherCMD resourceNetherCMD = new ResourceNetherCMD();
