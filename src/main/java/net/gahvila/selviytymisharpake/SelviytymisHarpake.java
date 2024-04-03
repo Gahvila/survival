@@ -11,6 +11,7 @@ import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackManager;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Events.*;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Homes.HomeCommands;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Homes.HomeManager;
+import net.gahvila.selviytymisharpake.PlayerFeatures.Homes.HomeMenu;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Pets;
 import net.gahvila.selviytymisharpake.PlayerFeatures.PlayerCommands.TpaCommands;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Spawn.SpawnCMD;
@@ -48,6 +49,7 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
     private ResurssinetherReset resurssinetherReset;
     private AddonMenu addonMenu;
     private WarpMenu warpMenu;
+    private HomeMenu homeMenu;
 
     @Override
     public void onEnable() {
@@ -71,6 +73,8 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         resurssinetherReset = new ResurssinetherReset(homeManager, instance);
         addonMenu = new AddonMenu(addonManager, homeManager);
         warpMenu = new WarpMenu(warpManager);
+        homeMenu = new HomeMenu(homeManager);
+
 
         RidableBuff ridableBuff = new RidableBuff();
         ridableBuff.ridableBuffScheduler();
@@ -96,7 +100,7 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         Pets pets = new Pets();
         pets.registerCommands();
 
-        HomeCommands homeCommands = new HomeCommands(homeManager);
+        HomeCommands homeCommands = new HomeCommands(homeManager, homeMenu);
         homeCommands.registerCommands();
 
         WarpCommands warpCommands = new WarpCommands(warpManager, warpMenu);

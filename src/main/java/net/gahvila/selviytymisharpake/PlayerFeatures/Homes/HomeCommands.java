@@ -29,10 +29,13 @@ public class HomeCommands {
 
     public static HashMap<Player, Integer> gambling = new HashMap<>();
     private final HomeManager homeManager;
+    private final HomeMenu homeMenu;
 
 
-    public HomeCommands(HomeManager homeManager) {
+
+    public HomeCommands(HomeManager homeManager, HomeMenu homeMenu) {
         this.homeManager = homeManager;
+        this.homeMenu = homeMenu;
     }
     public void registerCommands() {
         new CommandAPICommand("buyhome")
@@ -92,7 +95,7 @@ public class HomeCommands {
                 .executesPlayer((p, args) -> {
                     if (args.getRaw("koti") == null) {
                         if (homeManager.getHomes(p) != null) {
-                            new HomeMenu(SelviytymisHarpake.getPlayerMenuUtility(p), homeManager).open();
+                            homeMenu.showGUI(p);
                         }else{
                             p.sendMessage(toMiniMessage("<white>Sinulla ei ole kotia. Voit asettaa kodin komennolla</white> <#85FF00>/sethome</#85FF00><white>.</white>"));
                         }

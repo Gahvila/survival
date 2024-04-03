@@ -1,13 +1,14 @@
 package net.gahvila.selviytymisharpake.PlayerFeatures.Homes;
 
-
+import com.github.stefvanschie.inventoryframework.gui.GuiItem;
+import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
+import com.github.stefvanschie.inventoryframework.pane.*;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -15,98 +16,75 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.bukkit.Bukkit.getServer;
-
-public class HomeMenu extends PaginatedMenu implements Listener {
-
+public class HomeMenu {
     private final HomeManager homeManager;
 
-    public HomeMenu(PlayerMenuUtility playerMenuUtility, HomeManager homeManager) {
-        super(playerMenuUtility);
+
+    public HomeMenu(HomeManager homeManager) {
         this.homeManager = homeManager;
+
     }
 
-    @Override
-    public String getMenuName() {
-        return "§5§lKotilista";
-    }
+    public void showGUI(Player player) {
+        ChestGui gui = new ChestGui(3, "§5§lKodit");
+        gui.show(player);
 
-    @Override
-    public int getSlots() {
-        return 54;
-    }
+        gui.setOnGlobalClick(event -> event.setCancelled(true));
 
-    @Override
-    public void handleMenu(InventoryClickEvent e) {
-        Player p = (Player) e.getWhoClicked();
+        OutlinePane background = new OutlinePane(0, 0, 9, 5, Pane.Priority.LOWEST);
+        ItemStack backgroundItem = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+        ItemMeta backgroundItemMeta = backgroundItem.getItemMeta();
+        backgroundItemMeta.displayName(toMiniMessage(""));
+        backgroundItem.setItemMeta(backgroundItemMeta);
+        background.addItem(new GuiItem(backgroundItem));
+        background.setRepeat(true);
+        gui.addPane(background);
 
-        ArrayList<Player> players = new ArrayList<Player>(getServer().getOnlinePlayers());
-
-        if (e.getCurrentItem().getType().equals(Material.GREEN_BED)) {
-            if (homeManager.getHome(p, e.getCurrentItem().getItemMeta().getDisplayName()) != null){
-                p.teleportAsync(homeManager.getHome(p, e.getCurrentItem().getItemMeta().getDisplayName()));
-                p.sendMessage(toMiniMessage("<white>Sinut teleportattiin kotiin</white> <#85FF00>" + e.getCurrentItem().getItemMeta().getDisplayName() + "<#/85FF00>."));
-            }else {
-                p.closeInventory();
-                p.sendMessage("Tuota kotia ei ole olemassa. Mitä duunaat?");
-            }
-        }else if (e.getCurrentItem().getType().equals(Material.BARRIER)) {
-            //close inventory
-            if (e.getClick().isKeyboardClick()){
-                e.setCancelled(true);
-            }else {
-                p.closeInventory();
-            }
-        }else if(e.getCurrentItem().getType().equals(Material.DARK_OAK_BUTTON)){
-            if (ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Aikaisempi sivu")){
-                if (page == 0){
-                    p.sendMessage(ChatColor.GRAY + "Olet ensimmäisellä sivulla.");
-                }else{
-                    page = page - 1;
-                    super.open();
-                }
-            }else if (ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Seuraava sivu")){
-                if (!((index + 1) >= players.size())){
-                    page = page + 1;
-                    super.open();
-                }else{
-                    p.sendMessage(ChatColor.GRAY + "Olet viimeisellä sivulla.");
-                }
-            }
+        PaginatedPane pages = new PaginatedPane(1, 1, 7, 3);
+        List<ItemStack> items = new ArrayList<>();
+        for (String warp : homeManager.getHomes(player)) {
+            ItemStack item = new ItemStack(Material.PAPER);
+            ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName(warp);
+            item.setItemMeta(meta);
+            items.add(item);
         }
-    }
+        pages.populateWithItemStacks(items);
 
-    @Override
-    public void setMenuItems() {
-
-        addMenuBorder();
-
-        //The thing you will be looping through to place items
-        ArrayList<String> homes = new ArrayList<String>(homeManager.getHomes(playerMenuUtility.getOwner()));
-
-        ///////////////////////////////////// Pagination loop template
-        if(homes != null && !homes.isEmpty()) {
-            for(int i = 0; i < getMaxItemsPerPage(); i++) {
-                index = getMaxItemsPerPage() * page + i;
-                if(index >= homes.size()) break;
-                if (homes.get(index) != null){
-                    ///////////////////////////
-
-                    //Create an item from our collection and place it into the inventory
-                    ItemStack homeItem = new ItemStack(Material.GREEN_BED, 1);
-                    ItemMeta homeMeta = homeItem.getItemMeta();
-                    homeMeta.setDisplayName(homeManager.getHomes(playerMenuUtility.getOwner()).get(i));
-                    homeMeta.setLore(List.of("§fKlikkaa teleportataksesi"));
-                    homeItem.setItemMeta(homeMeta);
-
-                    inventory.addItem(homeItem);
-
-                }
+        pages.setOnClick(event -> {
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
+            if (homeManager.getHome(player, event.getCurrentItem().getItemMeta().getDisplayName()) != null){
+                player.teleportAsync(homeManager.getHome(player, event.getCurrentItem().getItemMeta().getDisplayName()));
+                player.sendMessage(toMiniMessage("<white>Sinut teleportattiin kotiin</white> <#85FF00>" + event.getCurrentItem().getItemMeta().getDisplayName() + "<#/85FF00>."));
+            }else {
+                player.closeInventory();
+                player.sendMessage("Tuota kotia ei ole olemassa. Mitä duunaat?");
             }
-        }
+        });
+
+        StaticPane navigationPane = new StaticPane(0, 5, 9, 1);
+        navigationPane.addItem(new GuiItem(new ItemStack(Material.RED_WOOL), event -> {
+            if (pages.getPage() > 0) {
+                pages.setPage(pages.getPage() - 1);
+
+                gui.update();
+            }
+        }), 0, 0);
+        navigationPane.addItem(new GuiItem(new ItemStack(Material.GREEN_WOOL), event -> {
+            if (pages.getPage() < pages.getPages() - 1) {
+                pages.setPage(pages.getPage() + 1);
+
+                gui.update();
+            }
+        }), 8, 0);
+        navigationPane.addItem(new GuiItem(new ItemStack(Material.BARRIER), event ->
+                event.getWhoClicked().closeInventory()), 4, 0);
+        gui.addPane(navigationPane);
+
+        gui.update();
     }
 
     public @NotNull Component toMiniMessage(@NotNull String string) {
-        return MiniMessage.miniMessage().deserialize(string);
+        return MiniMessage.miniMessage().deserialize(string).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }
 }
