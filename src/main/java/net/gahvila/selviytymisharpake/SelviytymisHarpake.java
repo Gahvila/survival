@@ -46,11 +46,6 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
     private WarpManager warpManager;
     private ResurssinetherReset resurssinetherReset;
     private AddonMenu addonMenu;
-    private PlayerMenuUtility playerMenuUtility;
-
-
-
-    private static final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -109,8 +104,7 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
 
 
         //register events
-        registerListeners(new PlayerDeath(), new JoinEvent(), new QuitEvent(), new BackListener(backManager), new WarpEvents(warpManager),
-                new MenuListener(), new RNPortalDisabler(), new ExplodeEvent(), new MinecartBuff(), new Pets());
+        registerListeners(new PlayerDeath(), new JoinEvent(), new QuitEvent(), new BackListener(backManager), new WarpEvents(warpManager), new RNPortalDisabler(), new ExplodeEvent(), new MinecartBuff(), new Pets());
     }
 
     //main class helpers
@@ -121,20 +115,6 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
     }
 
     //getters
-    public static PlayerMenuUtility getPlayerMenuUtility(Player p) {
-        PlayerMenuUtility playerMenuUtility;
-        if (!(playerMenuUtilityMap.containsKey(p))) { //See if the player has a playermenuutility "saved" for them
-
-            //This player doesn't. Make one for them add it to the hashmap
-            playerMenuUtility = new PlayerMenuUtility(p);
-            playerMenuUtilityMap.put(p, playerMenuUtility);
-
-            return playerMenuUtility;
-        } else {
-            return playerMenuUtilityMap.get(p); //Return the object by using the provided player
-        }
-    }
-
     public SelviytymisHarpake getPlugin() {
         return plugin;
     }

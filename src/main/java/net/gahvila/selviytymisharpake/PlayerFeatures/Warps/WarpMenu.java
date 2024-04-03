@@ -1,152 +1,160 @@
 package net.gahvila.selviytymisharpake.PlayerFeatures.Warps;
 
-
+import com.github.stefvanschie.inventoryframework.gui.GuiItem;
+import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
+import com.github.stefvanschie.inventoryframework.pane.*;
+import com.github.stefvanschie.inventoryframework.pane.util.Pattern;
 import net.gahvila.selviytymisharpake.SelviytymisHarpake;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
-import static org.bukkit.Bukkit.getServer;
-
-public class WarpMenu extends PaginatedMenu implements Listener {
+public class WarpMenu {
     private final WarpManager warpManager;
 
-    public WarpMenu(PlayerMenuUtility playerMenuUtility, WarpManager warpManager) {
-        super(playerMenuUtility);
+
+    public WarpMenu(WarpManager warpManager) {
         this.warpManager = warpManager;
+
     }
 
-    @Override
-    public String getMenuName() {
-        return "§5§lWarppilista";
+    public void showGUI(Player player) {
+        ChestGui gui = new ChestGui(3, "§5§lWarpit");
+        gui.show(player);
+
+        gui.setOnGlobalClick(event -> event.setCancelled(true));
+
+        OutlinePane background = new OutlinePane(0, 0, 9, 5, Pane.Priority.LOWEST);
+        ItemStack backgroundItem = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+        ItemMeta backgroundItemMeta = backgroundItem.getItemMeta();
+        backgroundItemMeta.displayName(toMiniMessage(""));
+        backgroundItem.setItemMeta(backgroundItemMeta);
+        background.addItem(new GuiItem(backgroundItem));
+        background.setRepeat(true);
+        gui.addPane(background);
+
+        PaginatedPane pages = new PaginatedPane(1, 1, 7, 3);
+        List<ItemStack> items = new ArrayList<>();
+        for (String warp : warpManager.getWarps()) {
+            ItemStack item = new ItemStack(Material.PAPER);
+            ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName(warp);
+            item.setItemMeta(meta);
+            items.add(item);
+        }
+        pages.populateWithItemStacks(items);
+
+        pages.setOnClick(event -> {
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
+            confirmMenu(player, event.getCurrentItem(), event.getCurrentItem().getItemMeta().getDisplayName());
+        });
+
+        StaticPane navigationPane = new StaticPane(0, 5, 9, 1);
+        navigationPane.addItem(new GuiItem(new ItemStack(Material.RED_WOOL), event -> {
+            if (pages.getPage() > 0) {
+                pages.setPage(pages.getPage() - 1);
+
+                gui.update();
+            }
+        }), 0, 0);
+        navigationPane.addItem(new GuiItem(new ItemStack(Material.GREEN_WOOL), event -> {
+            if (pages.getPage() < pages.getPages() - 1) {
+                pages.setPage(pages.getPage() + 1);
+
+                gui.update();
+            }
+        }), 8, 0);
+        navigationPane.addItem(new GuiItem(new ItemStack(Material.BARRIER), event ->
+                event.getWhoClicked().closeInventory()), 4, 0);
+        gui.addPane(navigationPane);
+
+        gui.update();
     }
 
-    @Override
-    public int getSlots() {
-        return 54;
-    }
+    private void confirmMenu(Player player, ItemStack item, String warpName) {
+        ChestGui gui = new ChestGui(3, "§4§lVarmista osto");
+        gui.show(player);
 
-    @Override
-    public void handleMenu(InventoryClickEvent e) {
-        Player p = (Player) e.getWhoClicked();
+        gui.setOnGlobalClick(event -> event.setCancelled(true));
 
-        ArrayList<Player> players = new ArrayList<Player>(getServer().getOnlinePlayers());
+        Pattern pattern = new Pattern(
+                "111111111",
+                "1AAAICCC1",
+                "111111111"
+        );
 
-        if (e.getCurrentItem().getType().equals(Material.GREEN_WOOL)) {
-            Integer price = warpManager.getWarpPrice(e.getCurrentItem().getItemMeta().getDisplayName());
-            if (price > 0 && price < 51){
-                playerMenuUtility.setWarpToTeleport(e.getCurrentItem().getItemMeta().getDisplayName());
+        PatternPane pane = new PatternPane(0, 0, 9, 3, pattern);
 
-                new WarpConfirmMenu(playerMenuUtility, warpManager).open();
-            }else{
-                p.closeInventory();
-                if (warpManager.isLocationSafe(warpManager.getWarp(e.getCurrentItem().getItemMeta().getDisplayName()))) {
-                    if (!p.getName().equals(warpManager.getWarpOwnerName(e.getCurrentItem().getItemMeta().getDisplayName()))) {
-                        warpManager.addUses(e.getCurrentItem().getItemMeta().getDisplayName());
-                    }
-                    p.teleportAsync(warpManager.getWarp(e.getCurrentItem().getItemMeta().getDisplayName()));
-                    p.sendMessage("Sinut teleportattiin warppiin §e" + e.getCurrentItem().getItemMeta().getDisplayName() + "§f.");
+        ItemStack accept = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
+        ItemMeta acceptMeta = accept.getItemMeta();
+        acceptMeta.displayName(toMiniMessage("<green><b>Hyväksy"));
+        accept.setItemMeta(acceptMeta);
+
+        ItemStack cancel = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+        ItemMeta cancelMeta = cancel.getItemMeta();
+        cancelMeta.displayName(toMiniMessage("<red><b>Hylkää"));
+        cancel.setItemMeta(cancelMeta);
+
+        ItemStack background = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+        ItemMeta backgroundMeta = background.getItemMeta();
+        backgroundMeta.displayName(toMiniMessage(""));
+        background.setItemMeta(backgroundMeta);
+
+        pane.bindItem('1', new GuiItem(background));
+        pane.bindItem('I', new GuiItem(item));
+
+        pane.bindItem('A', new GuiItem(accept, event -> {
+            player.closeInventory();
+            int price = warpManager.getWarpPrice(warpName);
+
+            if (SelviytymisHarpake.getEconomy().getBalance(player) >= price) {
+                SelviytymisHarpake.getEconomy().withdrawPlayer(player, price);
+                player.sendMessage(toMiniMessage("Tililtäsi veloitettiin <#85FF00>" + price + "Ⓖ</#85FF00>."));
+                player.closeInventory();
+                player.teleportAsync(warpManager.getWarp(warpName));
+                player.sendMessage(toMiniMessage("Sinut teleportattiin warppiin <#85FF00>" + warpName + "</#85FF00>."));
+
+                if (!player.getName().equals(warpManager.getWarpOwnerName(warpName))){
+                    warpManager.addUses(warpName);
+                }
+                //
+                String ownerUUID = warpManager.getWarpOwnerUUID(warpName);
+                if (Bukkit.getPlayer(UUID.fromString(ownerUUID)) == null){
+                    warpManager.addMoneyToQueue(warpManager.getWarpOwnerUUID(warpName), price);
                 }else{
-                    p.sendMessage("Warpin sijainti ei ole turvallinen. Teleportti peruttu.");
+                    Player owner = Bukkit.getPlayer(UUID.fromString(ownerUUID));
+                    SelviytymisHarpake.getEconomy().depositPlayer(owner, price);
+                    owner.sendMessage("Sinun maksullista warppia käytettiin, sait §e" + price + "Ⓖ§f.");
                 }
+            } else {
+                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
+                player.sendMessage(toMiniMessage("Nyt kyllä loppu hilut kesken, tarviit <#85FF00>" + price + "Ⓖ</#85FF00> käyttääksesi tätä warppia."));
+                player.closeInventory();
             }
+        }));
 
-        }else if (e.getCurrentItem().getType().equals(Material.BARRIER)) {
-            //close inventory
-            if (e.getClick().isKeyboardClick()){
-                e.setCancelled(true);
-            }else {
-                p.closeInventory();
-            }
-        } else if (e.getCurrentItem().getType().equals(Material.DARK_OAK_BUTTON)) {
-            if (ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Aikaisempi sivu")) {
-                if (page == 0) {
-                    p.sendMessage(ChatColor.GRAY + "Olet ensimmäisellä sivulla.");
-                } else {
-                    page = page - 1;
-                    super.open();
-                }
-            } else if (ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()).equalsIgnoreCase("Seuraava sivu")) {
-                int maxItemsPerPage = getMaxItemsPerPage();
-                int startIndex = (page + 1) * maxItemsPerPage;
-                ArrayList<String> warps = new ArrayList<String>(warpManager.getWarps());
-                if (startIndex >= warps.size()) {
-                    p.sendMessage(ChatColor.GRAY + "Olet viimeisellä sivulla.");
-                } else {
-                    page = page + 1;
-                    super.open();
-                }
-            }
-        }else if(e.getCurrentItem().getType().equals(Material.NETHER_STAR)){
-            warpManager.changeSorting(p);
+        pane.bindItem('C', new GuiItem(cancel, event -> {
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
+            showGUI(player);
+        }));
 
-            p.closeInventory();
-            new WarpMenu(SelviytymisHarpake.getPlayerMenuUtility(p), warpManager).open();
-        }
+        gui.addPane(pane);
+
+        gui.update();
     }
 
-    @Override
-    public void setMenuItems() {
-
-        addMenuBorder();
-
-        //The thing you will be looping through to place items
-        ArrayList<String> warps = new ArrayList<String>(warpManager.getWarps());
-
-        ItemStack orderItem = new ItemStack(Material.NETHER_STAR, 1);
-        ItemMeta orderMeta = orderItem.getItemMeta();
-
-        orderMeta.setDisplayName("§aJärjestys");
-
-        if (warpManager.getSorting(playerMenuUtility.getOwner()) == 0 || warpManager.getSorting(playerMenuUtility.getOwner()) == null){
-            orderMeta.setLore(List.of("§fNykyinen järjestys:", "§eUusin ensin"));
-            Collections.reverse(warps);
-        }else if (warpManager.getSorting(playerMenuUtility.getOwner()) == 1){
-            orderMeta.setLore(List.of("§fNykyinen järjestys:", "§eVanhin ensin"));
-        }else if (warpManager.getSorting(playerMenuUtility.getOwner()) == 2){
-            orderMeta.setLore(List.of("§fNykyinen järjestys:", "§eAakkosjärjestys"));
-            warps.sort(String::compareToIgnoreCase);
-        }
-        orderItem.setItemMeta(orderMeta);
-
-        inventory.setItem(52, orderItem);
-
-        ///////////////////////////////////// Pagination loop template
-        int maxItemsPerPage = getMaxItemsPerPage();
-        int startIndex = page * maxItemsPerPage;
-        int endIndex = Math.min(startIndex + maxItemsPerPage, warps.size());
-
-        for (int i = startIndex; i < endIndex; i++) {
-            ///////////////////////////
-
-            // Create an item from our collection and place it into the inventory
-            ItemStack warpItem = new ItemStack(Material.GREEN_WOOL, 1);
-            ItemMeta warpMeta = warpItem.getItemMeta();
-
-            String currWarp = warps.get(i);
-            String warpOwner = warpManager.getWarpOwnerName(currWarp);
-
-            Date currentTime = new Date(warpManager.getCreationDate(currWarp));
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String dateString = formatter.format(currentTime);
-
-            warpMeta.setDisplayName(currWarp);
-            warpMeta.setLore(List.of("§fOmistaja: §e" + warpOwner, "§fKäyttökerrat: §e" + warpManager.getUses(currWarp), "§fHinta: §e" + warpManager.getWarpPrice(currWarp) + "Ⓖ§f", "§7§o" + dateString));
-            warpItem.setItemMeta(warpMeta);
-
-            inventory.addItem(warpItem);
-        }
-
-
+    public @NotNull Component toMiniMessage(@NotNull String string) {
+        return MiniMessage.miniMessage().deserialize(string).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }
 }
