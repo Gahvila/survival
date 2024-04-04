@@ -7,22 +7,24 @@ import org.bukkit.Location;
 public class BackCommand {
 
     private final BackManager backManager;
+    private final BackMenu backMenu;
 
 
-    public BackCommand(BackManager backManager) {
+    public BackCommand(BackManager backManager, BackMenu backMenu) {
         this.backManager = backManager;
+        this.backMenu = backMenu;
     }
 
     public void registerCommands() {
         new CommandAPICommand("back")
                 .executesPlayer((p, args) -> {
-                    new BackMenu(SelviytymisHarpake.getPlayerMenuUtility(p), backManager).open();
+                    backMenu.showGUI(p);
                 })
                 .register();
         new CommandAPICommand("fback")
                 .withAliases("fb")
                 .executesPlayer((p, args) -> {
-                    Location previousLocation = backManager.getBack(p, 1);
+                    Location previousLocation = backManager.getBack(p);
 
                     if (previousLocation != null) {
                         p.teleportAsync(previousLocation);

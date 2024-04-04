@@ -8,9 +8,11 @@ import net.gahvila.selviytymisharpake.PlayerFeatures.Addons.AddonMenu;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackCommand;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackListener;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackManager;
+import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackMenu;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Events.*;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Homes.HomeCommands;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Homes.HomeManager;
+import net.gahvila.selviytymisharpake.PlayerFeatures.Homes.HomeMenu;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Pets;
 import net.gahvila.selviytymisharpake.PlayerFeatures.PlayerCommands.TpaCommands;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Spawn.SpawnCMD;
@@ -19,22 +21,18 @@ import net.gahvila.selviytymisharpake.PlayerFeatures.VehicleBuffs.RidableBuff;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Warps.WarpCommands;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Warps.WarpEvents;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Warps.WarpManager;
+import net.gahvila.selviytymisharpake.PlayerFeatures.Warps.WarpMenu;
 import net.gahvila.selviytymisharpake.PluginCommands.MainCommand;
 import net.gahvila.selviytymisharpake.Resurssinether.RNPortalDisabler;
 import net.gahvila.selviytymisharpake.Resurssinether.ResourceNetherCMD;
 import net.gahvila.selviytymisharpake.Resurssinether.ResurssinetherReset;
 import net.gahvila.selviytymisharpake.Utils.EmptyChunkGenerator;
-import net.gahvila.selviytymisharpake.Utils.MenuListener;
-import net.gahvila.selviytymisharpake.Utils.PlayerMenuUtility;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.HashMap;
 
 public final class SelviytymisHarpake extends JavaPlugin implements Listener {
     public static SelviytymisHarpake instance;
@@ -48,11 +46,9 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
     private WarpManager warpManager;
     private ResurssinetherReset resurssinetherReset;
     private AddonMenu addonMenu;
-    private PlayerMenuUtility playerMenuUtility;
-
-
-
-    private static final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
+    private WarpMenu warpMenu;
+    private HomeMenu homeMenu;
+    private BackMenu backMenu;
 
     @Override
     public void onEnable() {
@@ -75,6 +71,11 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         warpManager = new WarpManager();
         resurssinetherReset = new ResurssinetherReset(homeManager, instance);
         addonMenu = new AddonMenu(addonManager, homeManager);
+        warpMenu = new WarpMenu(warpManager);
+        homeMenu = new HomeMenu(homeManager);
+        backMenu = new BackMenu(backManager);
+
+
 
         RidableBuff ridableBuff = new RidableBuff();
         ridableBuff.ridableBuffScheduler();
@@ -85,7 +86,7 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         AddonCommands addonCommands = new AddonCommands(addonManager, addonMenu);
         addonCommands.registerCommands();
 
-        BackCommand backCommand = new BackCommand(backManager);
+        BackCommand backCommand = new BackCommand(backManager, backMenu);
         backCommand.registerCommands();
 
         MainCommand mainCommand = new MainCommand();
@@ -100,10 +101,10 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         Pets pets = new Pets();
         pets.registerCommands();
 
-        HomeCommands homeCommands = new HomeCommands(homeManager);
+        HomeCommands homeCommands = new HomeCommands(homeManager, homeMenu);
         homeCommands.registerCommands();
 
-        WarpCommands warpCommands = new WarpCommands(warpManager);
+        WarpCommands warpCommands = new WarpCommands(warpManager, warpMenu);
         warpCommands.registerCommands();
 
         ResourceNetherCMD resourceNetherCMD = new ResourceNetherCMD();
@@ -111,8 +112,7 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
 
 
         //register events
-        registerListeners(new PlayerDeath(), new JoinEvent(), new QuitEvent(), new BackListener(backManager), new WarpEvents(warpManager),
-                new MenuListener(), new RNPortalDisabler(), new ExplodeEvent(), new MinecartBuff(), new Pets());
+        registerListeners(new PlayerDeath(), new JoinEvent(), new QuitEvent(), new BackListener(backManager), new WarpEvents(warpManager), new RNPortalDisabler(), new ExplodeEvent(), new MinecartBuff(), new Pets());
     }
 
     //main class helpers
@@ -123,20 +123,6 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
     }
 
     //getters
-    public static PlayerMenuUtility getPlayerMenuUtility(Player p) {
-        PlayerMenuUtility playerMenuUtility;
-        if (!(playerMenuUtilityMap.containsKey(p))) { //See if the player has a playermenuutility "saved" for them
-
-            //This player doesn't. Make one for them add it to the hashmap
-            playerMenuUtility = new PlayerMenuUtility(p);
-            playerMenuUtilityMap.put(p, playerMenuUtility);
-
-            return playerMenuUtility;
-        } else {
-            return playerMenuUtilityMap.get(p); //Return the object by using the provided player
-        }
-    }
-
     public SelviytymisHarpake getPlugin() {
         return plugin;
     }

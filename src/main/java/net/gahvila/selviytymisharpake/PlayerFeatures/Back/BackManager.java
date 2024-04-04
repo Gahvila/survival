@@ -30,40 +30,25 @@ public class BackManager {
     public void saveBackLocation(Player player, Location location) {
         Json backData = new Json("backdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
-
-        // Shift existing positions up by 1
-        int positionLimit = 4;
-
-        // Shift existing positions up by 1
-        for (int i = positionLimit; i >= 2; i--) {
-            if (backData.getFileData().containsKey(uuid + "." + (i - 1))) {
-                // Move the existing position to the next one
-                backData.getFileData().insert(uuid + "." + i, backData.getFileData().get(uuid + "." + (i - 1)));
-            } else {
-                // If there's no location at the previous position, remove the current position
-                backData.getFileData().remove(uuid + "." + i);
-            }
-        }
-
         // Save the new location at position 1
-        backData.getFileData().insert(uuid + "." + 1 + ".world", location.getWorld().getName());
-        backData.getFileData().insert(uuid + "." + 1 + ".x", location.getX());
-        backData.getFileData().insert(uuid + "." + 1 + ".y", location.getY());
-        backData.getFileData().insert(uuid + "." + 1 + ".z", location.getZ());
-        backData.getFileData().insert(uuid + "." + 1 + ".yaw", location.getYaw());
+        backData.getFileData().insert(uuid + "." + "last" + ".world", location.getWorld().getName());
+        backData.getFileData().insert(uuid + "." + "last" + ".x", location.getX());
+        backData.getFileData().insert(uuid + "." + "last" + ".y", location.getY());
+        backData.getFileData().insert(uuid + "." + "last" + ".z", location.getZ());
+        backData.getFileData().insert(uuid + "." + "last" + ".yaw", location.getYaw());
         backData.set(uuid + "." + 1 + ".pitch", location.getPitch());
     }
 
-    public Location getBack(Player player, Integer position) {
+    public Location getBack(Player player) {
         Json backData = new Json("backdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
-        if (backData.getFileData().containsKey(uuid + "." + position)) {
-            World world = Bukkit.getWorld(backData.getString(uuid + "." + position + ".world"));
-            double x = backData.getDouble(uuid + "." + position + ".x");
-            double y = backData.getDouble(uuid + "." + position + ".y");
-            double z = backData.getDouble(uuid + "." + position + ".z");
-            float yaw = (float) backData.getDouble(uuid + "." + position + ".yaw");
-            float pitch = (float) backData.getDouble(uuid + "." + position + ".pitch");
+        if (backData.getFileData().containsKey(uuid + "." + "last")) {
+            World world = Bukkit.getWorld(backData.getString(uuid + "." + "last" + ".world"));
+            double x = backData.getDouble(uuid + "." + "last" + ".x");
+            double y = backData.getDouble(uuid + "." + "last" + ".y");
+            double z = backData.getDouble(uuid + "." + "last" + ".z");
+            float yaw = (float) backData.getDouble(uuid + "." + "last" + ".yaw");
+            float pitch = (float) backData.getDouble(uuid + "." + "last" + ".pitch");
             Location location = new Location(world, x, y, z, yaw, pitch);
             return location;
         }
@@ -155,22 +140,22 @@ public class BackManager {
         return null;
     }
 
-    public Double getX(Player player, Integer position) {
+    public Double getX(Player player) {
         Json backData = new Json("backdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
-        if (backData.getFileData().containsKey(uuid + "." + position)) {
-            Double x = backData.getDouble(uuid + "." + position + ".x");
+        if (backData.getFileData().containsKey(uuid + "." + "last")) {
+            Double x = backData.getDouble(uuid + "." + "last" + ".x");
             double roundOff = Math.round(x * 100.0) / 100.0;
             return roundOff;
         }
         return null;
     }
 
-    public Double getZ(Player player, Integer position) {
+    public Double getZ(Player player) {
         Json backData = new Json("backdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
-        if (backData.getFileData().containsKey(uuid + "." + position)) {
-            Double z = backData.getDouble(uuid + "." + position + ".z");
+        if (backData.getFileData().containsKey(uuid + "." + "last")) {
+            Double z = backData.getDouble(uuid + "." + "last" + ".z");
             double roundOff = Math.round(z * 100.0) / 100.0;
             return roundOff;
         }
