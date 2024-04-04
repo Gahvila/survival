@@ -16,7 +16,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,53 +32,80 @@ public class WarpMenu {
     }
 
     public void showGUI(Player player) {
-        ChestGui gui = new ChestGui(3, "§5§lWarpit");
+        ChestGui gui = new ChestGui(5, "§5§lWarpit");
         gui.show(player);
 
         gui.setOnGlobalClick(event -> event.setCancelled(true));
 
-        OutlinePane background = new OutlinePane(0, 0, 9, 5, Pane.Priority.LOWEST);
-        ItemStack backgroundItem = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
-        ItemMeta backgroundItemMeta = backgroundItem.getItemMeta();
-        backgroundItemMeta.displayName(toMiniMessage(""));
-        backgroundItem.setItemMeta(backgroundItemMeta);
-        background.addItem(new GuiItem(backgroundItem));
-        background.setRepeat(true);
-        gui.addPane(background);
-
         PaginatedPane pages = new PaginatedPane(1, 1, 7, 3);
         List<ItemStack> items = new ArrayList<>();
         for (String warp : warpManager.getWarps()) {
+            Date currentTime = new Date(warpManager.getCreationDate(warp));
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String dateString = formatter.format(currentTime);
+
             ItemStack item = new ItemStack(Material.PAPER);
             ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(warp);
+            meta.setLore(List.of("§fOmistaja: §e" + warpManager.getWarpOwnerName(warp), "§fKäyttökerrat: §e" + warpManager.getUses(warp), "§fHinta: §e" + warpManager.getWarpPrice(warp) + "Ⓖ§f", "§7§o" + dateString));
             item.setItemMeta(meta);
             items.add(item);
         }
         pages.populateWithItemStacks(items);
+        gui.addPane(pages);
 
         pages.setOnClick(event -> {
+            String warpName = event.getCurrentItem().getItemMeta().getDisplayName();
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
-            confirmMenu(player, event.getCurrentItem(), event.getCurrentItem().getItemMeta().getDisplayName());
+            if (warpManager.getWarpPrice(warpName) == 0){
+                player.closeInventory();
+                player.teleportAsync(warpManager.getWarp(warpName));
+                player.sendMessage(toMiniMessage("Sinut teleportattiin warppiin <#85FF00>" + warpName + "</#85FF00>."));
+
+                if (!player.getName().equals(warpManager.getWarpOwnerName(warpName))){
+                    warpManager.addUses(warpName);
+                }
+            }else {
+                confirmMenu(player, event.getCurrentItem(), warpName);
+            }
         });
 
-        StaticPane navigationPane = new StaticPane(0, 5, 9, 1);
-        navigationPane.addItem(new GuiItem(new ItemStack(Material.RED_WOOL), event -> {
+
+        StaticPane navigationPane = new StaticPane(0, 4, 9, 1);
+
+        ItemStack previous = new ItemStack(Material.MANGROVE_BUTTON);
+        ItemMeta previousMeta = previous.getItemMeta();
+        previousMeta.displayName(toMiniMessage("<b>Takaisin"));
+        previous.setItemMeta(previousMeta);
+        navigationPane.addItem(new GuiItem(previous, event -> {
             if (pages.getPage() > 0) {
                 pages.setPage(pages.getPage() - 1);
+                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.8F, 0.7F);
 
                 gui.update();
             }
-        }), 0, 0);
-        navigationPane.addItem(new GuiItem(new ItemStack(Material.GREEN_WOOL), event -> {
+        }), 3, 0);
+        ItemStack sorting = new ItemStack(Material.NETHER_STAR);
+        ItemMeta sortingMeta = sorting.getItemMeta();
+        sortingMeta.displayName(toMiniMessage("<white><b>Järjestys"));
+        sortingMeta.lore(List.of(toMiniMessage("<white>Järjestäminen on tulossa pian.")));
+        sorting.setItemMeta(sortingMeta);
+        navigationPane.addItem(new GuiItem(sorting, event -> {
+            player.sendMessage("Tulossa pian.");
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
+        }), 4, 0);
+        ItemStack next = new ItemStack(Material.WARPED_BUTTON);
+        ItemMeta nextMeta = next.getItemMeta();
+        nextMeta.displayName(toMiniMessage("<b>Seuraava"));
+        next.setItemMeta(nextMeta);
+        navigationPane.addItem(new GuiItem(next, event -> {
             if (pages.getPage() < pages.getPages() - 1) {
                 pages.setPage(pages.getPage() + 1);
+                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.8F, 0.8F);
 
                 gui.update();
             }
-        }), 8, 0);
-        navigationPane.addItem(new GuiItem(new ItemStack(Material.BARRIER), event ->
-                event.getWhoClicked().closeInventory()), 4, 0);
+        }), 5, 0);
         gui.addPane(navigationPane);
 
         gui.update();

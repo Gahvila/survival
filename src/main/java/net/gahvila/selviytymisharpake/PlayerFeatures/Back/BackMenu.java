@@ -5,11 +5,13 @@ import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.PatternPane;
+import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import com.github.stefvanschie.inventoryframework.pane.util.Pattern;
 import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -42,7 +44,7 @@ public class BackMenu {
         background.setRepeat(true);
         gui.addPane(background);
 
-        OutlinePane navigationPane = new OutlinePane(3, 1, 2, 1);
+        StaticPane navigationPane = new StaticPane(3, 1, 3, 1);
 
         ItemStack deathItem = new ItemStack(Material.SKELETON_SKULL, 1);
         ItemMeta deathMeta = deathItem.getItemMeta();
@@ -53,7 +55,7 @@ public class BackMenu {
         navigationPane.addItem(new GuiItem(deathItem, event -> {
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
             confirmMenu(player, deathItem);
-        }));
+        }),0, 0);
 
         if (backManager.getBack(player) != null) {
             ItemStack back = new ItemStack(Material.MAP, 1);
@@ -64,8 +66,14 @@ public class BackMenu {
 
             navigationPane.addItem(new GuiItem(back, event -> {
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
-                confirmMenu(player, deathItem);
-            }));
+                Location previousLocation = backManager.getBack(player);
+
+                if (previousLocation != null) {
+                    player.teleportAsync(previousLocation);
+                } else {
+                    player.sendMessage("Sijaintia ei ole.");
+                }
+            }), 2, 0);
 
         }else {
             ItemStack back = new ItemStack(Material.BARRIER, 1);
@@ -74,9 +82,8 @@ public class BackMenu {
             back.setItemMeta(back1meta);
 
             navigationPane.addItem(new GuiItem(back, event -> {
-                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
-                confirmMenu(player, deathItem);
-            }));
+                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
+            }), 2, 0);
         }
 
 
