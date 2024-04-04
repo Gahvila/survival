@@ -1,184 +1,149 @@
 package net.gahvila.selviytymisharpake.PlayerFeatures.Back;
 
+import com.github.stefvanschie.inventoryframework.gui.GuiItem;
+import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
+import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
+import com.github.stefvanschie.inventoryframework.pane.Pane;
+import com.github.stefvanschie.inventoryframework.pane.PatternPane;
+import com.github.stefvanschie.inventoryframework.pane.util.Pattern;
+import net.gahvila.selviytymisharpake.SelviytymisHarpake;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class BackMenu extends Menu implements InventoryHolder {
+public class BackMenu {
 
     private final BackManager backManager;
 
-    public BackMenu(PlayerMenuUtility playerMenuUtility, BackManager backManager) {
-        super(playerMenuUtility);
+    public BackMenu(BackManager backManager) {
         this.backManager = backManager;
+
     }
 
-    @Override
-    public String getMenuName() {
-        return "§2§lBack §0- §8Mitä tehdään?";
-    }
+    public void showGUI(Player player) {
+        ChestGui gui = new ChestGui(3, "§5§lLisäosat");
+        gui.show(player);
+        gui.setOnGlobalClick(event -> event.setCancelled(true));
 
-    @Override
-    public int getSlots() {
-        return 27;
-    }
+        OutlinePane background = new OutlinePane(0, 0, 9, 3, Pane.Priority.LOWEST);
+        ItemStack backgroundItem = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+        ItemMeta backgroundItemMeta = backgroundItem.getItemMeta();
+        backgroundItemMeta.displayName(toMiniMessage(""));
+        backgroundItem.setItemMeta(backgroundItemMeta);
+        background.addItem(new GuiItem(backgroundItem));
+        background.setRepeat(true);
+        gui.addPane(background);
 
-    @Override
-    public void handleMenu(InventoryClickEvent e) {
-        Player p = (Player) e.getWhoClicked();
+        OutlinePane navigationPane = new OutlinePane(3, 1, 2, 1);
 
-        if (e.getCurrentItem().getType().equals(Material.SKELETON_SKULL)) {
-            new BackMenuConfirm(playerMenuUtility, backManager).open();
-        }else if(e.getCurrentItem().getType().equals(Material.MAP)){
-            if (e.getSlot() == 13){
-                if (backManager.getBack(p, 1) != null){
-                    p.teleportAsync(backManager.getBack(p, 1));
-                }
-            } else if (e.getSlot() == 14){
-                if (backManager.getBack(p, 2) != null){
-                    p.teleportAsync(backManager.getBack(p, 2));
-                }
-            } else if (e.getSlot() == 15){
-                if (backManager.getBack(p, 3) != null){
-                    p.teleportAsync(backManager.getBack(p, 3));
-                }
-            } else if (e.getSlot() == 16){
-                if (backManager.getBack(p, 4) != null){
-                    p.teleportAsync(backManager.getBack(p, 4));
-                }
-            }
-            p.closeInventory();
-        }
-    }
+        ItemStack deathItem = new ItemStack(Material.SKELETON_SKULL, 1);
+        ItemMeta deathMeta = deathItem.getItemMeta();
+        deathMeta.setDisplayName("§fKuolinsijainti");
+        deathMeta.setLore(List.of("§fHinta: §e" + backManager.calculateDeathPrice(player) + "Ⓖ", "§fKoordinaatit: §e" + backManager.getXdeath(player) + " §8| §e" + backManager.getZdeath(player)));
+        deathItem.setItemMeta(deathMeta);
 
-    @Override
-    public void setMenuItems() {
+        navigationPane.addItem(new GuiItem(deathItem, event -> {
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
+            confirmMenu(player, deathItem);
+        }));
 
-        setFillerGlass();
+        if (backManager.getBack(player) != null) {
+            ItemStack back = new ItemStack(Material.MAP, 1);
+            ItemMeta backmeta = back.getItemMeta();
+            backmeta.setDisplayName("§fViimeisin sijainti");
+            backmeta.setLore(List.of("§fKoordinaatit: §e" + backManager.getX(player) + " §8| §e" + backManager.getZ(player)));
+            back.setItemMeta(backmeta);
 
-        Player p = playerMenuUtility.getOwner();
-        if (backManager.getDeath(p) != null) {
-            ItemStack deathItem = new ItemStack(Material.SKELETON_SKULL, 1);
-            ItemMeta deathMeta = deathItem.getItemMeta();
-            deathMeta.setDisplayName("§fKuolinsijainti");
-            deathMeta.setLore(List.of("§fHinta: §e" + backManager.calculateDeathPrice(p) + "Ⓖ", "§fKoordinaatit: §e" + backManager.getXdeath(p) + " §8| §e" + backManager.getZdeath(p)));
-            deathItem.setItemMeta(deathMeta);
+            navigationPane.addItem(new GuiItem(back, event -> {
+                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
+                confirmMenu(player, deathItem);
+            }));
 
-            inventory.setItem(10, deathItem);
-        }else{
-            ItemStack deathItem = new ItemStack(Material.BARRIER, 1);
-            ItemMeta deathMeta = deathItem.getItemMeta();
-            deathMeta.setDisplayName("§fSijaintia ei ole");
-            deathItem.setItemMeta(deathMeta);
-
-            inventory.setItem(10, deathItem);
-        }
-
-        //1
-        if (backManager.getBack(p, 1) != null) {
-            ItemStack back1 = new ItemStack(Material.MAP, 1);
-            ItemMeta back1meta = back1.getItemMeta();
-
-            back1meta.setDisplayName("§f1");
-            back1meta.setLore(List.of("§fKoordinaatit: §e" + backManager.getX(p, 1) + " §8| §e" + backManager.getZ(p, 1)));
-            back1.setItemMeta(back1meta);
-            inventory.setItem(13, back1);
         }else {
-            ItemStack back1 = new ItemStack(Material.BARRIER, 1);
-            ItemMeta back1meta = back1.getItemMeta();
-
+            ItemStack back = new ItemStack(Material.BARRIER, 1);
+            ItemMeta back1meta = back.getItemMeta();
             back1meta.setDisplayName("§fSijaintia ei ole");
-            back1.setItemMeta(back1meta);
-            inventory.setItem(13, back1);
+            back.setItemMeta(back1meta);
+
+            navigationPane.addItem(new GuiItem(back, event -> {
+                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
+                confirmMenu(player, deathItem);
+            }));
         }
 
-        //2
-        if (backManager.getBack(p, 2) != null) {
-            if (p.hasPermission("gahvilacore.rank.vip")) {
-                ItemStack back2 = new ItemStack(Material.MAP, 1);
-                ItemMeta back2meta = back2.getItemMeta();
 
-                back2meta.setDisplayName("§f2");
-                back2meta.setLore(List.of("§fKoordinaatit: §e" + backManager.getX(p, 2) + " §8| §e" + backManager.getZ(p, 2)));
-                back2.setItemMeta(back2meta);
-                inventory.setItem(14, back2);
-            } else {
-                ItemStack back2 = new ItemStack(Material.BARRIER, 1);
-                ItemMeta back2meta = back2.getItemMeta();
 
-                back2meta.setDisplayName("§fTarvitset §e§lVIP §frankin käyttääksesi tätä");
-                back2meta.setLore(List.of("§fKoordinaatit: §e" + backManager.getX(p, 2) + " §8| §e" + backManager.getZ(p, 2)));
-                back2.setItemMeta(back2meta);
-                inventory.setItem(14, back2);
+        gui.addPane(navigationPane);
+
+        gui.update();
+    }
+
+    private void confirmMenu(Player player, ItemStack item) {
+        ChestGui gui = new ChestGui(3, "§4§lVarmista osto");
+        gui.show(player);
+
+        gui.setOnGlobalClick(event -> event.setCancelled(true));
+
+        Pattern pattern = new Pattern(
+                "111111111",
+                "1AAAICCC1",
+                "111111111"
+        );
+
+        PatternPane pane = new PatternPane(0, 0, 9, 3, pattern);
+
+        ItemStack accept = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
+        ItemMeta acceptMeta = accept.getItemMeta();
+        acceptMeta.displayName(toMiniMessage("<green><b>Hyväksy"));
+        accept.setItemMeta(acceptMeta);
+
+        ItemStack cancel = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+        ItemMeta cancelMeta = cancel.getItemMeta();
+        cancelMeta.displayName(toMiniMessage("<red><b>Hylkää"));
+        cancel.setItemMeta(cancelMeta);
+
+        ItemStack background = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+        ItemMeta backgroundMeta = background.getItemMeta();
+        backgroundMeta.displayName(toMiniMessage(""));
+        background.setItemMeta(backgroundMeta);
+
+        pane.bindItem('1', new GuiItem(background));
+        pane.bindItem('I', new GuiItem(item));
+
+        pane.bindItem('A', new GuiItem(accept, event -> {
+            player.closeInventory();
+            double price = backManager.calculateDeathPrice(player);
+            if (SelviytymisHarpake.getEconomy().getBalance(player) >= price) {
+                SelviytymisHarpake.getEconomy().withdrawPlayer(player, price);
+                player.sendMessage("Tililtäsi veloitettiin §e" + price + "Ⓖ§f.");
+                player.closeInventory();
+                player.teleportAsync(backManager.getDeath(player));
+                player.sendMessage("Sinut teleportattiin sinun viimeisimpään kuolinpaikkaan§f.");
+            }else{
+                player.closeInventory();
+                player.sendMessage("Sinulla ei ole tarpeeksi Ⓖ!");
             }
-        }else{
-            ItemStack back2 = new ItemStack(Material.BARRIER, 1);
-            ItemMeta back2meta = back2.getItemMeta();
+        }));
 
-            back2meta.setDisplayName("§fSijaintia ei ole");
-            back2.setItemMeta(back2meta);
-            inventory.setItem(14, back2);
-        }
+        pane.bindItem('C', new GuiItem(cancel, event -> {
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
+            showGUI(player);
+        }));
 
-        //3
-        if (backManager.getBack(p, 3) != null) {
-            if (p.hasPermission("gahvilacore.rank.mvp")) {
-                ItemStack back3 = new ItemStack(Material.MAP, 1);
-                ItemMeta back3meta = back3.getItemMeta();
+        gui.addPane(pane);
 
-                back3meta.setDisplayName("§f3");
-                back3meta.setLore(List.of("§fKoordinaatit: §e" + backManager.getX(p, 3) + " §8| §e" + backManager.getZ(p, 3)));
-                back3.setItemMeta(back3meta);
-                inventory.setItem(15, back3);
-            } else {
-                ItemStack back3 = new ItemStack(Material.BARRIER, 1);
-                ItemMeta back3meta = back3.getItemMeta();
+        gui.update();
+    }
 
-                back3meta.setDisplayName("§fTarvitset §6§lMVP §frankin käyttääksesi tätä");
-                back3meta.setLore(List.of("§fKoordinaatit: §e" + backManager.getX(p, 3) + " §8| §e" + backManager.getZ(p, 3)));
-                back3.setItemMeta(back3meta);
-                inventory.setItem(15, back3);
-            }
-        }else{
-            ItemStack back3 = new ItemStack(Material.BARRIER, 1);
-            ItemMeta back3meta = back3.getItemMeta();
-
-            back3meta.setDisplayName("§fSijaintia ei ole");
-            back3.setItemMeta(back3meta);
-            inventory.setItem(15, back3);
-        }
-
-        //4
-        if (backManager.getBack(p, 4) != null) {
-            if (p.hasPermission("gahvilacore.rank.pro")) {
-                ItemStack back4 = new ItemStack(Material.MAP, 1);
-                ItemMeta back4meta = back4.getItemMeta();
-
-                back4meta.setDisplayName("§f4");
-                back4meta.setLore(List.of("§fKoordinaatit: §e" + backManager.getX(p, 4) + " §8| §e" + backManager.getZ(p, 4)));
-                back4.setItemMeta(back4meta);
-                inventory.setItem(16, back4);
-            } else {
-                ItemStack back4 = new ItemStack(Material.BARRIER, 1);
-                ItemMeta back4meta = back4.getItemMeta();
-
-                back4meta.setDisplayName("§fTarvitset §5§lPRO §frankin käyttääksesi tätä");
-                back4meta.setLore(List.of("§fKoordinaatit: §e" + backManager.getX(p, 4) + " §8| §e" + backManager.getZ(p, 4)));
-                back4.setItemMeta(back4meta);
-                inventory.setItem(16, back4);
-            }
-        }else{
-            ItemStack back4 = new ItemStack(Material.BARRIER, 1);
-            ItemMeta back4meta = back4.getItemMeta();
-
-            back4meta.setDisplayName("§fSijaintia ei ole");
-            back4.setItemMeta(back4meta);
-            inventory.setItem(16, back4);
-        }
-
-    }}
+    public @NotNull Component toMiniMessage(@NotNull String string) {
+        return MiniMessage.miniMessage().deserialize(string).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+    }
+}
