@@ -5,6 +5,7 @@ import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.*;
 import com.github.stefvanschie.inventoryframework.pane.component.Label;
+import com.github.stefvanschie.inventoryframework.pane.util.Pattern;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -32,6 +33,21 @@ public class HomeMenu {
         gui.show(player);
 
         gui.setOnGlobalClick(event -> event.setCancelled(true));
+
+        Pattern pattern = new Pattern(
+                "111111111",
+                "1AAAAAAA1",
+                "1AAAAAAA1",
+                "1AAAAAAA1",
+                "111AAA111"
+        );
+        PatternPane border = new PatternPane(0, 0, 9, 5, Pane.Priority.LOWEST, pattern);
+        ItemStack background = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+        ItemMeta backgroundMeta = background.getItemMeta();
+        backgroundMeta.displayName(toMiniMessage(""));
+        background.setItemMeta(backgroundMeta);
+        border.bindItem('1', new GuiItem(background));
+        gui.addPane(border);
 
         PaginatedPane pages = new PaginatedPane(1, 1, 7, 3);
         List<ItemStack> items = new ArrayList<>();

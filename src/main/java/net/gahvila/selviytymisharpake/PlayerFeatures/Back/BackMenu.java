@@ -31,7 +31,7 @@ public class BackMenu {
     }
 
     public void showGUI(Player player) {
-        ChestGui gui = new ChestGui(3, "§5§lLisäosat");
+        ChestGui gui = new ChestGui(3, "§5§lBack");
         gui.show(player);
         gui.setOnGlobalClick(event -> event.setCancelled(true));
 
