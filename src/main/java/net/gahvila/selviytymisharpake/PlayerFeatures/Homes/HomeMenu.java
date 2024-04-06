@@ -6,9 +6,11 @@ import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.*;
 import com.github.stefvanschie.inventoryframework.pane.component.Label;
 import com.github.stefvanschie.inventoryframework.pane.util.Pattern;
+import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -62,10 +64,18 @@ public class HomeMenu {
         gui.addPane(pages);
 
         pages.setOnClick(event -> {
-            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
-            if (homeManager.getHome(player, event.getCurrentItem().getItemMeta().getDisplayName()) != null){
-                player.teleportAsync(homeManager.getHome(player, event.getCurrentItem().getItemMeta().getDisplayName()));
-                player.sendMessage(toMiniMessage("<white>Sinut teleportattiin kotiin</white> <#85FF00>" + event.getCurrentItem().getItemMeta().getDisplayName() + "</#85FF00>."));
+            if (event.getCurrentItem() == null) return;
+            String homeName = event.getCurrentItem().getItemMeta().getDisplayName();
+            if (homeManager.getHome(player, homeName) != null){
+                player.teleportAsync(homeManager.getHome(player, homeName));
+                player.sendMessage(toMiniMessage("<white>Sinut teleportattiin kotiin</white> <#85FF00>" + homeName + "</#85FF00>."));
+                Bukkit.getServer().getScheduler().runTaskLater(SelviytymisHarpake.instance, new Runnable() {
+                    @Override
+                    public void run() {
+                        player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
+                        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 0.5F, 1F);
+                    }
+                }, 5);
             }else {
                 player.closeInventory();
                 player.sendMessage("Tuota kotia ei ole olemassa. Mitä duunaat?");

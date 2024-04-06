@@ -248,14 +248,14 @@ public class TpaCommands {
         }
 
         if (type == 0) {
-            tpasender.teleport(tpareceiver);
+            tpasender.teleportAsync(tpareceiver.getLocation());
             tpareceiver.sendMessage(toMiniMessage("Hyväksyit <#85FF00>" + tpasender.getName() + ":n</#85FF00> TPA-pyynnön."));
             tpasender.sendMessage(toMiniMessage("<#85FF00>" + tpareceiver.getName() + "</#85FF00> hyväksyi TPA-pyyntösi."));
 
             tpasender.playSound(tpasender.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 2F, 1F);
             tpareceiver.playSound(tpareceiver.getLocation(), Sound.ENTITY_VILLAGER_YES, 2F, 1F);
         } else if (type == 1){
-            tpareceiver.teleport(tpasender);
+            tpareceiver.teleportAsync(tpasender.getLocation());
             tpareceiver.sendMessage(toMiniMessage("Hyväksyit <#85FF00>" + tpasender.getName() + ":n</#85FF00> TPAHere-pyynnön."));
             tpasender.sendMessage(toMiniMessage("<#85FF00>" + tpareceiver.getName() + "</#85FF00> hyväksyi TPAHere-pyyntösi."));
 

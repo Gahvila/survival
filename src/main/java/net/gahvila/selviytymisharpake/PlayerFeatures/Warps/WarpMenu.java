@@ -70,13 +70,19 @@ public class WarpMenu {
         gui.addPane(pages);
 
         pages.setOnClick(event -> {
+            if (event.getCurrentItem() == null) return;
             String warpName = event.getCurrentItem().getItemMeta().getDisplayName();
-            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
             if (warpManager.getWarpPrice(warpName) == 0){
                 player.closeInventory();
                 player.teleportAsync(warpManager.getWarp(warpName));
                 player.sendMessage(toMiniMessage("Sinut teleportattiin warppiin <#85FF00>" + warpName + "</#85FF00>."));
-
+                Bukkit.getServer().getScheduler().runTaskLater(SelviytymisHarpake.instance, new Runnable() {
+                    @Override
+                    public void run() {
+                        player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
+                        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 0.5F, 1F);
+                    }
+                }, 5);
                 if (!player.getName().equals(warpManager.getWarpOwnerName(warpName))){
                     warpManager.addUses(warpName);
                 }
