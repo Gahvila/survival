@@ -53,10 +53,15 @@ public class HomeMenu {
 
         PaginatedPane pages = new PaginatedPane(1, 1, 7, 3);
         List<ItemStack> items = new ArrayList<>();
-        for (String warp : homeManager.getHomes(player)) {
-            ItemStack item = new ItemStack(Material.LIME_BED);
+        for (String home : homeManager.getHomes(player)) {
+            ItemStack item;
+            switch (homeManager.getHome(player, home).getWorld().getEnvironment()){
+                case NETHER -> item = new ItemStack(Material.RED_BED);
+                case THE_END -> item = new ItemStack(Material.PURPLE_BED);
+                default -> item = new ItemStack(Material.LIME_BED);
+            }
             ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(warp);
+            meta.setDisplayName(home);
             item.setItemMeta(meta);
             items.add(item);
         }
