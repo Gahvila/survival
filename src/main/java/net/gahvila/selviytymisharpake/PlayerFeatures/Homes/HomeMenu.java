@@ -11,6 +11,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -71,8 +72,9 @@ public class HomeMenu {
         pages.setOnClick(event -> {
             if (event.getCurrentItem() == null) return;
             String homeName = event.getCurrentItem().getItemMeta().getDisplayName();
-            if (homeManager.getHome(player, homeName) != null){
-                player.teleportAsync(homeManager.getHome(player, homeName));
+            Location homeLocation = homeManager.getHome(player, homeName);
+            if (homeLocation != null){
+                player.teleportAsync(homeLocation);
                 player.sendMessage(toMiniMessage("<white>Sinut teleportattiin kotiin</white> <#85FF00>" + homeName + "</#85FF00>."));
                 Bukkit.getServer().getScheduler().runTaskLater(SelviytymisHarpake.instance, new Runnable() {
                     @Override

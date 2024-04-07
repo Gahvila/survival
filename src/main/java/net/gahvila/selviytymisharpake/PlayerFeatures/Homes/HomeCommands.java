@@ -182,12 +182,13 @@ public class HomeCommands {
             if (info == null || info.sender() == null || !(info.sender() instanceof Player player)) {
                 throw new IllegalArgumentException("Invalid sender information.");
             }
+            ArrayList<String> homeNames = homeManager.getHomes(player);
 
-            if (homeManager.getHomes(player) == null) {
+            if (homeNames == null) {
                 return new String[0];
             }
 
-            return homeManager.getHomes((Player) info.sender()).toArray(new String[0]);
+            return homeNames.toArray(new String[0]);
         }));
     }
 
