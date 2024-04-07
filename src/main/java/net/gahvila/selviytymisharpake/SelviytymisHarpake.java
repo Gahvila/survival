@@ -119,7 +119,7 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
 
         //fix reload argh
         for (Player player : Bukkit.getOnlinePlayers()) {
-            homeManager.putHomeIntoRam(player);
+            homeManager.putHomeIntoRam(player.getUniqueId());
         }
     }
 

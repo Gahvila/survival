@@ -22,6 +22,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.UUID;
 
 import static net.gahvila.selviytymisharpake.SelviytymisHarpake.instance;
 
@@ -48,10 +49,11 @@ public class HomeCommands {
                 .withArguments(customHomeArgument("koti"))
                 .executesPlayer((p, args) -> {
                     String nimi = args.getRaw("koti");
-                    if (homeManager.getHomes(p) == null) {
+                    UUID uuid = p.getUniqueId();
+                    if (homeManager.getHomes(uuid) == null) {
                         p.sendMessage(toMiniMessage("</white>Sinulla ei ole kotia nimellä <#85FF00>" + nimi + "</#85FF00><white>.</white>"));
-                    } else if (homeManager.getHomes(p).contains(nimi)) {
-                        homeManager.deleteHome(p, nimi);
+                    } else if (homeManager.getHomes(uuid).contains(nimi)) {
+                        homeManager.deleteHome(uuid, nimi);
                         p.sendMessage(toMiniMessage("<white>Koti nimellä</white> <#85FF00>" + nimi + "</#85FF00> <white>poistettu.</white>"));
                     } else {
                         p.sendMessage(toMiniMessage("<white>Sinulla ei ole kotia nimellä</white> <#85FF00>" + nimi + "</#85FF00><white>.</white>"));
@@ -65,14 +67,14 @@ public class HomeCommands {
                     String oldName = args.getRaw("koti");
                     String newName = args.getRaw("nimi");
                     if (args.get("nimi") == null){
-                        p.sendMessage("test");
                         return;
                     }
 
-                    if (homeManager.getHomes(p) == null) {
+                    UUID uuid = p.getUniqueId();
+                    if (homeManager.getHomes(uuid) == null) {
                         p.sendMessage(toMiniMessage("</white>Sinulla ei ole kotia nimellä <#85FF00>" + oldName + "</#85FF00><white>.</white>"));
-                    } else if (homeManager.getHomes(p).contains(oldName) && !(homeManager.getHomes(p).contains(newName))) {
-                        homeManager.editHomeName(p, oldName, newName);
+                    } else if (homeManager.getHomes(uuid).contains(oldName) && !(homeManager.getHomes(uuid).contains(newName))) {
+                        homeManager.editHomeName(uuid, oldName, newName);
                         p.sendMessage(toMiniMessage("<white>Kodin <#85FF00>" + oldName + " <white>nimi muutettu: <#85FF00>" + newName));
                     } else {
                         p.sendMessage(toMiniMessage("<white>Sinulla ei ole kotia nimellä</white> <#85FF00>" + oldName + "</#85FF00><white>.</white>"));
@@ -93,8 +95,9 @@ public class HomeCommands {
                         }))
                 .withOptionalArguments(customHomeArgument("koti"))
                 .executesPlayer((p, args) -> {
+                    UUID uuid = p.getUniqueId();
                     if (args.getRaw("koti") == null) {
-                        if (homeManager.getHomes(p) != null) {
+                        if (homeManager.getHomes(uuid) != null) {
                             homeMenu.showGUI(p);
                         }else{
                             p.sendMessage(toMiniMessage("<white>Sinulla ei ole kotia. Voit asettaa kodin komennolla</white> <#85FF00>/sethome</#85FF00><white>.</white>"));
@@ -104,9 +107,9 @@ public class HomeCommands {
 
                     String nimi = args.getRaw("koti");
 
-                    if (homeManager.getHomes(p) != null) {
-                        if (homeManager.getHomes(p).contains(nimi)) {
-                            p.teleportAsync(homeManager.getHome(p, nimi));
+                    if (homeManager.getHomes(uuid) != null) {
+                        if (homeManager.getHomes(uuid).contains(nimi)) {
+                            p.teleportAsync(homeManager.getHome(uuid, nimi));
                             p.setWalkSpeed(0.2F);
                             p.sendMessage(toMiniMessage("<white>Sinut teleportattiin kotiin</white> <#85FF00>" + nimi + "</#85FF00>."));
 
@@ -120,8 +123,9 @@ public class HomeCommands {
         new CommandAPICommand("sethome")
                 .withOptionalArguments(new GreedyStringArgument("nimi"))
                 .executesPlayer((p, args) -> {
+                    UUID uuid = p.getUniqueId();
                     if (args.get("nimi") == null){
-                        if (homeManager.getHomes(p) == null || homeManager.getHomes(p).size() < homeManager.getAllowedHomes(p)) {
+                        if (homeManager.getHomes(uuid) == null || homeManager.getHomes(uuid).size() < homeManager.getAllowedHomes(p)) {
                             if (gambling.containsKey(p)){
                                 p.sendMessage("Et voi asettaa kotia juuri nyt.");
                                 return;
@@ -129,21 +133,21 @@ public class HomeCommands {
                             p.sendMessage("Kotisi nimi arvotaan satunnaisesti koska et syöttänyt nimeä.");
                             String randomName = generateRandomString();
 
-                            homeManager.saveHome(p, randomName, p.getLocation());
+                            homeManager.saveHome(uuid, randomName, p.getLocation());
 
                             goGambaGoldGoldGold(p, randomName);
                         }
                         return;
                     }
                     String nimi = (String) args.get("nimi");
-                    if (homeManager.getHomes(p) == null || homeManager.getHomes(p).size() < homeManager.getAllowedHomes(p)) {
+                    if (homeManager.getHomes(uuid) == null || homeManager.getHomes(uuid).size() < homeManager.getAllowedHomes(p)) {
                         if (nimi.matches("[a-zA-Z0-9]*") && nimi.length() <= 16) {
                             if (nimi.equals("sänky")) {
                                 p.sendMessage("Et voi käyttää tuota nimeä.");
                                 return;
                             }
                             if (!p.getWorld().getName().equals("spawn") || (!p.getWorld().getName().equals("resurssinether"))) {
-                                homeManager.saveHome(p, nimi, p.getLocation());
+                                homeManager.saveHome(uuid, nimi, p.getLocation());
                                 p.sendMessage(toMiniMessage("<white>Koti nimellä</white> <#85FF00>" + nimi + "</#85FF00> <white>asetettu.</white>"));
                             } else {
                                 p.sendMessage("Et voi asettaa kotia tässä maassa.");
@@ -169,8 +173,8 @@ public class HomeCommands {
             // Retrieve the list of home names for the player
 
             Player player = (Player) info.sender();
-
-            ArrayList<String> homeNames = homeManager.getHomes(player);
+            UUID uuid = player.getUniqueId();
+            ArrayList<String> homeNames = homeManager.getHomes(uuid);
 
             // Check if the home names list is not null and contains names
             if (homeNames == null || homeNames.isEmpty()) {
@@ -182,7 +186,8 @@ public class HomeCommands {
             if (info == null || info.sender() == null || !(info.sender() instanceof Player player)) {
                 throw new IllegalArgumentException("Invalid sender information.");
             }
-            ArrayList<String> homeNames = homeManager.getHomes(player);
+
+            ArrayList<String> homeNames = homeManager.getHomes(player.getUniqueId());
 
             if (homeNames == null) {
                 return new String[0];

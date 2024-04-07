@@ -54,9 +54,9 @@ public class HomeMenu {
 
         PaginatedPane pages = new PaginatedPane(1, 1, 7, 3);
         List<ItemStack> items = new ArrayList<>();
-        for (String home : homeManager.getHomes(player)) {
+        for (String home : homeManager.getHomes(player.getUniqueId())) {
             ItemStack item;
-            switch (homeManager.getHome(player, home).getWorld().getEnvironment()){
+            switch (homeManager.getHome(player.getUniqueId(), home).getWorld().getEnvironment()){
                 case NETHER -> item = new ItemStack(Material.RED_BED);
                 case THE_END -> item = new ItemStack(Material.PURPLE_BED);
                 default -> item = new ItemStack(Material.LIME_BED);
@@ -72,7 +72,7 @@ public class HomeMenu {
         pages.setOnClick(event -> {
             if (event.getCurrentItem() == null) return;
             String homeName = event.getCurrentItem().getItemMeta().getDisplayName();
-            Location homeLocation = homeManager.getHome(player, homeName);
+            Location homeLocation = homeManager.getHome(player.getUniqueId(), homeName);
             if (homeLocation != null){
                 player.teleportAsync(homeLocation);
                 player.sendMessage(toMiniMessage("<white>Sinut teleportattiin kotiin</white> <#85FF00>" + homeName + "</#85FF00>."));

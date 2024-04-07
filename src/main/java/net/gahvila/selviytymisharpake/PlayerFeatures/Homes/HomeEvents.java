@@ -16,11 +16,11 @@ public class HomeEvents implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        homeManager.putHomeIntoRam(event.getPlayer());
+        homeManager.putHomeIntoRam(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        homeManager.homes.remove(event.getPlayer());
+        homeManager.homes.remove(event.getPlayer().getUniqueId());
     }
 }
