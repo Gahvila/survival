@@ -34,8 +34,9 @@ public class HomeManager {
 
     public void putHomeIntoRam(Player player) {
         HashMap<String, Location> data = homes.getOrDefault(player, new HashMap<>());
-        if (getHomesFromStorage(player) == null) return;
-        for (String homeName : getHomesFromStorage(player)) {
+        List<String> homesFromStorage = getHomesFromStorage(player);
+        if (homesFromStorage == null) return;
+        for (String homeName : homesFromStorage) {
             data.put(homeName, getHomeFromStorage(player, homeName));
         }
         homes.put(player, data);
