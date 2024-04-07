@@ -22,6 +22,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Float.MAX_VALUE;
+
 public class HomeMenu {
     private final HomeManager homeManager;
 
@@ -74,12 +76,12 @@ public class HomeMenu {
             String homeName = event.getCurrentItem().getItemMeta().getDisplayName();
             Location homeLocation = homeManager.getHome(player.getUniqueId(), homeName);
             if (homeLocation != null){
+                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);
                 player.teleportAsync(homeLocation);
                 player.sendMessage(toMiniMessage("<white>Sinut teleportattiin kotiin</white> <#85FF00>" + homeName + "</#85FF00>."));
                 Bukkit.getServer().getScheduler().runTaskLater(SelviytymisHarpake.instance, new Runnable() {
                     @Override
                     public void run() {
-                        player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
                         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 0.5F, 1F);
                     }
                 }, 5);
