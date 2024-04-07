@@ -22,6 +22,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import static java.lang.Float.MAX_VALUE;
+
 public class WarpMenu {
     private final WarpManager warpManager;
 
@@ -79,8 +81,8 @@ public class WarpMenu {
                 Bukkit.getServer().getScheduler().runTaskLater(SelviytymisHarpake.instance, new Runnable() {
                     @Override
                     public void run() {
-                        player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
-                        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 0.5F, 1F);
+                        player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);
+                        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, MAX_VALUE, 1F);
                     }
                 }, 5);
                 if (!player.getName().equals(warpManager.getWarpOwnerName(warpName))){
