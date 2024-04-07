@@ -1,18 +1,22 @@
 package net.gahvila.selviytymisharpake.PlayerFeatures.Homes;
 
 import de.leonhard.storage.Json;
+import it.unimi.dsi.fastutil.Hash;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static net.gahvila.selviytymisharpake.SelviytymisHarpake.instance;
 
 public class HomeManager {
-
+    public HashMap<Player, HashMap<String, Location>> homes = new HashMap<>();
     public void saveHome(Player player, String home, Location location) {
         Json homeData = new Json("homedata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
@@ -22,12 +26,25 @@ public class HomeManager {
         homeData.getFileData().insert(uuid + "." + home + ".z", location.getZ());
         homeData.getFileData().insert(uuid + "." + home + ".yaw", location.getYaw());
         homeData.set(uuid + "." + home + ".pitch", location.getPitch());
+
+        HashMap<String, Location> data = homes.getOrDefault(player, new HashMap<>());
+        data.put(home, location);
+        homes.put(player, data);
+    }
+
+    public void putHomeIntoRam(Player player) {
+        HashMap<String, Location> data = homes.getOrDefault(player, new HashMap<>());
+        for (String homeName : getHomesFromStorage(player)) {
+            data.put(homeName, getHomeFromStorage(player, homeName));
+        }
+        homes.put(player, data);
     }
 
     //
     public void deleteHome(Player player, String home) {
         Json homeData = new Json("homedata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
+        getCache(player).remove(home);
         if (homeData.contains(uuid + "." + home)) {
             homeData.set(uuid + "." + home, null);
         }
@@ -54,7 +71,7 @@ public class HomeManager {
         }
     }
     //
-    public Location getHome(Player player, String home) {
+    public Location getHomeFromStorage(Player player, String home) {
         Json homeData = new Json("homedata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         if (homeData.getFileData().containsKey(uuid + "." + home)) {
@@ -71,9 +88,12 @@ public class HomeManager {
 
         return null;
     }
+    public Location getHome(Player player, String home) {
+        return getCache(player).get(home);
+    }
 
-    //
-    public ArrayList<String> getHomes(Player player) {
+    //from storage
+    public ArrayList<String> getHomesFromStorage(Player player) {
         Json homeData = new Json("homedata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         if (homeData.contains(uuid)) {
@@ -82,6 +102,14 @@ public class HomeManager {
             return homes;
         }
         return null;
+    }
+    //from cache
+    public ArrayList<String> getHomes(Player player) {
+        return new ArrayList<>(getCache(player).keySet());
+    }
+
+    public HashMap<String, Location> getCache(Player player) {
+        return homes.getOrDefault(player, new HashMap<>());
     }
 
     public void editHomeName(Player player, String oldHome, String newHome) {
