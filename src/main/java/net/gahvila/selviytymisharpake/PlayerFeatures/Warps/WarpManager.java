@@ -88,14 +88,14 @@ public class WarpManager {
 
     //
     public String updateWarpPrice(Player player, String name, Integer price) {
-        Json warpData = new Json("warpdata.toml", instance.getDataFolder() + "/data/");
+        Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
         warpData.set(name + ".price", price);
         return null;
     }
 
     //
     public String updateWarpLocation(Player player, Warp warp, Location location) {
-        Json warpData = new Json("warpdata.toml", instance.getDataFolder() + "/data/");
+        Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
         warpData.getFileData().insert(warp.getName() + ".world", location.getWorld().getName());
         warpData.getFileData().insert(warp.getName() + ".x", location.getX());
         warpData.getFileData().insert(warp.getName() + ".y", location.getY());
@@ -109,7 +109,7 @@ public class WarpManager {
     }
 
     public void setWarp(Player player, String warp, Location location, Integer price, Material customItem) {
-        Json warpData = new Json("warpdata.toml", instance.getDataFolder() + "/data/");
+        Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         warpData.getFileData().insert(warp + ".owner", uuid);
         warpData.getFileData().insert(warp + ".currentOwnerName", player.getName());
@@ -135,7 +135,7 @@ public class WarpManager {
     //
 
     public void addUses(Warp warp) {
-        Json warpData = new Json("warpdata.toml", instance.getDataFolder() + "/data/");
+        Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
         warpData.set(warp.getName() + ".uses", warp.getUses()  + 1);
         warp.setUses(warp.getUses()  + 1);
     }
@@ -144,7 +144,7 @@ public class WarpManager {
 
     //
     public void deleteWarp(Warp warp) {
-        Json warpData = new Json("warpdata.toml", instance.getDataFolder() + "/data/");
+        Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
         if (warpData.contains(warp.getName())) {
             warpData.set(warp.getName(), null);
         }
@@ -152,20 +152,19 @@ public class WarpManager {
     }
 
     public void editWarpItem(Warp warp, Material customItem) {
-        Json warpData = new Json("warpdata.toml", instance.getDataFolder() + "/data/");
-        warpData.set(warp + ".customItem", customItem == Material.AIR ? Material.DIRT : customItem);
+        Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
+        warpData.set(warp.getName() + ".customItem", customItem == Material.AIR ? Material.DIRT : customItem);
         warp.setCustomItem(customItem);
     }
 
     //
     public void updateWarpOwnerName(Player player) {
-        Json warpData = new Json("warpdata.toml", instance.getDataFolder() + "/data/");
+        Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         warpData.getFileData().toMap().forEach((k,v) -> {
             if (v.toString().contains("owner=" + uuid)){
                 if (!v.toString().contains("currentOwnerName=" + player.getName())){
                     warpData.set(k + ".currentOwnerName", player.getName());
-                    return;
                 }
             }
         });
@@ -207,10 +206,15 @@ public class WarpManager {
         return warps.stream().toList();
     }
 
-    //
-    public List<String> getOwnedWarps(Player player){
-        return warps.stream().filter(warp -> warp.getOwner().equals(player.getUniqueId())).map(Warp::getName).toList();
+    public List<Warp> getOwnedWarps(UUID uuid){
+        return warps.stream().filter(warp -> warp.getOwner().equals(uuid)).toList();
     }
+
+    //
+    public List<String> getOwnedWarpNames(UUID uuid){
+        return warps.stream().filter(warp -> warp.getOwner().equals(uuid)).map(Warp::getName).toList();
+    }
+
 
     //
 

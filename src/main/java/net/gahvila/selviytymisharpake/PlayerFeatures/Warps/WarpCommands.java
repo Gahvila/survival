@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class WarpCommands {
 
@@ -63,7 +64,7 @@ public class WarpCommands {
 
                 .register();
         new CommandAPICommand("delwarp")
-                .withArguments(customWarpArgument("warp"))
+                .withArguments(customOwnedWarpArgument("warp"))
                 .executesPlayer((p, args) -> {
                     String nimi = args.getRaw("warp");
                     Optional<Warp> warp = warpManager.getWarp(nimi);
@@ -80,8 +81,7 @@ public class WarpCommands {
                 })
                 .register();
         new CommandAPICommand("editwarp")
-                .withArguments(new CommandArgument("komento"))
-                .withArguments(new ItemStackArgument("item")
+                .withArguments(customOwnedWarpArgument("warp"))
                 .executesPlayer((p, args) -> {
                     String name = args.getRaw("nimi");
                     Material customItem = args.get("item") == null ?
@@ -97,8 +97,7 @@ public class WarpCommands {
                     }
                     warpManager.editWarpItem(warp.get(), customItem);
                     p.sendMessage("§fWarpin §e" + name + " §fitemiä muokattu: " + customItem.name());
-                }))
-
+                })
                 .register();
         new CommandAPICommand("setwarp")
                 .withArguments(new StringArgument("nimi"))
@@ -108,7 +107,7 @@ public class WarpCommands {
                     String name = args.getRaw("nimi");
                     Integer price = (Integer) args.get("hinta");
 
-                    if (warpManager.getOwnedWarps(p).size() < warpManager.getAllowedWarps(p)) {
+                    if (warpManager.getOwnedWarps(p.getUniqueId()).size() < warpManager.getAllowedWarps(p)) {
                         if (!warpManager.getWarpNames().contains(name)) {
                             if (p.getWorld().getName().equals("world")) {
                                 warpManager.setWarp(p, name, p.getLocation(), price, args.get("item") == null ?
@@ -189,6 +188,36 @@ public class WarpCommands {
             }
 
             return warpManager.getWarpNames().toArray(new String[0]);
+        }));
+    }
+
+    public Argument<List<String>> customOwnedWarpArgument(String nodeName) {
+        // Construct our CustomArgument that takes in a String input and returns a list of home names
+        return new CustomArgument<List<String>, String>(new StringArgument(nodeName), info -> {
+            // Retrieve the list of home names for the player
+
+            Player player = (Player) info.sender();
+            UUID uuid = player.getUniqueId();
+            List<String> warpNames = warpManager.getOwnedWarpNames(uuid);
+
+            // Check if the home names list is not null and contains names
+            if (warpNames == null || warpNames.isEmpty()) {
+                throw CustomArgument.CustomArgumentException.fromMessageBuilder(new CustomArgument.MessageBuilder("Ei ole warppeja."));
+            } else {
+                return warpNames;
+            }
+        }).replaceSuggestions(ArgumentSuggestions.strings(info -> {
+            if (info == null || info.sender() == null || !(info.sender() instanceof Player player)) {
+                throw new IllegalArgumentException("Invalid sender information.");
+            }
+
+            List<String> warpNames = warpManager.getOwnedWarpNames(player.getUniqueId());
+
+            if (warpNames == null) {
+                return new String[0];
+            }
+
+            return warpNames.toArray(new String[0]);
         }));
     }
 
