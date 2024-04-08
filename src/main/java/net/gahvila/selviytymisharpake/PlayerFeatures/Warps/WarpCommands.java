@@ -1,18 +1,24 @@
 package net.gahvila.selviytymisharpake.PlayerFeatures.Warps;
 
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.arguments.Argument;
-import dev.jorel.commandapi.arguments.ArgumentSuggestions;
-import dev.jorel.commandapi.arguments.CustomArgument;
-import dev.jorel.commandapi.arguments.GreedyStringArgument;
+import dev.jorel.commandapi.arguments.*;
 import net.gahvila.selviytymisharpake.SelviytymisHarpake;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class WarpCommands {
 
@@ -60,30 +66,59 @@ public class WarpCommands {
                 .withArguments(customWarpArgument("warp"))
                 .executesPlayer((p, args) -> {
                     String nimi = args.getRaw("warp");
-                    if (warpManager.getWarps() == null) {
-                        p.sendMessage("Warppeja ei ole.");
+                    Optional<Warp> warp = warpManager.getWarp(nimi);
+                    if (warp.isEmpty()) {
+                        p.sendMessage("Warppia ei löytynyt.");
                         return;
                     }
-                    if (!warpManager.getWarpOwnerUUID(nimi).equals(p.getUniqueId().toString())) {
+                    if (!warp.get().getOwner().equals(p.getUniqueId())) {
                         p.sendMessage("§7Et omista warppia nimellä §e" + nimi + "§f.");
                         return;
                     }
-                    warpManager.deleteWarp(nimi);
+                    warpManager.deleteWarp(warp.get());
                     p.sendMessage("§fWarp nimellä §e" + nimi + " §fpoistettu.");
                 })
                 .register();
-        new CommandAPICommand("setwarp")
+        new CommandAPICommand("editwarp")
+                .withArguments(new CommandArgument("komento"))
+                .withArguments(new ItemStackArgument("item")
                 .executesPlayer((p, args) -> {
+                    String name = args.getRaw("nimi");
+                    Material customItem = args.get("item") == null ?
+                            Material.DIRT : ((ItemStack) args.get("item")).getType();
+                    Optional<Warp> warp = warpManager.getWarp(name);
+                    if (warp.isEmpty()) {
+                        p.sendMessage("Warppia ei löytynyt.");
+                        return;
+                    }
+                    if (!warp.get().getOwner().equals(p.getUniqueId())) {
+                        p.sendMessage("§7Et omista warppia nimellä §e" + name + "§f.");
+                        return;
+                    }
+                    warpManager.editWarpItem(warp.get(), customItem);
+                    p.sendMessage("§fWarpin §e" + name + " §fitemiä muokattu: " + customItem.name());
+                }))
+
+                .register();
+        new CommandAPICommand("setwarp")
+                .withArguments(new StringArgument("nimi"))
+                .withArguments(new IntegerArgument("hinta", 0, 100))
+                .withOptionalArguments(new ItemStackArgument("item"))
+                .executesPlayer((p, args) -> {
+                    String name = args.getRaw("nimi");
+                    Integer price = (Integer) args.get("hinta");
+
                     if (warpManager.getOwnedWarps(p).size() < warpManager.getAllowedWarps(p)) {
-                        if (p.getWorld().getName().equals("world")) {
-                            p.sendMessage("§7Aloitit warpin asettamisen.");
-                            p.sendMessage("§cKirjoita vastauksesi chattiin!");
-                            p.sendMessage("");
-                            p.sendMessage("§fMikäs sinun warppisi nimi on? Nimi voi sisältää vain kirjaimia ja numeroita.");
-                            p.sendMessage("§7Jos haluat perua warpin luonnin, kirjoita '§elopeta§7' chattiin.");
-                            warpManager.settingWarp.put(p.getUniqueId(), 1);
-                        }else{
-                            p.sendMessage("Voit asettaa warpin vain päämaailmaan.");
+                        if (!warpManager.getWarpNames().contains(name)) {
+                            if (p.getWorld().getName().equals("world")) {
+                                warpManager.setWarp(p, name, p.getLocation(), price, args.get("item") == null ?
+                                        Material.DIRT : ((ItemStack) args.get("item")).getType());
+                                p.sendMessage(toMiniMessage("Asetit warpin " + name + " hintaan " + price + "."));
+                            }else{
+                                p.sendMessage("Voit asettaa warpin vain päämaailmaan.");
+                            }
+                        } else {
+                            p.sendMessage("Warppi tuolla nimellä on jo olemassa");
                         }
                     }else{
                         p.sendMessage("Sinulla ei ole tarpeeksi warppeja! Voit ostaa warpin komennolla §e/buywarp");
@@ -106,13 +141,15 @@ public class WarpCommands {
                         }
                         return;
                     }
-                    if (warpManager.getWarps().contains(nimi)) {
-                        Integer price = warpManager.getWarpPrice(nimi);
+
+                    Optional<Warp> warp = warpManager.getWarp(nimi);
+                    if (warp.isPresent()) {
+                        Integer price = warp.get().getPrice();
                         if (price > 0 && price < 51) {
                             p.sendMessage("Maksullisiin warppeihin pääsee vain valikon kautta.");
                         } else {
-                            if (warpManager.isLocationSafe(warpManager.getWarp(nimi))){
-                                p.teleportAsync(warpManager.getWarp(nimi));
+                            if (warpManager.isLocationSafe(warp.get().getLocation())){
+                                p.teleportAsync(warp.get().getLocation());
                                 p.setWalkSpeed(0.2F);
                             }else{
                                 p.sendMessage("Warpin sijainti ei ole turvallinen. Teleportti peruttu.");
@@ -134,11 +171,11 @@ public class WarpCommands {
         return (int) cost;
     }
 
-    public Argument<ArrayList<String>> customWarpArgument(String nodeName) {
+    public Argument<List<String>> customWarpArgument(String nodeName) {
         // Construct our CustomArgument that takes in a String input and returns a list of home names
-        return new CustomArgument<ArrayList<String>, String>(new GreedyStringArgument(nodeName), info -> {
+        return new CustomArgument<List<String>, String>(new GreedyStringArgument(nodeName), info -> {
 
-            ArrayList<String> homeNames = warpManager.getWarps();
+            List<String> homeNames = warpManager.getWarpNames();
 
             // Check if the warp names list is not null and contains names
             if (homeNames == null || homeNames.isEmpty()) {
@@ -147,11 +184,15 @@ public class WarpCommands {
                 return homeNames;
             }
         }).replaceSuggestions(ArgumentSuggestions.strings(info -> {
-            if (warpManager.getWarps() == null) {
+            if (warpManager.getWarpNames() == null) {
                 return new String[0];
             }
 
-            return warpManager.getWarps().toArray(new String[0]);
+            return warpManager.getWarpNames().toArray(new String[0]);
         }));
+    }
+
+    public @NotNull Component toMiniMessage(@NotNull String string) {
+        return MiniMessage.miniMessage().deserialize(string);
     }
 }

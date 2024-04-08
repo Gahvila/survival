@@ -17,10 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static java.lang.Float.MAX_VALUE;
 
@@ -56,15 +53,15 @@ public class WarpMenu {
 
         PaginatedPane pages = new PaginatedPane(1, 1, 7, 3);
         List<ItemStack> items = new ArrayList<>();
-        for (String warp : warpManager.getWarps()) {
-            Date currentTime = new Date(warpManager.getCreationDate(warp));
+        for (Warp warp : warpManager.getWarps()) {
+            Date currentTime = new Date(warp.getCreationDate());
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String dateString = formatter.format(currentTime);
 
-            ItemStack item = new ItemStack(Material.PAPER);
+            ItemStack item = new ItemStack(warp.getCustomItem());
             ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(warp);
-            meta.setLore(List.of("§fOmistaja: §e" + warpManager.getWarpOwnerName(warp), "§fKäyttökerrat: §e" + warpManager.getUses(warp), "§fHinta: §e" + warpManager.getWarpPrice(warp) + "Ⓖ§f", "§7§o" + dateString));
+            meta.setDisplayName(warp.getName());
+            meta.setLore(List.of("§fOmistaja: §e" + warp.getOwnerName(), "§fKäyttökerrat: §e" + warp.getUses(), "§fHinta: §e" + warp.getPrice() + "Ⓖ§f", "§7§o" + dateString));
             item.setItemMeta(meta);
             items.add(item);
         }
@@ -73,11 +70,11 @@ public class WarpMenu {
 
         pages.setOnClick(event -> {
             if (event.getCurrentItem() == null) return;
-            String warpName = event.getCurrentItem().getItemMeta().getDisplayName();
-            if (warpManager.getWarpPrice(warpName) == 0){
+            Optional<Warp> warp = warpManager.getWarp(event.getCurrentItem().getItemMeta().getDisplayName());
+            if (warp.get().getPrice() == 0){
                 player.closeInventory();
-                player.teleportAsync(warpManager.getWarp(warpName));
-                player.sendMessage(toMiniMessage("Sinut teleportattiin warppiin <#85FF00>" + warpName + "</#85FF00>."));
+                player.teleportAsync(warp.get().getLocation());
+                player.sendMessage(toMiniMessage("Sinut teleportattiin warppiin <#85FF00>" + warp.get().getName() + "</#85FF00>."));
                 Bukkit.getServer().getScheduler().runTaskLater(SelviytymisHarpake.instance, new Runnable() {
                     @Override
                     public void run() {
@@ -85,11 +82,11 @@ public class WarpMenu {
                         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, MAX_VALUE, 1F);
                     }
                 }, 5);
-                if (!player.getName().equals(warpManager.getWarpOwnerName(warpName))){
-                    warpManager.addUses(warpName);
+                if (!player.getName().equals(warp.get().getOwnerName())){
+                    warpManager.addUses(warp.get());
                 }
             }else {
-                confirmMenu(player, event.getCurrentItem(), warpName);
+                confirmMenu(player, event.getCurrentItem(), warp.get());
             }
         });
 
@@ -134,7 +131,7 @@ public class WarpMenu {
         gui.update();
     }
 
-    private void confirmMenu(Player player, ItemStack item, String warpName) {
+    private void confirmMenu(Player player, ItemStack item, Warp warp) {
         ChestGui gui = new ChestGui(3, "§4§lVarmista osto");
         gui.show(player);
 
@@ -168,24 +165,24 @@ public class WarpMenu {
 
         pane.bindItem('A', new GuiItem(accept, event -> {
             player.closeInventory();
-            int price = warpManager.getWarpPrice(warpName);
+            int price = warp.getPrice();
 
             if (SelviytymisHarpake.getEconomy().getBalance(player) >= price) {
                 SelviytymisHarpake.getEconomy().withdrawPlayer(player, price);
                 player.sendMessage(toMiniMessage("Tililtäsi veloitettiin <#85FF00>" + price + "Ⓖ</#85FF00>."));
                 player.closeInventory();
-                player.teleportAsync(warpManager.getWarp(warpName));
-                player.sendMessage(toMiniMessage("Sinut teleportattiin warppiin <#85FF00>" + warpName + "</#85FF00>."));
+                player.teleportAsync(warp.getLocation());
+                player.sendMessage(toMiniMessage("Sinut teleportattiin warppiin <#85FF00>" + warp.getName() + "</#85FF00>."));
 
-                if (!player.getName().equals(warpManager.getWarpOwnerName(warpName))){
-                    warpManager.addUses(warpName);
+                if (!player.getName().equals(warp.getOwnerName())){
+                    warpManager.addUses(warp);
                 }
                 //
-                String ownerUUID = warpManager.getWarpOwnerUUID(warpName);
-                if (Bukkit.getPlayer(UUID.fromString(ownerUUID)) == null){
-                    warpManager.addMoneyToQueue(warpManager.getWarpOwnerUUID(warpName), price);
+                UUID ownerUUID = warp.getOwner();
+                if (Bukkit.getPlayer(ownerUUID) == null){
+                    warpManager.addMoneyToQueue(ownerUUID.toString(), price);
                 }else{
-                    Player owner = Bukkit.getPlayer(UUID.fromString(ownerUUID));
+                    Player owner = Bukkit.getPlayer(ownerUUID);
                     SelviytymisHarpake.getEconomy().depositPlayer(owner, price);
                     owner.sendMessage("Sinun maksullista warppia käytettiin, sait §e" + price + "Ⓖ§f.");
                 }

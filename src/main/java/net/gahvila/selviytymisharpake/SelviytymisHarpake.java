@@ -121,6 +121,8 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         for (Player player : Bukkit.getOnlinePlayers()) {
             homeManager.putHomeIntoRam(player.getUniqueId());
         }
+
+        warpManager.loadWarps();
     }
 
     @Override
