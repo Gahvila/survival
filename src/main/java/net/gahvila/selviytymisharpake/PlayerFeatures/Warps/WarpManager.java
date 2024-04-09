@@ -14,14 +14,6 @@ import java.util.*;
 import static net.gahvila.selviytymisharpake.SelviytymisHarpake.instance;
 
 public class WarpManager {
-
-    public HashMap<UUID, Integer> editingWarp = new HashMap<UUID, Integer>();
-    public HashMap<UUID, String> editingWarpName = new HashMap<UUID, String>();
-    //
-    public HashMap<UUID, Integer> settingWarp = new HashMap<UUID, Integer>();
-    public HashMap<UUID, String> settingWarpName = new HashMap<UUID, String>();
-    public HashMap<UUID, Integer> settingWarpPrice = new HashMap<UUID, Integer>();
-
     public HashSet<Warp> warps = new HashSet<>();
 
 
@@ -94,20 +86,6 @@ public class WarpManager {
     }
 
     //
-    public String updateWarpLocation(Player player, Warp warp, Location location) {
-        Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
-        warpData.getFileData().insert(warp.getName() + ".world", location.getWorld().getName());
-        warpData.getFileData().insert(warp.getName() + ".x", location.getX());
-        warpData.getFileData().insert(warp.getName() + ".y", location.getY());
-        warpData.getFileData().insert(warp.getName() + ".z", location.getZ());
-        warpData.getFileData().insert(warp.getName() + ".yaw", location.getYaw());
-        warpData.getFileData().insert(warp.getName() + ".pitch", location.getPitch());
-
-        //todo: ehkä vituillaa
-        warp.setLocation(location);
-        return null;
-    }
-
     public void setWarp(Player player, String warp, Location location, Integer price, Material customItem) {
         Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
@@ -155,6 +133,29 @@ public class WarpManager {
         Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
         warpData.set(warp.getName() + ".customItem", customItem == Material.AIR ? Material.DIRT : customItem);
         warp.setCustomItem(customItem);
+    }
+
+    public void editWarpName(Warp warp, String newName) {
+        Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
+        if (getWarpNames().contains(newName)) return;
+        if (warpData.contains(warp.getName())) {
+            warpData.set(warp.getName(), null);
+        }
+        String uuid = warp.getOwner().toString();
+        warpData.getFileData().insert(newName + ".owner", uuid);
+        warpData.getFileData().insert(newName + ".currentOwnerName", warp.getOwnerName());
+        warpData.getFileData().insert(newName + ".price", warp.getPrice());
+        warpData.getFileData().insert(newName + ".uses", warp.getUses());
+        warpData.getFileData().insert(newName + ".creationdate", warp.getCreationDate());
+        warpData.getFileData().insert(newName + ".customItem", warp.getCustomItem());
+        warpData.getFileData().insert(newName + ".world", warp.getLocation().getWorld().getName());
+        warpData.getFileData().insert(newName + ".x", warp.getLocation().getX());
+        warpData.getFileData().insert(newName + ".y", warp.getLocation().getY());
+        warpData.getFileData().insert(newName + ".z", warp.getLocation().getZ());
+        warpData.getFileData().insert(newName + ".yaw", warp.getLocation().getYaw());
+        warpData.set(newName + ".pitch", warp.getLocation().getPitch());
+
+        warp.setName(newName);
     }
 
     //
