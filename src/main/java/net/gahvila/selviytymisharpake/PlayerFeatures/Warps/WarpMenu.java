@@ -1,10 +1,13 @@
 package net.gahvila.selviytymisharpake.PlayerFeatures.Warps;
 
 import com.github.stefvanschie.inventoryframework.adventuresupport.ComponentHolder;
+import com.github.stefvanschie.inventoryframework.font.util.Font;
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.AnvilGui;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
+import com.github.stefvanschie.inventoryframework.gui.type.DropperGui;
 import com.github.stefvanschie.inventoryframework.pane.*;
+import com.github.stefvanschie.inventoryframework.pane.component.Label;
 import com.github.stefvanschie.inventoryframework.pane.util.Pattern;
 import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import net.kyori.adventure.text.Component;
@@ -366,7 +369,8 @@ public class WarpMenu {
         priceEdit.setItemMeta(priceEditMeta);
 
         navigationPane.addItem(new GuiItem(priceEdit, event -> {
-            //TODO: tee jotai
+            player.playSound(player.getLocation(), Sound.ITEM_SPYGLASS_USE, 0.8F, 0.8F);
+            showPriceChangeMenu(player, warp);
         }), 2, 0);
 
         ItemStack delete = new ItemStack(Material.REDSTONE_BLOCK);
@@ -510,6 +514,50 @@ public class WarpMenu {
         }), 5, 0);
         gui.addPane(navigationPane);
 
+        gui.update();
+    }
+
+    public void showPriceChangeMenu(Player player, Warp warp) {
+        ChestGui gui = new ChestGui(5, ComponentHolder.of(toMiniMessage("<dark_green><b>Syötä hinta")));
+        gui.show(player);
+
+        gui.setOnGlobalClick(event -> event.setCancelled(true));
+        OutlinePane background = new OutlinePane(0, 0, 9, 5, Pane.Priority.LOWEST);
+
+        ItemStack backgroundItem = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+        ItemMeta backgroundItemMeta = backgroundItem.getItemMeta();
+        backgroundItemMeta.displayName(toMiniMessage(""));
+        backgroundItem.setItemMeta(backgroundItemMeta);
+
+        background.addItem(new GuiItem(backgroundItem));
+        background.setRepeat(true);
+        gui.addPane(background);
+
+        Label input = new Label(3, 1, 3, 3, Font.LIGHT_GRAY);
+
+        StringBuilder stringBuilder = new StringBuilder();
+        input.setText("123456789", (character, item) -> new GuiItem(item, event -> {
+            stringBuilder.append(character);
+            player.playSound(player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 0.8F, 0.8F);
+            gui.setTitle(ComponentHolder.of(toMiniMessage("<dark_green><b>Syötä hinta: " + stringBuilder)));
+            gui.update();
+        }));
+
+        StaticPane navigationPane = new StaticPane(0, 4, 9, 1);
+
+        ItemStack back = new ItemStack(Material.BARRIER);
+        ItemMeta backMeta = back.getItemMeta();
+        backMeta.displayName(toMiniMessage("<b>Peruuta<b>"));
+        back.setItemMeta(backMeta);
+        navigationPane.addItem(new GuiItem(back, event -> {
+            showWarpEditMenu(player, warp);
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);
+
+        }), 1, 0);
+
+        gui.addPane(navigationPane);
+
+        gui.addPane(input);
         gui.update();
     }
 
