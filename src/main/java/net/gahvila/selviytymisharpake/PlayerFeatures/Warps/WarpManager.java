@@ -223,13 +223,13 @@ public class WarpManager {
     public void addAllowedWarps(Player player) {
         Json warpData = new Json("allowedwarps.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
-        warpData.set(uuid + ".allowed", getAllowedWarps(player) + 1);
+        warpData.set(uuid + ".allowed", (getAllowedWarps(player) - 1) + 1);
     }
 
     public Integer getAllowedWarps(Player player) {
         Json warpData = new Json("allowedwarps.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
-        Integer allowedHomes = warpData.getInt(uuid + ".allowed");
+        Integer allowedHomes = warpData.getInt(uuid + ".allowed") + 1; //+1 for free warp for everyone
         return allowedHomes;
     }
 

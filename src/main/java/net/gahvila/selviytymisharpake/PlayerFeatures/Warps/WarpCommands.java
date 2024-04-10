@@ -43,7 +43,7 @@ public class WarpCommands {
                                 SelviytymisHarpake.getEconomy().withdrawPlayer(p, price);
 
                                 warpManager.addAllowedWarps(p);
-                                p.sendMessage(toMiniMessage("Sinulla on nyt <#85FF00>" + warpManager.getAllowedWarps(p) + "</#85FF00> warppia yhteensä."));
+                                p.sendMessage(toMiniMessage("Sinulla on nyt <#85FF00>" + warpManager.getAllowedWarps(p) + "</#85FF00> warppia yhteensä. Tässä on mukana myös sinun ilmaiswarppi."));
                             } else {
                                 p.sendMessage(toMiniMessage("Warpin osto maksaa <#85FF00>" + price + "Ⓖ</#85FF00>, ja sinulla on vain <#85FF00>" + SelviytymisHarpake.getEconomy().getBalance(p)));
                             }
@@ -56,7 +56,7 @@ public class WarpCommands {
 
                     Integer price = getNextWarpCost(p);
 
-                    p.sendMessage(toMiniMessage("Sinulla on <#85FF00>" + warpManager.getAllowedWarps(p) + "</#85FF00> warppia yhteensä."));
+                    p.sendMessage(toMiniMessage("Sinulla on <#85FF00>" + warpManager.getAllowedWarps(p) + "</#85FF00> warppia yhteensä. Tässä on mukana myös sinun ilmaiswarppi."));
                     p.sendMessage(toMiniMessage("Haluatko varmasti ostaa warpin? \nHinta: <#85FF00>" + price + "Ⓖ"));
                     p.sendMessage(toMiniMessage("Jokaisen warpin osto nostaa hintaa <#85FF00>10%</#85FF00>."));
                     p.sendMessage(accept);
@@ -161,8 +161,8 @@ public class WarpCommands {
 
     public int getNextWarpCost(Player p) {
         double rate = 0.10;
-        int initialCost = 1000;
-        double cost = initialCost * Math.pow(1 + rate, warpManager.getAllowedWarps(p));
+        int initialCost = 10000;
+        double cost = initialCost * Math.pow(1 + rate, (warpManager.getAllowedWarps(p) - 1));
         return (int) cost;
     }
 
