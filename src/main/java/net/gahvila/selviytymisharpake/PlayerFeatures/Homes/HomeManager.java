@@ -102,7 +102,6 @@ public class HomeManager {
     }
     //from cache
     public ArrayList<String> getHomes(UUID uuid) {
-        System.err.println(new ArrayList<>(getCache(uuid).keySet()));
         return new ArrayList<>(getCache(uuid).keySet());
     }
 
