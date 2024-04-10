@@ -11,6 +11,7 @@ import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackManager;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackMenu;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Events.*;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Homes.HomeCommands;
+import net.gahvila.selviytymisharpake.PlayerFeatures.Homes.HomeEvents;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Homes.HomeManager;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Homes.HomeMenu;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Pets;
@@ -18,10 +19,7 @@ import net.gahvila.selviytymisharpake.PlayerFeatures.PlayerCommands.TpaCommands;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Spawn.SpawnCMD;
 import net.gahvila.selviytymisharpake.PlayerFeatures.VehicleBuffs.MinecartBuff;
 import net.gahvila.selviytymisharpake.PlayerFeatures.VehicleBuffs.RidableBuff;
-import net.gahvila.selviytymisharpake.PlayerFeatures.Warps.WarpCommands;
-import net.gahvila.selviytymisharpake.PlayerFeatures.Warps.WarpEvents;
-import net.gahvila.selviytymisharpake.PlayerFeatures.Warps.WarpManager;
-import net.gahvila.selviytymisharpake.PlayerFeatures.Warps.WarpMenu;
+import net.gahvila.selviytymisharpake.PlayerFeatures.Warps.*;
 import net.gahvila.selviytymisharpake.PluginCommands.MainCommand;
 import net.gahvila.selviytymisharpake.Resurssinether.RNPortalDisabler;
 import net.gahvila.selviytymisharpake.Resurssinether.ResourceNetherCMD;
@@ -29,6 +27,7 @@ import net.gahvila.selviytymisharpake.Resurssinether.ResurssinetherReset;
 import net.gahvila.selviytymisharpake.Utils.EmptyChunkGenerator;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -112,7 +111,20 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
 
 
         //register events
-        registerListeners(new PlayerDeath(), new JoinEvent(), new QuitEvent(), new BackListener(backManager), new WarpEvents(warpManager), new RNPortalDisabler(), new ExplodeEvent(), new MinecartBuff(), new Pets());
+        registerListeners(new PlayerDeath(), new JoinEvent(), new QuitEvent(), new BackListener(backManager),
+                new WarpEvents(warpManager), new RNPortalDisabler(), new ExplodeEvent(), new MinecartBuff(), new Pets(), new HomeEvents(homeManager));
+
+        //fix reload argh
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            homeManager.putHomeIntoRam(player.getUniqueId());
+        }
+
+        warpManager.loadWarps();
+    }
+
+    @Override
+    public void onDisable() {
+        homeManager.homes.clear();
     }
 
     //main class helpers

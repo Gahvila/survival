@@ -33,10 +33,9 @@ public class BackListener implements Listener {
     public void onDeath(PlayerDeathEvent e) {
         Player p = e.getEntity().getPlayer();
         Location loc = p.getLocation();
-        EntityDamageEvent.DamageCause damageCause = e.getEntity().getLastDamageCause().getCause();
         died.add(p.getUniqueId());
 
-        backManager.saveDeath(p, loc, damageCause.toString(), SelviytymisHarpake.getEconomy().getBalance(p), hasDiamondArmorAdvancement(p), hasElytraAdvancement(p), hasNetheriteAdvancement(p), hasIronArmor(p));
+        backManager.setDeath(p, loc);
 
     }
     @EventHandler
@@ -54,11 +53,9 @@ public class BackListener implements Listener {
                 cause != PlayerTeleportEvent.TeleportCause.SPECTATE) {
 
             World fromWorld = e.getFrom().getWorld();
-            Location toLocation = e.getTo();
-
             //not spawn
             if (!fromWorld.equals(Bukkit.getWorld("spawn"))) {
-                backManager.saveBackLocation(p, e.getFrom());
+                backManager.setBack(p, e.getFrom());
             }
         }
     }
@@ -68,25 +65,5 @@ public class BackListener implements Listener {
         Player p = e.getPlayer();
         Bukkit.getScheduler().runTaskLater(SelviytymisHarpake.instance, () -> died.remove(p.getUniqueId()), 100);
 
-    }
-
-    public boolean hasDiamondArmorAdvancement(Player player) {
-        Advancement advancement = Bukkit.getAdvancement(NamespacedKey.minecraft("story/shiny_gear"));
-        return player.getAdvancementProgress(advancement).isDone();
-    }
-
-    public boolean hasElytraAdvancement(Player player) {
-        Advancement advancement = Bukkit.getAdvancement(NamespacedKey.minecraft("end/elytra"));
-        return player.getAdvancementProgress(advancement).isDone();
-    }
-
-    public boolean hasNetheriteAdvancement(Player player) {
-        Advancement advancement = Bukkit.getAdvancement(NamespacedKey.minecraft("nether/netherite_armor"));
-        return player.getAdvancementProgress(advancement).isDone();
-    }
-
-    public boolean hasIronArmor(Player player) {
-        Advancement advancement = Bukkit.getAdvancement(NamespacedKey.minecraft("story/obtain_armor"));
-        return player.getAdvancementProgress(advancement).isDone();
     }
 }

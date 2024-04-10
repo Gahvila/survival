@@ -45,23 +45,33 @@ public class BackMenu {
         gui.addPane(background);
 
         StaticPane navigationPane = new StaticPane(3, 1, 3, 1);
+        if (backManager.getDeath(player) != null) {
+            ItemStack deathItem = new ItemStack(Material.SKELETON_SKULL, 1);
+            ItemMeta deathMeta = deathItem.getItemMeta();
+            deathMeta.setDisplayName("§fKuolinsijainti");
+            deathMeta.setLore(List.of("§fHinta: §e" + backManager.getDeathPrice(player) + "Ⓖ", "§fKoordinaatit: §e" + backManager.getDeath(player).getBlockX() + " §8| §e" + backManager.getDeath(player).getBlockZ()));
+            deathItem.setItemMeta(deathMeta);
 
-        ItemStack deathItem = new ItemStack(Material.SKELETON_SKULL, 1);
-        ItemMeta deathMeta = deathItem.getItemMeta();
-        deathMeta.setDisplayName("§fKuolinsijainti");
-        deathMeta.setLore(List.of("§fHinta: §e" + backManager.calculateDeathPrice(player) + "Ⓖ", "§fKoordinaatit: §e" + backManager.getXdeath(player) + " §8| §e" + backManager.getZdeath(player)));
-        deathItem.setItemMeta(deathMeta);
+            navigationPane.addItem(new GuiItem(deathItem, event -> {
+                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
+                confirmMenu(player, deathItem);
+            }), 0, 0);
+        } else {
+            ItemStack back = new ItemStack(Material.BARRIER, 1);
+            ItemMeta back1meta = back.getItemMeta();
+            back1meta.setDisplayName("§fKuolinsijaintia ei ole");
+            back.setItemMeta(back1meta);
 
-        navigationPane.addItem(new GuiItem(deathItem, event -> {
-            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
-            confirmMenu(player, deathItem);
-        }),0, 0);
+            navigationPane.addItem(new GuiItem(back, event -> {
+                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
+            }), 0, 0);
+    }
 
         if (backManager.getBack(player) != null) {
             ItemStack back = new ItemStack(Material.MAP, 1);
             ItemMeta backmeta = back.getItemMeta();
             backmeta.setDisplayName("§fViimeisin sijainti");
-            backmeta.setLore(List.of("§fKoordinaatit: §e" + backManager.getX(player) + " §8| §e" + backManager.getZ(player)));
+            backmeta.setLore(List.of("§fKoordinaatit: §e" + backManager.getBack(player).getBlockX() + " §8| §e" + backManager.getBack(player).getBlockX()));
             back.setItemMeta(backmeta);
 
             navigationPane.addItem(new GuiItem(back, event -> {
@@ -127,7 +137,7 @@ public class BackMenu {
 
         pane.bindItem('A', new GuiItem(accept, event -> {
             player.closeInventory();
-            double price = backManager.calculateDeathPrice(player);
+            double price = backManager.getDeathPrice(player);
             if (SelviytymisHarpake.getEconomy().getBalance(player) >= price) {
                 SelviytymisHarpake.getEconomy().withdrawPlayer(player, price);
                 player.sendMessage("Tililtäsi veloitettiin §e" + price + "Ⓖ§f.");

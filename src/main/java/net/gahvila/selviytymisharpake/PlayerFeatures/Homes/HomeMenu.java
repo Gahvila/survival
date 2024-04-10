@@ -11,6 +11,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -20,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.lang.Float.MAX_VALUE;
 
 public class HomeMenu {
     private final HomeManager homeManager;
@@ -53,10 +56,15 @@ public class HomeMenu {
 
         PaginatedPane pages = new PaginatedPane(1, 1, 7, 3);
         List<ItemStack> items = new ArrayList<>();
-        for (String warp : homeManager.getHomes(player)) {
-            ItemStack item = new ItemStack(Material.LIME_BED);
+        for (String home : homeManager.getHomes(player.getUniqueId())) {
+            ItemStack item;
+            switch (homeManager.getHome(player.getUniqueId(), home).getWorld().getEnvironment()){
+                case NETHER -> item = new ItemStack(Material.RED_BED);
+                case THE_END -> item = new ItemStack(Material.PURPLE_BED);
+                default -> item = new ItemStack(Material.LIME_BED);
+            }
             ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(warp);
+            meta.setDisplayName(home);
             item.setItemMeta(meta);
             items.add(item);
         }
@@ -66,13 +74,14 @@ public class HomeMenu {
         pages.setOnClick(event -> {
             if (event.getCurrentItem() == null) return;
             String homeName = event.getCurrentItem().getItemMeta().getDisplayName();
-            if (homeManager.getHome(player, homeName) != null){
-                player.teleportAsync(homeManager.getHome(player, homeName));
+            Location homeLocation = homeManager.getHome(player.getUniqueId(), homeName);
+            if (homeLocation != null){
+                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);
+                player.teleportAsync(homeLocation);
                 player.sendMessage(toMiniMessage("<white>Sinut teleportattiin kotiin</white> <#85FF00>" + homeName + "</#85FF00>."));
                 Bukkit.getServer().getScheduler().runTaskLater(SelviytymisHarpake.instance, new Runnable() {
                     @Override
                     public void run() {
-                        player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
                         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 0.5F, 1F);
                     }
                 }, 5);

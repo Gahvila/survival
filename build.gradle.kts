@@ -20,7 +20,7 @@ dependencies {
     compileOnly("de.hexaoxi:carbonchat-api:3.0.0-beta.26")
     compileOnly ("com.github.koca2000:NoteBlockAPI:1.6.2")
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
-    implementation ("com.github.stefvanschie.inventoryframework:IF:0.10.13")
+    implementation ("com.github.stefvanschie.inventoryframework:IF:0.10.14-SNAPSHOT")
     implementation ("com.github.simplix-softworks:simplixstorage:3.2.7")
 
     //commandapi
@@ -56,7 +56,7 @@ tasks {
         dependencies {
             include(dependency("dev.jorel:commandapi-bukkit-shade:9.3.0"))
             include(dependency("com.github.simplix-softworks:simplixstorage:3.2.7"))
-            include(dependency("com.github.stefvanschie.inventoryframework:IF:0.10.13"))
+            include(dependency("com.github.stefvanschie.inventoryframework:IF:0.10.14-SNAPSHOT"))
 
         }
         relocate("dev.jorel.commandapi", "net.gahvila.selviytymisharpake.shaded.commandapi")
