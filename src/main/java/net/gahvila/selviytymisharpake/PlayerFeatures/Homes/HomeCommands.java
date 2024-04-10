@@ -167,14 +167,15 @@ public class HomeCommands {
 
     }
 
+
     public Argument<ArrayList<String>> customHomeArgument(String nodeName) {
         // Construct our CustomArgument that takes in a String input and returns a list of home names
         return new CustomArgument<ArrayList<String>, String>(new StringArgument(nodeName), info -> {
             // Retrieve the list of home names for the player
 
             Player player = (Player) info.sender();
-            UUID uuid = player.getUniqueId();
-            ArrayList<String> homeNames = homeManager.getHomes(uuid);
+
+            ArrayList<String> homeNames = homeManager.getHomes(player.getUniqueId());
 
             // Check if the home names list is not null and contains names
             if (homeNames == null || homeNames.isEmpty()) {
@@ -187,13 +188,11 @@ public class HomeCommands {
                 throw new IllegalArgumentException("Invalid sender information.");
             }
 
-            ArrayList<String> homeNames = homeManager.getHomes(player.getUniqueId());
-
-            if (homeNames == null) {
+            if (homeManager.getHomes(player.getUniqueId()) == null) {
                 return new String[0];
             }
 
-            return homeNames.toArray(new String[0]);
+            return homeManager.getHomes(player.getUniqueId()).toArray(new String[0]);
         }));
     }
 

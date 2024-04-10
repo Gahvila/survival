@@ -125,6 +125,33 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         homeManager.homes.clear();
+        //unregister homes
+        CommandAPI.unregister("buyhome");
+        CommandAPI.unregister("delhome");
+        CommandAPI.unregister("renamehome");
+        CommandAPI.unregister("home");
+        CommandAPI.unregister("sethome");
+        //unregister warps
+        CommandAPI.unregister("buywarp");
+        CommandAPI.unregister("delwarp");
+        CommandAPI.unregister("editwarp");
+        CommandAPI.unregister("setwarp");
+        CommandAPI.unregister("warp");
+        //unregister back
+        CommandAPI.unregister("back");
+        CommandAPI.unregister("fback");
+        //unregister tpa
+        CommandAPI.unregister("tpacancel");
+        CommandAPI.unregister("tpayes");
+        CommandAPI.unregister("tpano");
+        CommandAPI.unregister("tpahere");
+        CommandAPI.unregister("tpa");
+        CommandAPI.unregister("tpatoggle");
+        //unregister misc.
+        CommandAPI.unregister("selviytymishärpäke");
+        CommandAPI.unregister("resurssinether");
+        CommandAPI.unregister("spawn");
+        CommandAPI.unregister("addon");
     }
 
     //main class helpers
