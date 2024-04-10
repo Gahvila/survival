@@ -180,8 +180,7 @@ public class WarpManager {
     public void loadWarps() {
         Json homeData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
         homeData.getFileData().singleLayerKeySet().forEach(key -> {
-            System.err.println(homeData.getString(key + ".owner"));
-            Material customItem = Material.DIRT;
+            Material customItem = Material.LODESTONE;
             if (homeData.contains(key + ".customItem")) {
                 customItem = Material.getMaterial(homeData.getString(key + ".customItem"));
             }
