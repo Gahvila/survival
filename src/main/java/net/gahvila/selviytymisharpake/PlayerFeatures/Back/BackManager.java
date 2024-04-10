@@ -24,14 +24,14 @@ public class BackManager {
         deathLocation.put(player, location);
         double playerBalance = SelviytymisHarpake.getEconomy().getBalance(player);
         double percentage;
-        if (playerBalance >= 50000) {
-            percentage = 0.03; // 3% for balances above or equal to 1000
-        } else if (playerBalance >= 1000) {
-            percentage = 0.04; // 4% for balances above or equal to 500
+        if (playerBalance >= 25000) {
+            percentage = 0.03;
+        } else if (playerBalance >= 5000) {
+            percentage = 0.04;
         } else {
-            percentage = 0.05; // 5% for balances below 500
+            percentage = 0.05;
         }
-        deathPrice.put(player, (int) Math.round(SelviytymisHarpake.getEconomy().getBalance(player) * percentage)); //5% of player balance
+        deathPrice.put(player, (int) Math.round(SelviytymisHarpake.getEconomy().getBalance(player) * percentage));
 
     }
 

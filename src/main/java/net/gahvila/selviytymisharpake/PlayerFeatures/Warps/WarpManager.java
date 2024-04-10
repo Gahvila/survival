@@ -79,9 +79,10 @@ public class WarpManager {
     }
 
     //
-    public String updateWarpPrice(Player player, String name, Integer price) {
+    public String updateWarpPrice(Player player, Warp warp, Integer price) {
         Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
-        warpData.set(name + ".price", price);
+        warpData.set(warp.getName() + ".price", price);
+        warp.setPrice(price);
         return null;
     }
 
@@ -94,7 +95,7 @@ public class WarpManager {
         warpData.getFileData().insert(warp + ".price", price);
         warpData.getFileData().insert(warp + ".uses", 0);
         warpData.getFileData().insert(warp + ".creationdate", System.currentTimeMillis());
-        warpData.getFileData().insert(warp + ".customItem", customItem == Material.AIR ? Material.DIRT : customItem);
+        warpData.getFileData().insert(warp + ".customItem", customItem == Material.AIR ? Material.LODESTONE : customItem);
         warpData.getFileData().insert(warp + ".world", location.getWorld().getName());
         warpData.getFileData().insert(warp + ".x", location.getX());
         warpData.getFileData().insert(warp + ".y", location.getY());
@@ -107,7 +108,7 @@ public class WarpManager {
                 0,
                 System.currentTimeMillis(),
                 location,
-                customItem == Material.AIR ? Material.DIRT : customItem));
+                customItem == Material.AIR ? Material.LODESTONE : customItem));
     }
 
     //

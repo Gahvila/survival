@@ -254,7 +254,7 @@ public class WarpMenu {
             ItemStack item = new ItemStack(warp.getCustomItem());
             ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(warp.getName());
-            meta.setLore(List.of("§d§lKlikkaa muokataksesi", "§fKäyttökerrat: §e" + warp.getUses(), "§fHinta: §e" + warp.getPrice() + "Ⓖ§f", "§7§o" + dateString));
+            meta.setLore(List.of("§a§lKlikkaa muokataksesi", "§fKäyttökerrat: §e" + warp.getUses(), "§fHinta: §e" + warp.getPrice() + "Ⓖ§f", "§7§o" + dateString));
             item.setItemMeta(meta);
             items.add(item);
         }
@@ -273,7 +273,7 @@ public class WarpMenu {
 
         ItemStack back = new ItemStack(Material.BARRIER);
         ItemMeta backMeta = back.getItemMeta();
-        backMeta.displayName(toMiniMessage("<b>Peruuta<b>"));
+        backMeta.displayName(toMiniMessage("<white><b>Peruuta<b>"));
         back.setItemMeta(backMeta);
         navigationPane.addItem(new GuiItem(back, event -> {
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.8F, 0.7F);
@@ -320,25 +320,27 @@ public class WarpMenu {
     }
 
     public void showWarpEditMenu(Player player, Warp warp) {
-        ChestGui gui = new ChestGui(3, ComponentHolder.of(toMiniMessage("<dark_green><b>Warp:</b> " + warp.getName())));
+        ChestGui gui = new ChestGui(5, ComponentHolder.of(toMiniMessage("<dark_green><b>Warp:</b> " + warp.getName())));
         gui.show(player);
 
         gui.setOnGlobalClick(event -> event.setCancelled(true));
 
-        OutlinePane background = new OutlinePane(0, 0, 9, 3, Pane.Priority.LOWEST);
+        Pattern pattern = new Pattern(
+                "111111111",
+                "1AAAAAAA1",
+                "1AAAAAAA1",
+                "1AAAAAAA1",
+                "111111111"
+        );
+        PatternPane border = new PatternPane(0, 0, 9, 5, Pane.Priority.LOWEST, pattern);
+        ItemStack background = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+        ItemMeta backgroundMeta = background.getItemMeta();
+        backgroundMeta.displayName(toMiniMessage(""));
+        background.setItemMeta(backgroundMeta);
+        border.bindItem('1', new GuiItem(background));
+        gui.addPane(border);
 
-        ItemStack backgroundItem = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
-        ItemMeta backgroundItemMeta = backgroundItem.getItemMeta();
-        backgroundItemMeta.displayName(toMiniMessage(""));
-        backgroundItem.setItemMeta(backgroundItemMeta);
-
-        background.addItem(new GuiItem(backgroundItem));
-
-        background.setRepeat(true);
-
-        gui.addPane(background);
-
-        StaticPane navigationPane = new StaticPane(2, 1, 5, 1);
+        StaticPane settingPane = new StaticPane(2, 2, 5, 1);
 
         ItemStack nameEdit = new ItemStack(Material.ANVIL);
         ItemMeta nameEditMeta = nameEdit.getItemMeta();
@@ -346,7 +348,7 @@ public class WarpMenu {
         nameEditMeta.lore(List.of(toMiniMessage("<white>Nyt: <#85FF00>" + warp.getName())));
         nameEdit.setItemMeta(nameEditMeta);
 
-        navigationPane.addItem(new GuiItem(nameEdit, event -> {
+        settingPane.addItem(new GuiItem(nameEdit, event -> {
             player.playSound(player.getLocation(), Sound.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 1.0F, 0.8F);
             showNameChangeMenu(player, warp);
         }), 0, 0);
@@ -357,7 +359,7 @@ public class WarpMenu {
         itemEditMeta.lore(List.of(toMiniMessage("<white>Nyt: <#85FF00><lang:" + warp.getCustomItem().getItemTranslationKey() + ">")));
         itemEdit.setItemMeta(itemEditMeta);
 
-        navigationPane.addItem(new GuiItem(itemEdit, event -> {
+        settingPane.addItem(new GuiItem(itemEdit, event -> {
             player.playSound(player.getLocation(), Sound.ITEM_SPYGLASS_USE, 0.8F, 0.8F);
             showItemChangeMenu(player, warp);
         }), 1, 0);
@@ -365,10 +367,10 @@ public class WarpMenu {
         ItemStack priceEdit = new ItemStack(Material.GOLD_NUGGET);
         ItemMeta priceEditMeta = priceEdit.getItemMeta();
         priceEditMeta.displayName(toMiniMessage("<white><b>Muokkaa hintaa</b>"));
-        priceEditMeta.lore(List.of(toMiniMessage("<white>Nyt: <#85FF00>" + warp.getPrice())));
+        priceEditMeta.lore(List.of(toMiniMessage("<white>Nyt: <#85FF00>" + warp.getPrice() + "Ⓖ")));
         priceEdit.setItemMeta(priceEditMeta);
 
-        navigationPane.addItem(new GuiItem(priceEdit, event -> {
+        settingPane.addItem(new GuiItem(priceEdit, event -> {
             player.playSound(player.getLocation(), Sound.ITEM_SPYGLASS_USE, 0.8F, 0.8F);
             showPriceChangeMenu(player, warp);
         }), 2, 0);
@@ -379,7 +381,7 @@ public class WarpMenu {
         deleteMeta.lore(List.of(toMiniMessage("<white>Klikkaamalla warppi poistuu heti.</white>")));
         delete.setItemMeta(deleteMeta);
 
-        navigationPane.addItem(new GuiItem(delete, event -> {
+        settingPane.addItem(new GuiItem(delete, event -> {
             player.performCommand("delwarp " + warp.getName());
             player.playSound(player.getLocation(), Sound.ITEM_BUNDLE_REMOVE_ONE, 1.0F, 0.8F);
             if (warpManager.getOwnedWarps(player.getUniqueId()).isEmpty()){
@@ -389,7 +391,20 @@ public class WarpMenu {
             }
         }), 4, 0);
 
+        StaticPane navigationPane = new StaticPane(0, 4, 9, 1);
+
+        ItemStack back = new ItemStack(Material.BARRIER);
+        ItemMeta backMeta = back.getItemMeta();
+        backMeta.displayName(toMiniMessage("<white><b>Peruuta<b>"));
+        back.setItemMeta(backMeta);
+        navigationPane.addItem(new GuiItem(back, event -> {
+            showOwnWarps(player);
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);
+
+        }), 1, 0);
+
         gui.addPane(navigationPane);
+        gui.addPane(settingPane);
 
         gui.update();
     }
@@ -459,13 +474,14 @@ public class WarpMenu {
             }
             ItemStack item = new ItemStack(material);
             ItemMeta meta = item.getItemMeta();
-            meta.displayName(toMiniMessage("<light_purple><lang:" + material.getItemTranslationKey() + "></light_purple>"));
+            meta.displayName(toMiniMessage("<#85FF00><lang:" + material.getItemTranslationKey() + "></#85FF00>"));
             meta.lore(List.of(toMiniMessage("<white>Klikkaa valitaksesi</white>")));
             item.setItemMeta(meta);
             items.add(item);
         }
         pages.populateWithItemStacks(items);
         gui.addPane(pages);
+        System.err.println(items);
 
         pages.setOnClick(event -> {
             if (event.getCurrentItem() == null) return;
@@ -480,7 +496,7 @@ public class WarpMenu {
 
         ItemStack back = new ItemStack(Material.BARRIER);
         ItemMeta backMeta = back.getItemMeta();
-        backMeta.displayName(toMiniMessage("<b>Peruuta<b>"));
+        backMeta.displayName(toMiniMessage("<white><b>Peruuta<b>"));
         back.setItemMeta(backMeta);
         navigationPane.addItem(new GuiItem(back, event -> {
             showWarpEditMenu(player, warp);
@@ -505,7 +521,7 @@ public class WarpMenu {
         nextMeta.displayName(toMiniMessage("<b>Seuraava"));
         next.setItemMeta(nextMeta);
         navigationPane.addItem(new GuiItem(next, event -> {
-            if (pages.getPage() < pages.getPages() - 1) {
+            if (pages.getPage() < pages.getPages() - 8) {
                 pages.setPage(pages.getPage() + 1);
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.8F, 0.8F);
 
@@ -518,46 +534,113 @@ public class WarpMenu {
     }
 
     public void showPriceChangeMenu(Player player, Warp warp) {
-        ChestGui gui = new ChestGui(5, ComponentHolder.of(toMiniMessage("<dark_green><b>Syötä hinta")));
+        ChestGui gui = new ChestGui(5, ComponentHolder.of(toMiniMessage("<dark_green><b>Syötä hinta...")));
         gui.show(player);
 
         gui.setOnGlobalClick(event -> event.setCancelled(true));
-        OutlinePane background = new OutlinePane(0, 0, 9, 5, Pane.Priority.LOWEST);
 
-        ItemStack backgroundItem = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
-        ItemMeta backgroundItemMeta = backgroundItem.getItemMeta();
-        backgroundItemMeta.displayName(toMiniMessage(""));
-        backgroundItem.setItemMeta(backgroundItemMeta);
-
-        background.addItem(new GuiItem(backgroundItem));
-        background.setRepeat(true);
-        gui.addPane(background);
-
-        Label input = new Label(3, 1, 3, 3, Font.LIGHT_GRAY);
+        Pattern pattern = new Pattern(
+                "111111111",
+                "1AAAAAAA1",
+                "1AAAAAAA1",
+                "1AAAAAAA1",
+                "111AAA111"
+        );
+        PatternPane border = new PatternPane(0, 0, 9, 5, Pane.Priority.LOWEST, pattern);
+        ItemStack background = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+        ItemMeta backgroundMeta = background.getItemMeta();
+        backgroundMeta.displayName(toMiniMessage(""));
+        background.setItemMeta(backgroundMeta);
+        border.bindItem('1', new GuiItem(background));
+        gui.addPane(border);
 
         StringBuilder stringBuilder = new StringBuilder();
-        input.setText("123456789", (character, item) -> new GuiItem(item, event -> {
-            stringBuilder.append(character);
-            player.playSound(player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 0.8F, 0.8F);
-            gui.setTitle(ComponentHolder.of(toMiniMessage("<dark_green><b>Syötä hinta: " + stringBuilder)));
-            gui.update();
+        Pattern pattern1 = new Pattern(
+                "123",
+                "456",
+                "789",
+                "N0N"
+        );
+
+        PatternPane numberPane = new PatternPane(3, 1, 3, 4, pattern1);
+        ItemStack item = new ItemStack(Material.CYAN_STAINED_GLASS_PANE);
+        ItemMeta itemMeta = item.getItemMeta();
+        itemMeta.displayName(toMiniMessage("<#85FF00><b>" + "?")); // Set a placeholder display name
+
+        for (int i = 1; i <= 9; i++) {
+            String numberString = String.valueOf(i);
+            char character = numberString.charAt(0); // Get first character (character code)
+            itemMeta.displayName(toMiniMessage("<#85FF00><b>" + numberString)); // Set display name with string
+            item.setItemMeta(itemMeta);
+            item.setAmount(i);
+            int finalI = i;
+            numberPane.bindItem(character, new GuiItem(item.clone(), event -> {
+                if (stringBuilder.length() < 3) {
+                    stringBuilder.append(finalI);
+                    player.playSound(player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 0.8F, 0.8F);
+                    gui.setTitle(ComponentHolder.of(toMiniMessage("<dark_green><b>Hinta: " + stringBuilder + "</b>Ⓖ")));
+                    gui.update();
+                } else {
+                    player.sendMessage("Warpin hinta voi olla korkeintaan 3 lukua pitkä (max 999).");
+                }
+            }));
+        }
+        itemMeta.displayName(toMiniMessage("<#85FF00><b>0")); // Set a placeholder display name
+        item.setItemMeta(itemMeta);
+        item.setAmount(1);
+        numberPane.bindItem('0', new GuiItem(item.clone(), event -> {
+            if (stringBuilder.length() < 3) {
+                stringBuilder.append(0);
+                player.playSound(player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 0.8F, 0.8F);
+                gui.setTitle(ComponentHolder.of(toMiniMessage("<dark_green><b>Hinta: " + stringBuilder + "</b>Ⓖ")));
+                gui.update();
+            } else {
+                player.sendMessage("Warpin hinta voi olla korkeintaan 3 lukua pitkä (max 999).");
+            }
         }));
 
         StaticPane navigationPane = new StaticPane(0, 4, 9, 1);
 
         ItemStack back = new ItemStack(Material.BARRIER);
         ItemMeta backMeta = back.getItemMeta();
-        backMeta.displayName(toMiniMessage("<b>Peruuta<b>"));
+        backMeta.displayName(toMiniMessage("<white><b>Peruuta<b>"));
         back.setItemMeta(backMeta);
         navigationPane.addItem(new GuiItem(back, event -> {
             showWarpEditMenu(player, warp);
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);
+            gui.update();
 
         }), 1, 0);
+        ItemStack remove = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+        ItemMeta removeMeta = remove.getItemMeta();
+        removeMeta.displayName(toMiniMessage("<red><b>-<b>"));
+        remove.setItemMeta(removeMeta);
+        navigationPane.addItem(new GuiItem(remove, event -> {
+            if (!stringBuilder.isEmpty()) {
+                stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+                player.playSound(player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 0.8F, 0.8F);
+                if (stringBuilder.isEmpty()){
+                    gui.setTitle(ComponentHolder.of(toMiniMessage("<dark_green><b>Syötä hinta...")));
+                } else {
+                    gui.setTitle(ComponentHolder.of(toMiniMessage("<dark_green><b>Hinta: " + stringBuilder + "</b>Ⓖ")));
+                }
+                gui.update();
+            }
+        }), 3, 0);
+        ItemStack confirm = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
+        ItemMeta confirmMeta = confirm.getItemMeta();
+        confirmMeta.displayName(toMiniMessage("<green><b>Valmis<b>"));
+        confirm.setItemMeta(confirmMeta);
+        navigationPane.addItem(new GuiItem(confirm, event -> {
+            if (!stringBuilder.isEmpty()) {
+                warpManager.updateWarpPrice(player, warp, Integer.parseInt(stringBuilder.toString()));
+                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);
+                showWarpEditMenu(player, warp);
+            }
+        }), 5, 0);
 
+        gui.addPane(numberPane);
         gui.addPane(navigationPane);
-
-        gui.addPane(input);
         gui.update();
     }
 

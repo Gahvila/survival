@@ -43,9 +43,9 @@ public class WarpCommands {
                                 SelviytymisHarpake.getEconomy().withdrawPlayer(p, price);
 
                                 warpManager.addAllowedWarps(p);
-                                p.sendMessage("Sinulla on nyt §e" + warpManager.getAllowedWarps(p) + " §fwarppia yhteensä.");
+                                p.sendMessage(toMiniMessage("Sinulla on nyt <#85FF00>" + warpManager.getAllowedWarps(p) + "</#85FF00> warppia yhteensä."));
                             } else {
-                                p.sendMessage("Warpin osto maksaa §e" + price + "Ⓖ§f, ja sinulla on vain §e" + SelviytymisHarpake.getEconomy().getBalance(p));
+                                p.sendMessage(toMiniMessage("Warpin osto maksaa <#85FF00>" + price + "Ⓖ</#85FF00>, ja sinulla on vain <#85FF00>" + SelviytymisHarpake.getEconomy().getBalance(p)));
                             }
                         }))
                 .executesPlayer((p, args) -> {
@@ -56,9 +56,9 @@ public class WarpCommands {
 
                     Integer price = getNextWarpCost(p);
 
-                    p.sendMessage("§fSinulla on §e" + warpManager.getAllowedWarps(p) + " §fwarppia yhteensä.");
-                    p.sendMessage("Haluatko varmasti ostaa warpin? \nHinta: §e" + price + "Ⓖ");
-                    p.sendMessage("Jokaisen warpin osto nostaa hintaa §e10%§f.");
+                    p.sendMessage(toMiniMessage("Sinulla on <#85FF00>" + warpManager.getAllowedWarps(p) + "</#85FF00> warppia yhteensä."));
+                    p.sendMessage(toMiniMessage("Haluatko varmasti ostaa warpin? \nHinta: <#85FF00>" + price + "Ⓖ"));
+                    p.sendMessage(toMiniMessage("Jokaisen warpin osto nostaa hintaa <#85FF00>10%</#85FF00>."));
                     p.sendMessage(accept);
                 })
 
@@ -73,46 +73,42 @@ public class WarpCommands {
                         return;
                     }
                     if (!warp.get().getOwner().equals(p.getUniqueId())) {
-                        p.sendMessage("§7Et omista warppia nimellä §e" + nimi + "§f.");
+                        p.sendMessage(toMiniMessage("Et omista warppia nimellä <#85FF00>" + nimi + "</#85FF00>."));
                         return;
                     }
                     warpManager.deleteWarp(warp.get());
-                    p.sendMessage("§fWarp nimellä §e" + nimi + " §fpoistettu.");
+                    p.sendMessage(toMiniMessage("Warp nimellä <#85FF00>" + nimi + "</#85FF00> poistettu."));
                 })
                 .register();
         new CommandAPICommand("editwarp")
                 .withArguments(customOwnedWarpArgument("warp"))
                 .executesPlayer((p, args) -> {
-                    String name = args.getRaw("nimi");
-                    Material customItem = args.get("item") == null ?
-                            Material.DIRT : ((ItemStack) args.get("item")).getType();
-                    Optional<Warp> warp = warpManager.getWarp(name);
+                    String nimi = args.getRaw("warp");
+                    Optional<Warp> warp = warpManager.getWarp(nimi);
                     if (warp.isEmpty()) {
                         p.sendMessage("Warppia ei löytynyt.");
                         return;
                     }
                     if (!warp.get().getOwner().equals(p.getUniqueId())) {
-                        p.sendMessage("§7Et omista warppia nimellä §e" + name + "§f.");
+                        p.sendMessage(toMiniMessage("Et omista warppia nimellä <#85FF00>" + nimi + "</#85FF00>."));
                         return;
                     }
-                    warpManager.editWarpItem(warp.get(), customItem);
-                    p.sendMessage("§fWarpin §e" + name + " §fitemiä muokattu: " + customItem.name());
+                    warpMenu.showWarpEditMenu(p, warp.get());
+                    p.sendMessage(toMiniMessage("Warp nimellä <#85FF00>" + nimi + "</#85FF00> poistettu."));
                 })
                 .register();
         new CommandAPICommand("setwarp")
-                .withArguments(new StringArgument("nimi"))
-                .withArguments(new IntegerArgument("hinta", 0, 100))
-                .withOptionalArguments(new ItemStackArgument("item"))
+                .withArguments(new GreedyStringArgument("nimi"))
                 .executesPlayer((p, args) -> {
                     String name = args.getRaw("nimi");
-                    Integer price = (Integer) args.get("hinta");
 
                     if (warpManager.getOwnedWarps(p.getUniqueId()).size() < warpManager.getAllowedWarps(p)) {
                         if (!warpManager.getWarpNames().contains(name)) {
                             if (p.getWorld().getName().equals("world")) {
-                                warpManager.setWarp(p, name, p.getLocation(), price, args.get("item") == null ?
-                                        Material.DIRT : ((ItemStack) args.get("item")).getType());
-                                p.sendMessage(toMiniMessage("Asetit warpin " + name + " hintaan " + price + "."));
+                                warpManager.setWarp(p, name, p.getLocation(), 0, Material.LODESTONE);
+                                p.sendMessage(toMiniMessage("Asetit warpin nimellä <#85FF00>" + name + "</#85FF00>. Voit muokata warpin nimeä, materiaalia ja hintaa komennolla <#85FF00>/editwarp " + name + "</#85FF00>.")
+                                        .hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(toMiniMessage("Klikkaa muokataksesi")))
+                                        .clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand("/editwarp " + name)));
                             }else{
                                 p.sendMessage("Voit asettaa warpin vain päämaailmaan.");
                             }
@@ -120,11 +116,11 @@ public class WarpCommands {
                             p.sendMessage("Warppi tuolla nimellä on jo olemassa");
                         }
                     }else{
-                        p.sendMessage("Sinulla ei ole tarpeeksi warppeja! Voit ostaa warpin komennolla §e/buywarp");
+                        p.sendMessage(toMiniMessage("Sinulla ei ole tarpeeksi warppeja! Voit ostaa warpin komennolla <#85FF00>/buywarp</#85FF00>."));
                     }
 
                     if (warpManager.getAllowedWarps(p) == 0) {
-                        p.sendMessage("Sinulla ei ole tarpeeksi warppeja! Voit ostaa warpin komennolla §e/buywarp");
+                        p.sendMessage(toMiniMessage("Sinulla ei ole tarpeeksi warppeja! Voit ostaa warpin komennolla <#85FF00>/buywarp</#85FF00>."));
                     }
                 })
                 .register();
@@ -193,7 +189,7 @@ public class WarpCommands {
 
     public Argument<List<String>> customOwnedWarpArgument(String nodeName) {
         // Construct our CustomArgument that takes in a String input and returns a list of home names
-        return new CustomArgument<List<String>, String>(new StringArgument(nodeName), info -> {
+        return new CustomArgument<List<String>, String>(new GreedyStringArgument(nodeName), info -> {
             // Retrieve the list of home names for the player
 
             Player player = (Player) info.sender();
