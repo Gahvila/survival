@@ -481,7 +481,6 @@ public class WarpMenu {
         }
         pages.populateWithItemStacks(items);
         gui.addPane(pages);
-        System.err.println(items);
 
         pages.setOnClick(event -> {
             if (event.getCurrentItem() == null) return;
