@@ -1,5 +1,6 @@
 package net.gahvila.selviytymisharpake.PlayerFeatures.Back;
 
+import com.github.stefvanschie.inventoryframework.adventuresupport.ComponentHolder;
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
@@ -31,14 +32,14 @@ public class BackMenu {
     }
 
     public void showGUI(Player player) {
-        ChestGui gui = new ChestGui(3, "§5§lBack");
+        ChestGui gui = new ChestGui(3, ComponentHolder.of(toMM("<dark_purple><b>Back")));
         gui.show(player);
         gui.setOnGlobalClick(event -> event.setCancelled(true));
 
         OutlinePane background = new OutlinePane(0, 0, 9, 3, Pane.Priority.LOWEST);
         ItemStack backgroundItem = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta backgroundItemMeta = backgroundItem.getItemMeta();
-        backgroundItemMeta.displayName(toMiniMessage(""));
+        backgroundItemMeta.displayName(toMM(""));
         backgroundItem.setItemMeta(backgroundItemMeta);
         background.addItem(new GuiItem(backgroundItem));
         background.setRepeat(true);
@@ -48,8 +49,9 @@ public class BackMenu {
         if (backManager.getDeath(player) != null) {
             ItemStack deathItem = new ItemStack(Material.SKELETON_SKULL, 1);
             ItemMeta deathMeta = deathItem.getItemMeta();
-            deathMeta.setDisplayName("§fKuolinsijainti");
-            deathMeta.setLore(List.of("§fHinta: §e" + backManager.getDeathPrice(player) + "Ⓖ", "§fKoordinaatit: §e" + backManager.getDeath(player).getBlockX() + " §8| §e" + backManager.getDeath(player).getBlockZ()));
+            deathMeta.displayName(toMM("<white>Kuolinsijainti"));
+            deathMeta.lore(List.of(toMM("<white>Hinta: <yellow>" + backManager.getDeathPrice(player) + "Ⓖ"),
+                    toMM("<white>Koordinaatit: <yellow>" + backManager.getDeath(player).getBlockX() + " <dark_gray>| <yellow>" + backManager.getDeath(player).getBlockZ())));
             deathItem.setItemMeta(deathMeta);
 
             navigationPane.addItem(new GuiItem(deathItem, event -> {
@@ -59,7 +61,7 @@ public class BackMenu {
         } else {
             ItemStack back = new ItemStack(Material.BARRIER, 1);
             ItemMeta back1meta = back.getItemMeta();
-            back1meta.setDisplayName("§fKuolinsijaintia ei ole");
+            back1meta.displayName(toMM("<white>Kuolinsijaintia ei ole"));
             back.setItemMeta(back1meta);
 
             navigationPane.addItem(new GuiItem(back, event -> {
@@ -70,8 +72,8 @@ public class BackMenu {
         if (backManager.getBack(player) != null) {
             ItemStack back = new ItemStack(Material.MAP, 1);
             ItemMeta backmeta = back.getItemMeta();
-            backmeta.setDisplayName("§fViimeisin sijainti");
-            backmeta.setLore(List.of("§fKoordinaatit: §e" + backManager.getBack(player).getBlockX() + " §8| §e" + backManager.getBack(player).getBlockX()));
+            backmeta.displayName(toMM("<white>Viimeisin sijainti"));
+            backmeta.lore(List.of(toMM("<white>Koordinaatit: <yellow>" + backManager.getBack(player).getBlockX() + " <dark_gray>| <yellow>" + backManager.getBack(player).getBlockX())));
             back.setItemMeta(backmeta);
 
             navigationPane.addItem(new GuiItem(back, event -> {
@@ -88,7 +90,7 @@ public class BackMenu {
         }else {
             ItemStack back = new ItemStack(Material.BARRIER, 1);
             ItemMeta back1meta = back.getItemMeta();
-            back1meta.setDisplayName("§fSijaintia ei ole");
+            back1meta.displayName(toMM("<white>Sijaintia ei ole"));
             back.setItemMeta(back1meta);
 
             navigationPane.addItem(new GuiItem(back, event -> {
@@ -104,7 +106,7 @@ public class BackMenu {
     }
 
     private void confirmMenu(Player player, ItemStack item) {
-        ChestGui gui = new ChestGui(3, "§4§lVarmista osto");
+        ChestGui gui = new ChestGui(3, ComponentHolder.of(toMM("<dark_red><b>Varmista osto")));
         gui.show(player);
 
         gui.setOnGlobalClick(event -> event.setCancelled(true));
@@ -119,17 +121,17 @@ public class BackMenu {
 
         ItemStack accept = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
         ItemMeta acceptMeta = accept.getItemMeta();
-        acceptMeta.displayName(toMiniMessage("<green><b>Hyväksy"));
+        acceptMeta.displayName(toMM("<green><b>Hyväksy"));
         accept.setItemMeta(acceptMeta);
 
         ItemStack cancel = new ItemStack(Material.RED_STAINED_GLASS_PANE);
         ItemMeta cancelMeta = cancel.getItemMeta();
-        cancelMeta.displayName(toMiniMessage("<red><b>Hylkää"));
+        cancelMeta.displayName(toMM("<red><b>Hylkää"));
         cancel.setItemMeta(cancelMeta);
 
         ItemStack background = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta backgroundMeta = background.getItemMeta();
-        backgroundMeta.displayName(toMiniMessage(""));
+        backgroundMeta.displayName(toMM(""));
         background.setItemMeta(backgroundMeta);
 
         pane.bindItem('1', new GuiItem(background));
@@ -140,13 +142,13 @@ public class BackMenu {
             double price = backManager.getDeathPrice(player);
             if (SelviytymisHarpake.getEconomy().getBalance(player) >= price) {
                 SelviytymisHarpake.getEconomy().withdrawPlayer(player, price);
-                player.sendMessage("Tililtäsi veloitettiin §e" + price + "Ⓖ§f.");
+                player.sendMessage(toMM("<white>Tililtäsi veloitettiin <yellow>" + price + "Ⓖ</yellow>."));
                 player.closeInventory();
                 player.teleportAsync(backManager.getDeath(player));
-                player.sendMessage("Sinut teleportattiin sinun viimeisimpään kuolinpaikkaan§f.");
+                player.sendMessage("Sinut teleportattiin sinun viimeisimpään kuolinpaikkaan.");
             }else{
                 player.closeInventory();
-                player.sendMessage("Sinulla ei ole tarpeeksi Ⓖ!");
+                player.sendMessage("Sinulla ei ole tarpeeksi rahaa.");
             }
         }));
 
@@ -160,7 +162,7 @@ public class BackMenu {
         gui.update();
     }
 
-    public @NotNull Component toMiniMessage(@NotNull String string) {
+    public @NotNull Component toMM(@NotNull String string) {
         return MiniMessage.miniMessage().deserialize(string).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }
 }

@@ -4,19 +4,12 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -43,23 +36,19 @@ public class WarpCommands {
                                 SelviytymisHarpake.getEconomy().withdrawPlayer(p, price);
 
                                 warpManager.addAllowedWarps(p);
-                                p.sendMessage(toMiniMessage("Sinulla on nyt <#85FF00>" + warpManager.getAllowedWarps(p) + "</#85FF00> warppia yhteensä. Tässä on mukana myös sinun ilmaiswarppi."));
+                                p.sendMessage(toMM("Sinulla on nyt <#85FF00>" + warpManager.getAllowedWarps(p) + "</#85FF00> warppia yhteensä. Tässä on mukana myös sinun ilmaiswarppi."));
                             } else {
-                                p.sendMessage(toMiniMessage("Warpin osto maksaa <#85FF00>" + price + "Ⓖ</#85FF00>, ja sinulla on vain <#85FF00>" + SelviytymisHarpake.getEconomy().getBalance(p)));
+                                p.sendMessage(toMM("Warpin osto maksaa <#85FF00>" + price + "Ⓖ</#85FF00>, ja sinulla on vain <#85FF00>" + SelviytymisHarpake.getEconomy().getBalance(p)));
                             }
                         }))
                 .executesPlayer((p, args) -> {
-                    TextComponent accept = new TextComponent();
-                    accept.setText("§a§lHyväksy"); //set clickable text
-                    accept.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§bKlikkaa ostaaksesi.").create())); //display text msg when hovering
-                    accept.setClickEvent(new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND, "/buywarp forcebuy")); //runs command when they click the text
-
                     Integer price = getNextWarpCost(p);
 
-                    p.sendMessage(toMiniMessage("Sinulla on <#85FF00>" + warpManager.getAllowedWarps(p) + "</#85FF00> warppia yhteensä. Tässä on mukana myös sinun ilmaiswarppi."));
-                    p.sendMessage(toMiniMessage("Haluatko varmasti ostaa warpin? \nHinta: <#85FF00>" + price + "Ⓖ"));
-                    p.sendMessage(toMiniMessage("Jokaisen warpin osto nostaa hintaa <#85FF00>10%</#85FF00>."));
-                    p.sendMessage(accept);
+                    p.sendMessage(toMM("Sinulla on <#85FF00>" + warpManager.getAllowedWarps(p) + "</#85FF00> warppia yhteensä. Tässä on mukana myös sinun ilmaiswarppi."));
+                    p.sendMessage(toMM("Haluatko varmasti ostaa warpin? \nHinta: <#85FF00>" + price + "Ⓖ"));
+                    p.sendMessage(toMM("Jokaisen warpin osto nostaa hintaa <#85FF00>10%</#85FF00>."));
+                    p.sendMessage(toMM("<#85FF00><b>Hyväksy painamalla")
+                            .hoverEvent(HoverEvent.showText(toMM("<#85FF00>Klikkaa ostaaksesi."))).clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand("/buywarp forcebuy")));
                 })
 
                 .register();
@@ -73,11 +62,11 @@ public class WarpCommands {
                         return;
                     }
                     if (!warp.get().getOwner().equals(p.getUniqueId())) {
-                        p.sendMessage(toMiniMessage("Et omista warppia nimellä <#85FF00>" + nimi + "</#85FF00>."));
+                        p.sendMessage(toMM("Et omista warppia nimellä <#85FF00>" + nimi + "</#85FF00>."));
                         return;
                     }
                     warpManager.deleteWarp(warp.get());
-                    p.sendMessage(toMiniMessage("Warp nimellä <#85FF00>" + nimi + "</#85FF00> poistettu."));
+                    p.sendMessage(toMM("Warp nimellä <#85FF00>" + nimi + "</#85FF00> poistettu."));
                 })
                 .register();
         new CommandAPICommand("editwarp")
@@ -90,11 +79,11 @@ public class WarpCommands {
                         return;
                     }
                     if (!warp.get().getOwner().equals(p.getUniqueId())) {
-                        p.sendMessage(toMiniMessage("Et omista warppia nimellä <#85FF00>" + nimi + "</#85FF00>."));
+                        p.sendMessage(toMM("Et omista warppia nimellä <#85FF00>" + nimi + "</#85FF00>."));
                         return;
                     }
                     warpMenu.showWarpEditMenu(p, warp.get());
-                    p.sendMessage(toMiniMessage("Warp nimellä <#85FF00>" + nimi + "</#85FF00> poistettu."));
+                    p.sendMessage(toMM("Warp nimellä <#85FF00>" + nimi + "</#85FF00> poistettu."));
                 })
                 .register();
         new CommandAPICommand("setwarp")
@@ -106,8 +95,8 @@ public class WarpCommands {
                         if (!warpManager.getWarpNames().contains(name)) {
                             if (p.getWorld().getName().equals("world")) {
                                 warpManager.setWarp(p, name, p.getLocation(), 0, Material.LODESTONE);
-                                p.sendMessage(toMiniMessage("Asetit warpin nimellä <#85FF00>" + name + "</#85FF00>. Voit muokata warpin nimeä, materiaalia ja hintaa komennolla <#85FF00>/editwarp " + name + "</#85FF00>.")
-                                        .hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(toMiniMessage("Klikkaa muokataksesi")))
+                                p.sendMessage(toMM("Asetit warpin nimellä <#85FF00>" + name + "</#85FF00>. Voit muokata warpin nimeä, materiaalia ja hintaa komennolla <#85FF00>/editwarp " + name + "</#85FF00>.")
+                                        .hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(toMM("Klikkaa muokataksesi")))
                                         .clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand("/editwarp " + name)));
                             }else{
                                 p.sendMessage("Voit asettaa warpin vain päämaailmaan.");
@@ -116,11 +105,11 @@ public class WarpCommands {
                             p.sendMessage("Warppi tuolla nimellä on jo olemassa");
                         }
                     }else{
-                        p.sendMessage(toMiniMessage("Sinulla ei ole tarpeeksi warppeja! Voit ostaa warpin komennolla <#85FF00>/buywarp</#85FF00>."));
+                        p.sendMessage(toMM("Sinulla ei ole tarpeeksi warppeja! Voit ostaa warpin komennolla <#85FF00>/buywarp</#85FF00>."));
                     }
 
                     if (warpManager.getAllowedWarps(p) == 0) {
-                        p.sendMessage(toMiniMessage("Sinulla ei ole tarpeeksi warppeja! Voit ostaa warpin komennolla <#85FF00>/buywarp</#85FF00>."));
+                        p.sendMessage(toMM("Sinulla ei ole tarpeeksi warppeja! Voit ostaa warpin komennolla <#85FF00>/buywarp</#85FF00>."));
                     }
                 })
                 .register();
@@ -218,7 +207,7 @@ public class WarpCommands {
         }));
     }
 
-    public @NotNull Component toMiniMessage(@NotNull String string) {
+    public @NotNull Component toMM(@NotNull String string) {
         return MiniMessage.miniMessage().deserialize(string);
     }
 }

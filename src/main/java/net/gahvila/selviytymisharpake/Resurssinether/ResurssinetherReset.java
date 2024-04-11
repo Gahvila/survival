@@ -4,12 +4,16 @@ import de.leonhard.storage.Json;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Homes.HomeManager;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Spawn.SpawnTeleport;
 import net.gahvila.selviytymisharpake.SelviytymisHarpake;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.time.Duration;
@@ -42,7 +46,7 @@ public class ResurssinetherReset {
         return(path.delete());
     }
     public void performNetherReset() {
-        Bukkit.broadcastMessage("§c§lResurssinetherin nollaus on aloitettu!!");
+        Bukkit.broadcast(toMM("<red><b>Resurssinetherin nollaus on aloitettu!!"));
         for (Player p : Bukkit.getOnlinePlayers()){
             if (p.getWorld().getName().equals("resurssinether")){
                 SpawnTeleport.teleportSpawn(p);
@@ -53,19 +57,13 @@ public class ResurssinetherReset {
             Json warpData = new Json("netherdata.json", plugin.getDataFolder() + "/data/");
             warpData.set("generation", true);
 
-            Bukkit.broadcastMessage("§7Poistetaan resurssinether muistista...");
             Bukkit.unloadWorld("resurssinether", false);
-
-            Bukkit.broadcastMessage("§7Poistetaan kaikki kodit resurssinetherissä...");
             homeManager.deleteHomesInWorld("resurssinether");
 
-            Bukkit.broadcastMessage("§7Poistetaan resurssinetherin kartta...");
             deleteWorld(new File("resurssinether/DIM-1"));
             File leveldat = new File("resurssinether/level.dat");
             leveldat.delete();
 
-
-            Bukkit.broadcastMessage("§7Luodaan uutta karttaa...");
             WorldCreator resurssinethercreator = new WorldCreator("resurssinether");
             resurssinethercreator.environment(World.Environment.NETHER);
             resurssinethercreator.type(WorldType.NORMAL);
@@ -73,8 +71,12 @@ public class ResurssinetherReset {
             ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
             Bukkit.dispatchCommand(console, "rtp-admin reload");
             Bukkit.dispatchCommand(console, "chunky start resurssinether square 0 0 500 500 concentric");
-            Bukkit.broadcastMessage("§c§lResurssinether on nollattu onnistuneesti. Tervetuloa pelailemaan!");
+            Bukkit.broadcast(toMM("<red><b>Resurssinether on nollattu onnistuneesti. Tervetuloa pelailemaan!"));
             warpData.set("generation", false);
         }, 20);
+    }
+
+    public @NotNull Component toMM(@NotNull String string) {
+        return MiniMessage.miniMessage().deserialize(string).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }
 }

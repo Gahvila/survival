@@ -1,5 +1,6 @@
 package net.gahvila.selviytymisharpake.PlayerFeatures.Addons;
 
+import com.github.stefvanschie.inventoryframework.adventuresupport.ComponentHolder;
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
@@ -34,7 +35,7 @@ public class AddonMenu {
     }
 
     public void showGUI(Player player) {
-        ChestGui gui = new ChestGui(3, "§5§lLisäosat");
+        ChestGui gui = new ChestGui(3, ComponentHolder.of(toMM("<dark_purple><b>Lisäosat")));
         gui.show(player);
 
         gui.setOnGlobalClick(event -> event.setCancelled(true));
@@ -43,7 +44,7 @@ public class AddonMenu {
 
         ItemStack backgroundItem = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta backgroundItemMeta = backgroundItem.getItemMeta();
-        backgroundItemMeta.displayName(toMiniMessage(""));
+        backgroundItemMeta.displayName(toMM(""));
         backgroundItem.setItemMeta(backgroundItemMeta);
 
         background.addItem(new GuiItem(backgroundItem));
@@ -56,8 +57,8 @@ public class AddonMenu {
 
         ItemStack craft = new ItemStack(Material.CRAFTING_TABLE);
         ItemMeta craftMeta = craft.getItemMeta();
-        craftMeta.displayName(toMiniMessage("<white><b>Craft</b> <#85FF00>" + addonManager.getPrice("craft") + "Ⓖ"));
-        craftMeta.lore(List.of(toMiniMessage("<white>Antaa oikeudet <#85FF00>/craft <white>komentoon, "), toMiniMessage("<white>jolla voit craftata missä vain.")));
+        craftMeta.displayName(toMM("<white><b>Craft</b> <#85FF00>" + addonManager.getPrice("craft") + "Ⓖ"));
+        craftMeta.lore(List.of(toMM("<white>Antaa oikeudet <#85FF00>/craft <white>komentoon, "), toMM("<white>jolla voit craftata missä vain.")));
         craft.setItemMeta(craftMeta);
 
         navigationPane.addItem(new GuiItem(craft, event -> {
@@ -74,8 +75,8 @@ public class AddonMenu {
 
         ItemStack enderchest = new ItemStack(Material.ENDER_CHEST);
         ItemMeta enderchestMeta = enderchest.getItemMeta();
-        enderchestMeta.displayName(toMiniMessage("<white><b>Ender Chest</b> <#85FF00>" + addonManager.getPrice("enderchest") + "Ⓖ"));
-        enderchestMeta.lore(List.of(toMiniMessage("<white>Antaa oikeudet <#85FF00>/ec <white>komentoon, "), toMiniMessage("<white>jolla voit avata enderchestin missä vain.")));
+        enderchestMeta.displayName(toMM("<white><b>Ender Chest</b> <#85FF00>" + addonManager.getPrice("enderchest") + "Ⓖ"));
+        enderchestMeta.lore(List.of(toMM("<white>Antaa oikeudet <#85FF00>/ec <white>komentoon, "), toMM("<white>jolla voit avata enderchestin missä vain.")));
         enderchest.setItemMeta(enderchestMeta);
 
         navigationPane.addItem(new GuiItem(enderchest, event -> {
@@ -92,8 +93,8 @@ public class AddonMenu {
 
         ItemStack feed = new ItemStack(Material.COOKED_BEEF);
         ItemMeta feedMeta = feed.getItemMeta();
-        feedMeta.displayName(toMiniMessage("<white><b>Feed</b> <#85FF00>" + addonManager.getPrice("feed") + "Ⓖ"));
-        feedMeta.lore(List.of(toMiniMessage("<white>Antaa oikeudet <#85FF00>/feed <white>komentoon, "), toMiniMessage("<white>jolla voit täyttää ruokapalkkisi 2 minuutin välein.")));
+        feedMeta.displayName(toMM("<white><b>Feed</b> <#85FF00>" + addonManager.getPrice("feed") + "Ⓖ"));
+        feedMeta.lore(List.of(toMM("<white>Antaa oikeudet <#85FF00>/feed <white>komentoon, "), toMM("<white>jolla voit täyttää ruokapalkkisi 2 minuutin välein.")));
         feed.setItemMeta(feedMeta);
 
         navigationPane.addItem(new GuiItem(feed, event -> {
@@ -110,8 +111,8 @@ public class AddonMenu {
 
         ItemStack shop = new ItemStack(Material.CHEST);
         ItemMeta shopMeta = shop.getItemMeta();
-        shopMeta.displayName(toMiniMessage("<white><b>Kauppa</b> <#85FF00>" + addonManager.getPrice("shop") + "Ⓖ"));
-        shopMeta.lore(List.of(toMiniMessage("<white>Antaa oikeudet <#85FF00>/kauppa <white>komentoon, "), toMiniMessage("<white>jolla voit avata kaupan valikon missä vain.")));
+        shopMeta.displayName(toMM("<white><b>Kauppa</b> <#85FF00>" + addonManager.getPrice("shop") + "Ⓖ"));
+        shopMeta.lore(List.of(toMM("<white>Antaa oikeudet <#85FF00>/kauppa <white>komentoon, "), toMM("<white>jolla voit avata kaupan valikon missä vain.")));
         shop.setItemMeta(shopMeta);
 
         navigationPane.addItem(new GuiItem(shop, event -> {
@@ -128,8 +129,8 @@ public class AddonMenu {
 
         ItemStack home = new ItemStack(Material.OAK_DOOR);
         ItemMeta homeMeta = home.getItemMeta();
-        homeMeta.displayName(toMiniMessage("<white><b>Lisäkoti</b> <#85FF00>" + homeManager.getNextHomeCost(player) + "Ⓖ"));
-        homeMeta.lore(List.of(toMiniMessage("<white>Sinulla on</white> <#85FF00>" + homeManager.getAllowedHomes(player) + "</#85FF00> <white>kotia yhteensä.</white>"), toMiniMessage("<gray>(Rank: " + homeManager.getAllowedHomesOfRank(player) + "</gray> <dark_gray>|</dark_gray> <gray>Lisäkodit: " + homeManager.getAllowedAdditionalHomes(player) + ")</gray>"), toMiniMessage("<white>Ostamalla tämän saat yhden uuden kodin.")));
+        homeMeta.displayName(toMM("<white><b>Lisäkoti</b> <#85FF00>" + homeManager.getNextHomeCost(player) + "Ⓖ"));
+        homeMeta.lore(List.of(toMM("<white>Sinulla on</white> <#85FF00>" + homeManager.getAllowedHomes(player) + "</#85FF00> <white>kotia yhteensä.</white>"), toMM("<gray>(Rank: " + homeManager.getAllowedHomesOfRank(player) + "</gray> <dark_gray>|</dark_gray> <gray>Lisäkodit: " + homeManager.getAllowedAdditionalHomes(player) + ")</gray>"), toMM("<white>Ostamalla tämän saat yhden uuden kodin.")));
         home.setItemMeta(homeMeta);
 
         navigationPane.addItem(new GuiItem(home, event -> {
@@ -144,7 +145,7 @@ public class AddonMenu {
     }
 
     private void confirmMenu(Player player, ItemStack item, String addon) {
-        ChestGui gui = new ChestGui(3, "§4§lVarmista osto");
+        ChestGui gui = new ChestGui(3, "<dark_red><b>Varmista osto");
         gui.show(player);
 
         gui.setOnGlobalClick(event -> event.setCancelled(true));
@@ -159,17 +160,17 @@ public class AddonMenu {
 
         ItemStack accept = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
         ItemMeta acceptMeta = accept.getItemMeta();
-        acceptMeta.displayName(toMiniMessage("<green><b>Hyväksy"));
+        acceptMeta.displayName(toMM("<green><b>Hyväksy"));
         accept.setItemMeta(acceptMeta);
 
         ItemStack cancel = new ItemStack(Material.RED_STAINED_GLASS_PANE);
         ItemMeta cancelMeta = cancel.getItemMeta();
-        cancelMeta.displayName(toMiniMessage("<red><b>Hylkää"));
+        cancelMeta.displayName(toMM("<red><b>Hylkää"));
         cancel.setItemMeta(cancelMeta);
 
         ItemStack background = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta backgroundMeta = background.getItemMeta();
-        backgroundMeta.displayName(toMiniMessage(""));
+        backgroundMeta.displayName(toMM(""));
         background.setItemMeta(backgroundMeta);
 
         pane.bindItem('1', new GuiItem(background));
@@ -184,12 +185,12 @@ public class AddonMenu {
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_CELEBRATE, 0.5F, 1F);
                     SelviytymisHarpake.getEconomy().withdrawPlayer(player, price);
                     homeManager.addAdditionalHomes(player);
-                    player.sendMessage(toMiniMessage("<white>Ohhoh. Ostit lisäkodin hintaan <#85FF00>" + price +
+                    player.sendMessage(toMM("<white>Ohhoh. Ostit lisäkodin hintaan <#85FF00>" + price +
                             "Ⓖ</#85FF00><white>. Sinulla on nyt <#85FF00>" + homeManager.getAllowedHomes(player) + " kotia</#85FF00> <white>yhteensä."));
                     player.closeInventory();
                 } else {
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
-                    player.sendMessage(toMiniMessage("Nyt kyllä loppu hilut kesken, tarviit <#85FF00>" + price + "Ⓖ</#85FF00> ostaaksesi tuon."));
+                    player.sendMessage(toMM("Nyt kyllä loppu hilut kesken, tarviit <#85FF00>" + price + "Ⓖ</#85FF00> ostaaksesi tuon."));
                     showGUI(player);
                 }
                 return;
@@ -200,12 +201,12 @@ public class AddonMenu {
             if (SelviytymisHarpake.getEconomy().getBalance(player) >= price) {
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_CELEBRATE, 0.5F, 1F);
                 SelviytymisHarpake.getEconomy().withdrawPlayer(player, price);
-                player.sendMessage(toMiniMessage("<white>Ohhoh. Ostit lisäosan <#85FF00>" + addon + "</#85FF00> <white>onnistuneesti."));
+                player.sendMessage(toMM("<white>Ohhoh. Ostit lisäosan <#85FF00>" + addon + "</#85FF00> <white>onnistuneesti."));
                 addonManager.setAddon(player, addon);
                 player.closeInventory();
             } else {
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
-                player.sendMessage(toMiniMessage("Nyt kyllä loppu hilut kesken, tarviit <#85FF00>" + price + "Ⓖ</#85FF00> ostaaksesi tuon."));
+                player.sendMessage(toMM("Nyt kyllä loppu hilut kesken, tarviit <#85FF00>" + price + "Ⓖ</#85FF00> ostaaksesi tuon."));
                 player.closeInventory();
             }
         }));
@@ -220,7 +221,7 @@ public class AddonMenu {
         gui.update();
     }
 
-    public @NotNull Component toMiniMessage(@NotNull String string) {
+    public @NotNull Component toMM(@NotNull String string) {
         return MiniMessage.miniMessage().deserialize(string).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }
 }

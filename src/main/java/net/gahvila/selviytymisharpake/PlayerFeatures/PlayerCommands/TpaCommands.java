@@ -47,8 +47,8 @@ public class TpaCommands {
                         return;
                     }
                     if (tpa.containsKey(tpasender)) {
-                        tpasender.sendMessage(toMiniMessage("Sinulla on jo aktiivinen TPA-pyyntö. Lähettääksesi uuden sinun täytyy perua aikaisempi klikkaamalla tätä viestiä tai /tpacancel.")
-                                .hoverEvent(HoverEvent.showText(toMiniMessage("Klikkaa peruaksesi"))).clickEvent(ClickEvent.runCommand("/tpacancel")));
+                        tpasender.sendMessage(toMM("Sinulla on jo aktiivinen TPA-pyyntö. Lähettääksesi uuden sinun täytyy perua aikaisempi klikkaamalla tätä viestiä tai /tpacancel.")
+                                .hoverEvent(HoverEvent.showText(toMM("Klikkaa peruaksesi"))).clickEvent(ClickEvent.runCommand("/tpacancel")));
                         return;
                     }
                     if(Bukkit.getServer().getPluginManager().getPlugin("CarbonChat") != null) {
@@ -62,14 +62,14 @@ public class TpaCommands {
                     tpa.put(tpasender, tpareceiver);
                     latestTpaName.put(tpareceiver, tpasender);
                     tpareceiver.playSound(tpareceiver.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 2F, 1F);
-                    tpasender.sendMessage(toMiniMessage("Lähetit TPA-pyynnön <#85FF00>" + tpareceiver.getName() + ":lle</#85FF00>."));
+                    tpasender.sendMessage(toMM("Lähetit TPA-pyynnön <#85FF00>" + tpareceiver.getName() + ":lle</#85FF00>."));
 
-                    tpareceiver.sendMessage(toMiniMessage("\n| <#85FF00>" + tpasender.getName() + " </#85FF00>lähetti sinulle <#85FF00>TPA-pyynnön</#85FF00>."));
-                    tpareceiver.sendMessage(toMiniMessage("<white>| Sinulla on <#85FF00>30 sekuntia</#85FF00> <white>aikaa hyväksyä."));
-                    tpareceiver.sendMessage(toMiniMessage("| <green><b>Hyväksy</b>: /tpayes " + tpasender.getName())
-                            .hoverEvent(HoverEvent.showText(toMiniMessage("Klikkaa hyväksyäksesi."))).clickEvent(ClickEvent.runCommand("/tpayes " + tpasender.getName())));
-                    tpareceiver.sendMessage(toMiniMessage("| <red><b>Kieltäydy</b>: /tpano " + tpasender.getName())
-                            .hoverEvent(HoverEvent.showText(toMiniMessage("Klikkaa kieltäytyäksesi"))).clickEvent(ClickEvent.runCommand("/tpano " + tpasender.getName())));
+                    tpareceiver.sendMessage(toMM("\n| <#85FF00>" + tpasender.getName() + " </#85FF00>lähetti sinulle <#85FF00>TPA-pyynnön</#85FF00>."));
+                    tpareceiver.sendMessage(toMM("<white>| Sinulla on <#85FF00>30 sekuntia</#85FF00> <white>aikaa hyväksyä."));
+                    tpareceiver.sendMessage(toMM("| <green><b>Hyväksy</b>: /tpayes " + tpasender.getName())
+                            .hoverEvent(HoverEvent.showText(toMM("Klikkaa hyväksyäksesi."))).clickEvent(ClickEvent.runCommand("/tpayes " + tpasender.getName())));
+                    tpareceiver.sendMessage(toMM("| <red><b>Kieltäydy</b>: /tpano " + tpasender.getName())
+                            .hoverEvent(HoverEvent.showText(toMM("Klikkaa kieltäytyäksesi"))).clickEvent(ClickEvent.runCommand("/tpano " + tpasender.getName())));
 
                     Bukkit.getServer().getScheduler().runTaskLater(SelviytymisHarpake.instance, new Runnable() {
                         @Override
@@ -78,7 +78,7 @@ public class TpaCommands {
                                 tpa.remove(tpasender);
                                 latestTpaName.remove(tpareceiver);
                                 tpasender.sendMessage("TPA-pyyntösi vanhentui.");
-                                tpareceiver.sendMessage(toMiniMessage("<#85FF00>" + tpasender.getName() + ":n </#85FF00>lähettämä TPA-pyyntö vanhentui."));
+                                tpareceiver.sendMessage(toMM("<#85FF00>" + tpasender.getName() + ":n </#85FF00>lähettämä TPA-pyyntö vanhentui."));
                             }
                         }
                     }, 20 * 30);
@@ -100,8 +100,8 @@ public class TpaCommands {
                         return;
                     }
                     if (tpahere.containsKey(tpasender) || tpa.containsKey(tpasender)) {
-                        tpasender.sendMessage(toMiniMessage("Sinulla on jo aktiivinen TPA-pyyntö. Lähettääksesi uuden sinun täytyy perua aikaisempi klikkaamalla tätä viestiä tai /tpacancel.")
-                                .hoverEvent(HoverEvent.showText(toMiniMessage("Klikkaa peruaksesi"))).clickEvent(ClickEvent.runCommand("/tpacancel")));
+                        tpasender.sendMessage(toMM("Sinulla on jo aktiivinen TPA-pyyntö. Lähettääksesi uuden sinun täytyy perua aikaisempi klikkaamalla tätä viestiä tai /tpacancel.")
+                                .hoverEvent(HoverEvent.showText(toMM("Klikkaa peruaksesi"))).clickEvent(ClickEvent.runCommand("/tpacancel")));
                         return;
                     }
                     if(Bukkit.getServer().getPluginManager().getPlugin("CarbonChat") != null) {
@@ -115,14 +115,14 @@ public class TpaCommands {
                     tpahere.put(tpasender, tpareceiver);
                     latestTpaName.put(tpareceiver, tpasender);
                     tpareceiver.playSound(tpareceiver.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 2F, 1F);
-                    tpasender.sendMessage(toMiniMessage("Lähetit TPAHere-pyynnön <#85FF00>" + tpareceiver.getName() + ":lle</#85FF00>."));
+                    tpasender.sendMessage(toMM("Lähetit TPAHere-pyynnön <#85FF00>" + tpareceiver.getName() + ":lle</#85FF00>."));
 
-                    tpareceiver.sendMessage(toMiniMessage("\n<white>| <#85FF00>" + tpasender.getName() + " </#85FF00>lähetti sinulle <#85FF00>TPAHere-pyynnön</#85FF00>."));
-                    tpareceiver.sendMessage(toMiniMessage("<white>| Sinulla on <#85FF00>30 sekuntia</#85FF00> <white>aikaa hyväksyä."));
-                    tpareceiver.sendMessage(toMiniMessage("<white>| <green><b>Hyväksy</b>: /tpayes " + tpasender.getName())
-                            .hoverEvent(HoverEvent.showText(toMiniMessage("Klikkaa hyväksyäksesi."))).clickEvent(ClickEvent.runCommand("/tpayes " + tpasender.getName())));
-                    tpareceiver.sendMessage(toMiniMessage("<white>| <red><b>Kieltäydy</b>: /tpano " + tpasender.getName())
-                            .hoverEvent(HoverEvent.showText(toMiniMessage("Klikkaa kieltäytyäksesi"))).clickEvent(ClickEvent.runCommand("/tpano " + tpasender.getName())));
+                    tpareceiver.sendMessage(toMM("\n<white>| <#85FF00>" + tpasender.getName() + " </#85FF00>lähetti sinulle <#85FF00>TPAHere-pyynnön</#85FF00>."));
+                    tpareceiver.sendMessage(toMM("<white>| Sinulla on <#85FF00>30 sekuntia</#85FF00> <white>aikaa hyväksyä."));
+                    tpareceiver.sendMessage(toMM("<white>| <green><b>Hyväksy</b>: /tpayes " + tpasender.getName())
+                            .hoverEvent(HoverEvent.showText(toMM("Klikkaa hyväksyäksesi."))).clickEvent(ClickEvent.runCommand("/tpayes " + tpasender.getName())));
+                    tpareceiver.sendMessage(toMM("<white>| <red><b>Kieltäydy</b>: /tpano " + tpasender.getName())
+                            .hoverEvent(HoverEvent.showText(toMM("Klikkaa kieltäytyäksesi"))).clickEvent(ClickEvent.runCommand("/tpano " + tpasender.getName())));
 
                     Bukkit.getServer().getScheduler().runTaskLater(SelviytymisHarpake.instance, new Runnable() {
                         @Override
@@ -131,7 +131,7 @@ public class TpaCommands {
                                 tpahere.remove(tpasender);
                                 latestTpaName.remove(tpareceiver);
                                 tpasender.sendMessage("TPAHere-pyyntösi vanhentui.");
-                                tpareceiver.sendMessage(toMiniMessage("<#85FF00>" + tpasender.getName() + ":n </#85FF00>lähettämä TPAHere-pyyntö vanhentui."));
+                                tpareceiver.sendMessage(toMM("<#85FF00>" + tpasender.getName() + ":n </#85FF00>lähettämä TPAHere-pyyntö vanhentui."));
                             }
                         }
                     }, 20 * 30);
@@ -149,7 +149,7 @@ public class TpaCommands {
                         latestTpaName.remove(tpareceiver);
 
                         tpasender.sendMessage("Peruit TPA-pyyntösi.");
-                        tpareceiver.sendMessage(toMiniMessage(tpasender.getName() + " perui TPA-pyyntönsä."));
+                        tpareceiver.sendMessage(toMM(tpasender.getName() + " perui TPA-pyyntönsä."));
                     } else if (tpahere.get(tpasender) != null) {
                         Player tpareceiver = tpahere.get(tpasender);
 
@@ -157,7 +157,7 @@ public class TpaCommands {
                         latestTpaName.remove(tpareceiver);
 
                         tpasender.sendMessage("Peruit TPAHere-pyyntösi.");
-                        tpareceiver.sendMessage(toMiniMessage(tpasender.getName() + " perui TPAHere-pyyntönsä."));
+                        tpareceiver.sendMessage(toMM(tpasender.getName() + " perui TPAHere-pyyntönsä."));
                     }
                 })
                 .register();
@@ -197,7 +197,7 @@ public class TpaCommands {
                         } else if (tpahere.containsKey(tpasender) && tpahere.get(tpasender).equals(tpareceiver)) {
                             acceptTpa(tpasender, tpareceiver, 1);
                         } else {
-                            tpareceiver.sendMessage(toMiniMessage("<white>Sinulla ei ole TPA-pyyntöjä pelaajalta <#85FF00>" + tpasender.getName() + "</#85FF00>."));
+                            tpareceiver.sendMessage(toMM("<white>Sinulla ei ole TPA-pyyntöjä pelaajalta <#85FF00>" + tpasender.getName() + "</#85FF00>."));
                         }
                     }
                 })
@@ -227,7 +227,7 @@ public class TpaCommands {
                         } else if (tpahere.containsKey(tpasender) && tpahere.get(tpasender).equals(tpareceiver)){
                             denyTpa(tpasender, tpareceiver, 1);
                         } else {
-                            tpareceiver.sendMessage(toMiniMessage("<white>Sinulla ei ole TPA-pyyntöjä pelaajalta <#85FF00>" + tpasender.getName() + "</#85FF00>."));
+                            tpareceiver.sendMessage(toMM("<white>Sinulla ei ole TPA-pyyntöjä pelaajalta <#85FF00>" + tpasender.getName() + "</#85FF00>."));
                         }
                     }
                 })
@@ -249,15 +249,15 @@ public class TpaCommands {
 
         if (type == 0) {
             tpasender.teleportAsync(tpareceiver.getLocation());
-            tpareceiver.sendMessage(toMiniMessage("Hyväksyit <#85FF00>" + tpasender.getName() + ":n</#85FF00> TPA-pyynnön."));
-            tpasender.sendMessage(toMiniMessage("<#85FF00>" + tpareceiver.getName() + "</#85FF00> hyväksyi TPA-pyyntösi."));
+            tpareceiver.sendMessage(toMM("Hyväksyit <#85FF00>" + tpasender.getName() + ":n</#85FF00> TPA-pyynnön."));
+            tpasender.sendMessage(toMM("<#85FF00>" + tpareceiver.getName() + "</#85FF00> hyväksyi TPA-pyyntösi."));
 
             tpasender.playSound(tpasender.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 2F, 1F);
             tpareceiver.playSound(tpareceiver.getLocation(), Sound.ENTITY_VILLAGER_YES, 2F, 1F);
         } else if (type == 1){
             tpareceiver.teleportAsync(tpasender.getLocation());
-            tpareceiver.sendMessage(toMiniMessage("Hyväksyit <#85FF00>" + tpasender.getName() + ":n</#85FF00> TPAHere-pyynnön."));
-            tpasender.sendMessage(toMiniMessage("<#85FF00>" + tpareceiver.getName() + "</#85FF00> hyväksyi TPAHere-pyyntösi."));
+            tpareceiver.sendMessage(toMM("Hyväksyit <#85FF00>" + tpasender.getName() + ":n</#85FF00> TPAHere-pyynnön."));
+            tpasender.sendMessage(toMM("<#85FF00>" + tpareceiver.getName() + "</#85FF00> hyväksyi TPAHere-pyyntösi."));
 
             tpareceiver.playSound(tpasender.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 2F, 1F);
             tpasender.playSound(tpareceiver.getLocation(), Sound.ENTITY_VILLAGER_YES, 2F, 1F);
@@ -272,12 +272,12 @@ public class TpaCommands {
         }
         latestTpaName.remove(tpareceiver);
         if (type == 0) {
-            tpareceiver.sendMessage(toMiniMessage("Kieltäydyit <#85FF00>" + tpasender.getName() + ":n</#85FF00> TPA-pyynnöstä."));
-            tpasender.sendMessage(toMiniMessage("<#85FF00>" + tpareceiver.getName() + "</#85FF00> kieltäytyi TPA-pyynnöstäsi."));
+            tpareceiver.sendMessage(toMM("Kieltäydyit <#85FF00>" + tpasender.getName() + ":n</#85FF00> TPA-pyynnöstä."));
+            tpasender.sendMessage(toMM("<#85FF00>" + tpareceiver.getName() + "</#85FF00> kieltäytyi TPA-pyynnöstäsi."));
             tpasender.playSound(tpasender.getLocation(), Sound.ENTITY_VILLAGER_NO, 2F, 1F);
         } else {
-            tpareceiver.sendMessage(toMiniMessage("Kieltäydyit <#85FF00>" + tpasender.getName() + ":n</#85FF00> TPAHere-pyynnöstä."));
-            tpasender.sendMessage(toMiniMessage("<#85FF00>" + tpareceiver.getName() + "</#85FF00> kieltäytyi TPAHere-pyynnöstäsi."));
+            tpareceiver.sendMessage(toMM("Kieltäydyit <#85FF00>" + tpasender.getName() + ":n</#85FF00> TPAHere-pyynnöstä."));
+            tpasender.sendMessage(toMM("<#85FF00>" + tpareceiver.getName() + "</#85FF00> kieltäytyi TPAHere-pyynnöstäsi."));
             tpasender.playSound(tpasender.getLocation(), Sound.ENTITY_VILLAGER_NO, 2F, 1F);
         }
     }
@@ -300,7 +300,7 @@ public class TpaCommands {
         return toggle;
     }
 
-    public @NotNull Component toMiniMessage(@NotNull String string) {
+    public @NotNull Component toMM(@NotNull String string) {
         return MiniMessage.miniMessage().deserialize(string);
     }
 

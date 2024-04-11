@@ -36,7 +36,7 @@ public class WarpMenu {
     }
 
     public void showGUI(Player player) {
-        ChestGui gui = new ChestGui(5, "§5§lWarpit");
+        ChestGui gui = new ChestGui(5, ComponentHolder.of(toMM("<dark_purple><b>Warpit")));
         gui.show(player);
 
         gui.setOnGlobalClick(event -> event.setCancelled(true));
@@ -51,7 +51,7 @@ public class WarpMenu {
         PatternPane border = new PatternPane(0, 0, 9, 5, Pane.Priority.LOWEST, pattern);
         ItemStack background = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta backgroundMeta = background.getItemMeta();
-        backgroundMeta.displayName(toMiniMessage(""));
+        backgroundMeta.displayName(toMM(""));
         background.setItemMeta(backgroundMeta);
         border.bindItem('1', new GuiItem(background));
         gui.addPane(border);
@@ -65,8 +65,11 @@ public class WarpMenu {
 
             ItemStack item = new ItemStack(warp.getCustomItem());
             ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(warp.getName());
-            meta.setLore(List.of("§fOmistaja: §e" + warp.getOwnerName(), "§fKäyttökerrat: §e" + warp.getUses(), "§fHinta: §e" + warp.getPrice() + "Ⓖ§f", "§7§o" + dateString));
+            meta.displayName(Component.text(warp.getName()));
+            meta.lore(List.of(toMM("<white>Omistaja: <yellow>" + warp.getOwnerName()),
+                    toMM("<white>Käyttökerrat: <yellow>" + warp.getUses()),
+                    toMM("<white>Hinta: <yellow>" + warp.getPrice() + "Ⓖ"),
+                    toMM("<gray><i>" + dateString)));
             item.setItemMeta(meta);
             items.add(item);
         }
@@ -80,11 +83,10 @@ public class WarpMenu {
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);
                 player.closeInventory();
                 player.teleportAsync(warp.get().getLocation());
-                player.sendMessage(toMiniMessage("Sinut teleportattiin warppiin <#85FF00>" + warp.get().getName() + "</#85FF00>."));
+                player.sendMessage(toMM("Sinut teleportattiin warppiin <#85FF00>" + warp.get().getName() + "</#85FF00>."));
                 Bukkit.getServer().getScheduler().runTaskLater(SelviytymisHarpake.instance, new Runnable() {
                     @Override
                     public void run() {
-                        player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);
                         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, MAX_VALUE, 1F);
                     }
                 }, 5);
@@ -101,7 +103,7 @@ public class WarpMenu {
 
         ItemStack ownWarps = new ItemStack(Material.OAK_SIGN);
         ItemMeta ownWarpsMeta = ownWarps.getItemMeta();
-        ownWarpsMeta.displayName(toMiniMessage("<b>Omat warpit<b>"));
+        ownWarpsMeta.displayName(toMM("<b>Omat warpit<b>"));
         ownWarps.setItemMeta(ownWarpsMeta);
         navigationPane.addItem(new GuiItem(ownWarps, event -> {
             if (warpManager.getOwnedWarps(player.getUniqueId()).isEmpty()){
@@ -115,7 +117,7 @@ public class WarpMenu {
 
         ItemStack previous = new ItemStack(Material.MANGROVE_BUTTON);
         ItemMeta previousMeta = previous.getItemMeta();
-        previousMeta.displayName(toMiniMessage("<b>Takaisin"));
+        previousMeta.displayName(toMM("<b>Takaisin"));
         previous.setItemMeta(previousMeta);
         navigationPane.addItem(new GuiItem(previous, event -> {
             if (pages.getPage() > 0) {
@@ -127,8 +129,8 @@ public class WarpMenu {
         }), 3, 0);
         ItemStack sorting = new ItemStack(Material.NETHER_STAR);
         ItemMeta sortingMeta = sorting.getItemMeta();
-        sortingMeta.displayName(toMiniMessage("<white><b>Järjestys"));
-        sortingMeta.lore(List.of(toMiniMessage("<white>Järjestäminen on tulossa pian.")));
+        sortingMeta.displayName(toMM("<white><b>Järjestys"));
+        sortingMeta.lore(List.of(toMM("<white>Järjestäminen on tulossa pian.")));
         sorting.setItemMeta(sortingMeta);
         navigationPane.addItem(new GuiItem(sorting, event -> {
             player.sendMessage("Tulossa pian.");
@@ -136,7 +138,7 @@ public class WarpMenu {
         }), 4, 0);
         ItemStack next = new ItemStack(Material.WARPED_BUTTON);
         ItemMeta nextMeta = next.getItemMeta();
-        nextMeta.displayName(toMiniMessage("<b>Seuraava"));
+        nextMeta.displayName(toMM("<b>Seuraava"));
         next.setItemMeta(nextMeta);
         navigationPane.addItem(new GuiItem(next, event -> {
             if (pages.getPage() < pages.getPages() - 1) {
@@ -152,7 +154,7 @@ public class WarpMenu {
     }
 
     private void confirmMenu(Player player, ItemStack item, Warp warp) {
-        ChestGui gui = new ChestGui(3, "§4§lVarmista osto");
+        ChestGui gui = new ChestGui(3, ComponentHolder.of(toMM("<dark_red><b>Varmista osto")));
         gui.show(player);
 
         gui.setOnGlobalClick(event -> event.setCancelled(true));
@@ -167,17 +169,17 @@ public class WarpMenu {
 
         ItemStack accept = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
         ItemMeta acceptMeta = accept.getItemMeta();
-        acceptMeta.displayName(toMiniMessage("<green><b>Hyväksy"));
+        acceptMeta.displayName(toMM("<green><b>Hyväksy"));
         accept.setItemMeta(acceptMeta);
 
         ItemStack cancel = new ItemStack(Material.RED_STAINED_GLASS_PANE);
         ItemMeta cancelMeta = cancel.getItemMeta();
-        cancelMeta.displayName(toMiniMessage("<red><b>Hylkää"));
+        cancelMeta.displayName(toMM("<red><b>Hylkää"));
         cancel.setItemMeta(cancelMeta);
 
         ItemStack background = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta backgroundMeta = background.getItemMeta();
-        backgroundMeta.displayName(toMiniMessage(""));
+        backgroundMeta.displayName(toMM(""));
         background.setItemMeta(backgroundMeta);
 
         pane.bindItem('1', new GuiItem(background));
@@ -189,10 +191,10 @@ public class WarpMenu {
 
             if (SelviytymisHarpake.getEconomy().getBalance(player) >= price) {
                 SelviytymisHarpake.getEconomy().withdrawPlayer(player, price);
-                player.sendMessage(toMiniMessage("Tililtäsi veloitettiin <#85FF00>" + price + "Ⓖ</#85FF00>."));
+                player.sendMessage(toMM("Tililtäsi veloitettiin <#85FF00>" + price + "Ⓖ</#85FF00>."));
                 player.closeInventory();
                 player.teleportAsync(warp.getLocation());
-                player.sendMessage(toMiniMessage("Sinut teleportattiin warppiin <#85FF00>" + warp.getName() + "</#85FF00>."));
+                player.sendMessage(toMM("Sinut teleportattiin warppiin <#85FF00>" + warp.getName() + "</#85FF00>."));
 
                 if (!player.getName().equals(warp.getOwnerName())){
                     warpManager.addUses(warp);
@@ -204,11 +206,11 @@ public class WarpMenu {
                 }else{
                     Player owner = Bukkit.getPlayer(ownerUUID);
                     SelviytymisHarpake.getEconomy().depositPlayer(owner, price);
-                    owner.sendMessage("Sinun maksullista warppia käytettiin, sait §e" + price + "Ⓖ§f.");
+                    owner.sendMessage(toMM("Sinun maksullista warppia käytettiin, sait <#85FF00>" + price + "Ⓖ</#85FF00>."));
                 }
             } else {
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
-                player.sendMessage(toMiniMessage("Nyt kyllä loppu hilut kesken, tarviit <#85FF00>" + price + "Ⓖ</#85FF00> käyttääksesi tätä warppia."));
+                player.sendMessage(toMM("Nyt kyllä loppu hilut kesken, tarviit <#85FF00>" + price + "Ⓖ</#85FF00> käyttääksesi tätä warppia."));
                 player.closeInventory();
             }
         }));
@@ -224,7 +226,7 @@ public class WarpMenu {
     }
 
     public void showOwnWarps(Player player) {
-        ChestGui gui = new ChestGui(5, ComponentHolder.of(toMiniMessage("<dark_green><b>Omat warpit")));
+        ChestGui gui = new ChestGui(5, ComponentHolder.of(toMM("<dark_green><b>Omat warpit")));
         gui.show(player);
 
         gui.setOnGlobalClick(event -> event.setCancelled(true));
@@ -239,7 +241,7 @@ public class WarpMenu {
         PatternPane border = new PatternPane(0, 0, 9, 5, Pane.Priority.LOWEST, pattern);
         ItemStack background = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
         ItemMeta backgroundMeta = background.getItemMeta();
-        backgroundMeta.displayName(toMiniMessage(""));
+        backgroundMeta.displayName(toMM(""));
         background.setItemMeta(backgroundMeta);
         border.bindItem('1', new GuiItem(background));
         gui.addPane(border);
@@ -253,8 +255,11 @@ public class WarpMenu {
 
             ItemStack item = new ItemStack(warp.getCustomItem());
             ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(warp.getName());
-            meta.setLore(List.of("§a§lKlikkaa muokataksesi", "§fKäyttökerrat: §e" + warp.getUses(), "§fHinta: §e" + warp.getPrice() + "Ⓖ§f", "§7§o" + dateString));
+            meta.displayName(Component.text(warp.getName()));
+            meta.lore(List.of(toMM("<green><b>Klikkaa muokataksesi"),
+                    toMM("<white>Käyttökerrat: <yellow>" + warp.getUses()),
+                    toMM("<white>Hinta: <yellow>" + warp.getPrice() + "Ⓖ"),
+                    toMM("<gray><i>" + dateString)));
             item.setItemMeta(meta);
             items.add(item);
         }
@@ -273,7 +278,7 @@ public class WarpMenu {
 
         ItemStack back = new ItemStack(Material.BARRIER);
         ItemMeta backMeta = back.getItemMeta();
-        backMeta.displayName(toMiniMessage("<white><b>Peruuta<b>"));
+        backMeta.displayName(toMM("<white><b>Peruuta<b>"));
         back.setItemMeta(backMeta);
         navigationPane.addItem(new GuiItem(back, event -> {
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.8F, 0.7F);
@@ -283,7 +288,7 @@ public class WarpMenu {
 
         ItemStack previous = new ItemStack(Material.MANGROVE_BUTTON);
         ItemMeta previousMeta = previous.getItemMeta();
-        previousMeta.displayName(toMiniMessage("<b>Takaisin"));
+        previousMeta.displayName(toMM("<b>Takaisin"));
         previous.setItemMeta(previousMeta);
         navigationPane.addItem(new GuiItem(previous, event -> {
             if (pages.getPage() > 0) {
@@ -295,8 +300,8 @@ public class WarpMenu {
         }), 3, 0);
         ItemStack sorting = new ItemStack(Material.NETHER_STAR);
         ItemMeta sortingMeta = sorting.getItemMeta();
-        sortingMeta.displayName(toMiniMessage("<white><b>Järjestys"));
-        sortingMeta.lore(List.of(toMiniMessage("<white>Järjestäminen on tulossa pian.")));
+        sortingMeta.displayName(toMM("<white><b>Järjestys"));
+        sortingMeta.lore(List.of(toMM("<white>Järjestäminen on tulossa pian.")));
         sorting.setItemMeta(sortingMeta);
         navigationPane.addItem(new GuiItem(sorting, event -> {
             player.sendMessage("Tulossa pian.");
@@ -304,7 +309,7 @@ public class WarpMenu {
         }), 4, 0);
         ItemStack next = new ItemStack(Material.WARPED_BUTTON);
         ItemMeta nextMeta = next.getItemMeta();
-        nextMeta.displayName(toMiniMessage("<b>Seuraava"));
+        nextMeta.displayName(toMM("<b>Seuraava"));
         next.setItemMeta(nextMeta);
         navigationPane.addItem(new GuiItem(next, event -> {
             if (pages.getPage() < pages.getPages() - 1) {
@@ -320,7 +325,7 @@ public class WarpMenu {
     }
 
     public void showWarpEditMenu(Player player, Warp warp) {
-        ChestGui gui = new ChestGui(5, ComponentHolder.of(toMiniMessage("<dark_green><b>Warp:</b> " + warp.getName())));
+        ChestGui gui = new ChestGui(5, ComponentHolder.of(toMM("<dark_green><b>Warp:</b> " + warp.getName())));
         gui.show(player);
 
         gui.setOnGlobalClick(event -> event.setCancelled(true));
@@ -335,7 +340,7 @@ public class WarpMenu {
         PatternPane border = new PatternPane(0, 0, 9, 5, Pane.Priority.LOWEST, pattern);
         ItemStack background = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
         ItemMeta backgroundMeta = background.getItemMeta();
-        backgroundMeta.displayName(toMiniMessage(""));
+        backgroundMeta.displayName(toMM(""));
         background.setItemMeta(backgroundMeta);
         border.bindItem('1', new GuiItem(background));
         gui.addPane(border);
@@ -344,8 +349,8 @@ public class WarpMenu {
 
         ItemStack nameEdit = new ItemStack(Material.ANVIL);
         ItemMeta nameEditMeta = nameEdit.getItemMeta();
-        nameEditMeta.displayName(toMiniMessage("<white><b>Muokkaa nimeä</b>"));
-        nameEditMeta.lore(List.of(toMiniMessage("<white>Nyt: <#85FF00>" + warp.getName())));
+        nameEditMeta.displayName(toMM("<white><b>Muokkaa nimeä</b>"));
+        nameEditMeta.lore(List.of(toMM("<white>Nyt: <#85FF00>" + warp.getName())));
         nameEdit.setItemMeta(nameEditMeta);
 
         settingPane.addItem(new GuiItem(nameEdit, event -> {
@@ -355,8 +360,8 @@ public class WarpMenu {
 
         ItemStack itemEdit = new ItemStack(warp.getCustomItem());
         ItemMeta itemEditMeta = itemEdit.getItemMeta();
-        itemEditMeta.displayName(toMiniMessage("<white><b>Muokkaa materiaalia</b>"));
-        itemEditMeta.lore(List.of(toMiniMessage("<white>Nyt: <#85FF00><lang:" + warp.getCustomItem().getItemTranslationKey() + ">")));
+        itemEditMeta.displayName(toMM("<white><b>Muokkaa materiaalia</b>"));
+        itemEditMeta.lore(List.of(toMM("<white>Nyt: <#85FF00><lang:" + warp.getCustomItem().getItemTranslationKey() + ">")));
         itemEdit.setItemMeta(itemEditMeta);
 
         settingPane.addItem(new GuiItem(itemEdit, event -> {
@@ -366,8 +371,8 @@ public class WarpMenu {
 
         ItemStack priceEdit = new ItemStack(Material.GOLD_NUGGET);
         ItemMeta priceEditMeta = priceEdit.getItemMeta();
-        priceEditMeta.displayName(toMiniMessage("<white><b>Muokkaa hintaa</b>"));
-        priceEditMeta.lore(List.of(toMiniMessage("<white>Nyt: <#85FF00>" + warp.getPrice() + "Ⓖ")));
+        priceEditMeta.displayName(toMM("<white><b>Muokkaa hintaa</b>"));
+        priceEditMeta.lore(List.of(toMM("<white>Nyt: <#85FF00>" + warp.getPrice() + "Ⓖ")));
         priceEdit.setItemMeta(priceEditMeta);
 
         settingPane.addItem(new GuiItem(priceEdit, event -> {
@@ -377,8 +382,8 @@ public class WarpMenu {
 
         ItemStack delete = new ItemStack(Material.REDSTONE_BLOCK);
         ItemMeta deleteMeta = delete.getItemMeta();
-        deleteMeta.displayName(toMiniMessage("<red><b>Poista warp</b>"));
-        deleteMeta.lore(List.of(toMiniMessage("<white>Klikkaamalla warppi poistuu heti.</white>")));
+        deleteMeta.displayName(toMM("<red><b>Poista warp</b>"));
+        deleteMeta.lore(List.of(toMM("<white>Klikkaamalla warppi poistuu heti.</white>")));
         delete.setItemMeta(deleteMeta);
 
         settingPane.addItem(new GuiItem(delete, event -> {
@@ -395,7 +400,7 @@ public class WarpMenu {
 
         ItemStack back = new ItemStack(Material.BARRIER);
         ItemMeta backMeta = back.getItemMeta();
-        backMeta.displayName(toMiniMessage("<white><b>Peruuta<b>"));
+        backMeta.displayName(toMM("<white><b>Peruuta<b>"));
         back.setItemMeta(backMeta);
         navigationPane.addItem(new GuiItem(back, event -> {
             showOwnWarps(player);
@@ -410,7 +415,7 @@ public class WarpMenu {
     }
 
     public void showNameChangeMenu(Player player, Warp warp) {
-        AnvilGui gui = new AnvilGui(ComponentHolder.of(toMiniMessage("<dark_green><b>Syötä nimi...")));
+        AnvilGui gui = new AnvilGui(ComponentHolder.of(toMM("<dark_green><b>Syötä nimi...")));
         gui.show(player);
 
         gui.setOnGlobalClick(event -> event.setCancelled(true));
@@ -428,7 +433,7 @@ public class WarpMenu {
 
         ItemStack done = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
         ItemMeta doneMeta = done.getItemMeta();
-        doneMeta.displayName(toMiniMessage("<green>Valmis"));
+        doneMeta.displayName(toMM("<green>Valmis"));
         done.setItemMeta(doneMeta);
 
         GuiItem doneItem = new GuiItem(done, event -> {
@@ -445,7 +450,7 @@ public class WarpMenu {
         gui.update();
     }
     public void showItemChangeMenu(Player player, Warp warp) {
-        ChestGui gui = new ChestGui(5, ComponentHolder.of(toMiniMessage("<dark_green><b>Valitse materiaali...")));
+        ChestGui gui = new ChestGui(5, ComponentHolder.of(toMM("<dark_green><b>Valitse materiaali...")));
         gui.show(player);
 
         gui.setOnGlobalClick(event -> event.setCancelled(true));
@@ -460,7 +465,7 @@ public class WarpMenu {
         PatternPane border = new PatternPane(0, 0, 9, 5, Pane.Priority.LOWEST, pattern);
         ItemStack background = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
         ItemMeta backgroundMeta = background.getItemMeta();
-        backgroundMeta.displayName(toMiniMessage(""));
+        backgroundMeta.displayName(toMM(""));
         background.setItemMeta(backgroundMeta);
         border.bindItem('1', new GuiItem(background));
         gui.addPane(border);
@@ -474,8 +479,8 @@ public class WarpMenu {
             }
             ItemStack item = new ItemStack(material);
             ItemMeta meta = item.getItemMeta();
-            meta.displayName(toMiniMessage("<#85FF00><lang:" + material.getItemTranslationKey() + "></#85FF00>"));
-            meta.lore(List.of(toMiniMessage("<white>Klikkaa valitaksesi</white>")));
+            meta.displayName(toMM("<#85FF00><lang:" + material.getItemTranslationKey() + "></#85FF00>"));
+            meta.lore(List.of(toMM("<white>Klikkaa valitaksesi</white>")));
             item.setItemMeta(meta);
             items.add(item);
         }
@@ -495,7 +500,7 @@ public class WarpMenu {
 
         ItemStack back = new ItemStack(Material.BARRIER);
         ItemMeta backMeta = back.getItemMeta();
-        backMeta.displayName(toMiniMessage("<white><b>Peruuta<b>"));
+        backMeta.displayName(toMM("<white><b>Peruuta<b>"));
         back.setItemMeta(backMeta);
         navigationPane.addItem(new GuiItem(back, event -> {
             showWarpEditMenu(player, warp);
@@ -505,7 +510,7 @@ public class WarpMenu {
 
         ItemStack previous = new ItemStack(Material.MANGROVE_BUTTON);
         ItemMeta previousMeta = previous.getItemMeta();
-        previousMeta.displayName(toMiniMessage("<b>Takaisin"));
+        previousMeta.displayName(toMM("<b>Takaisin"));
         previous.setItemMeta(previousMeta);
         navigationPane.addItem(new GuiItem(previous, event -> {
             if (pages.getPage() > 0) {
@@ -517,7 +522,7 @@ public class WarpMenu {
         }), 3, 0);
         ItemStack next = new ItemStack(Material.WARPED_BUTTON);
         ItemMeta nextMeta = next.getItemMeta();
-        nextMeta.displayName(toMiniMessage("<b>Seuraava"));
+        nextMeta.displayName(toMM("<b>Seuraava"));
         next.setItemMeta(nextMeta);
         navigationPane.addItem(new GuiItem(next, event -> {
             if (pages.getPage() < pages.getPages() - 8) {
@@ -533,7 +538,7 @@ public class WarpMenu {
     }
 
     public void showPriceChangeMenu(Player player, Warp warp) {
-        ChestGui gui = new ChestGui(5, ComponentHolder.of(toMiniMessage("<dark_green><b>Syötä hinta...")));
+        ChestGui gui = new ChestGui(5, ComponentHolder.of(toMM("<dark_green><b>Syötä hinta...")));
         gui.show(player);
 
         gui.setOnGlobalClick(event -> event.setCancelled(true));
@@ -548,7 +553,7 @@ public class WarpMenu {
         PatternPane border = new PatternPane(0, 0, 9, 5, Pane.Priority.LOWEST, pattern);
         ItemStack background = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
         ItemMeta backgroundMeta = background.getItemMeta();
-        backgroundMeta.displayName(toMiniMessage(""));
+        backgroundMeta.displayName(toMM(""));
         background.setItemMeta(backgroundMeta);
         border.bindItem('1', new GuiItem(background));
         gui.addPane(border);
@@ -564,12 +569,12 @@ public class WarpMenu {
         PatternPane numberPane = new PatternPane(3, 1, 3, 4, pattern1);
         ItemStack item = new ItemStack(Material.CYAN_STAINED_GLASS_PANE);
         ItemMeta itemMeta = item.getItemMeta();
-        itemMeta.displayName(toMiniMessage("<#85FF00><b>" + "?")); // Set a placeholder display name
+        itemMeta.displayName(toMM("<#85FF00><b>" + "?")); // Set a placeholder display name
 
         for (int i = 1; i <= 9; i++) {
             String numberString = String.valueOf(i);
             char character = numberString.charAt(0); // Get first character (character code)
-            itemMeta.displayName(toMiniMessage("<#85FF00><b>" + numberString)); // Set display name with string
+            itemMeta.displayName(toMM("<#85FF00><b>" + numberString)); // Set display name with string
             item.setItemMeta(itemMeta);
             item.setAmount(i);
             int finalI = i;
@@ -577,21 +582,21 @@ public class WarpMenu {
                 if (stringBuilder.length() < 3) {
                     stringBuilder.append(finalI);
                     player.playSound(player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 0.8F, 0.8F);
-                    gui.setTitle(ComponentHolder.of(toMiniMessage("<dark_green><b>Hinta: " + stringBuilder + "</b>Ⓖ")));
+                    gui.setTitle(ComponentHolder.of(toMM("<dark_green><b>Hinta: " + stringBuilder + "</b>Ⓖ")));
                     gui.update();
                 } else {
                     player.sendMessage("Warpin hinta voi olla korkeintaan 3 lukua pitkä (max 999).");
                 }
             }));
         }
-        itemMeta.displayName(toMiniMessage("<#85FF00><b>0")); // Set a placeholder display name
+        itemMeta.displayName(toMM("<#85FF00><b>0")); // Set a placeholder display name
         item.setItemMeta(itemMeta);
         item.setAmount(1);
         numberPane.bindItem('0', new GuiItem(item.clone(), event -> {
             if (stringBuilder.length() < 3) {
                 stringBuilder.append(0);
                 player.playSound(player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 0.8F, 0.8F);
-                gui.setTitle(ComponentHolder.of(toMiniMessage("<dark_green><b>Hinta: " + stringBuilder + "</b>Ⓖ")));
+                gui.setTitle(ComponentHolder.of(toMM("<dark_green><b>Hinta: " + stringBuilder + "</b>Ⓖ")));
                 gui.update();
             } else {
                 player.sendMessage("Warpin hinta voi olla korkeintaan 3 lukua pitkä (max 999).");
@@ -602,7 +607,7 @@ public class WarpMenu {
 
         ItemStack back = new ItemStack(Material.BARRIER);
         ItemMeta backMeta = back.getItemMeta();
-        backMeta.displayName(toMiniMessage("<white><b>Peruuta<b>"));
+        backMeta.displayName(toMM("<white><b>Peruuta<b>"));
         back.setItemMeta(backMeta);
         navigationPane.addItem(new GuiItem(back, event -> {
             showWarpEditMenu(player, warp);
@@ -612,23 +617,23 @@ public class WarpMenu {
         }), 1, 0);
         ItemStack remove = new ItemStack(Material.RED_STAINED_GLASS_PANE);
         ItemMeta removeMeta = remove.getItemMeta();
-        removeMeta.displayName(toMiniMessage("<red><b>-<b>"));
+        removeMeta.displayName(toMM("<red><b>-<b>"));
         remove.setItemMeta(removeMeta);
         navigationPane.addItem(new GuiItem(remove, event -> {
             if (!stringBuilder.isEmpty()) {
                 stringBuilder.deleteCharAt(stringBuilder.length() - 1);
                 player.playSound(player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 0.8F, 0.8F);
                 if (stringBuilder.isEmpty()){
-                    gui.setTitle(ComponentHolder.of(toMiniMessage("<dark_green><b>Syötä hinta...")));
+                    gui.setTitle(ComponentHolder.of(toMM("<dark_green><b>Syötä hinta...")));
                 } else {
-                    gui.setTitle(ComponentHolder.of(toMiniMessage("<dark_green><b>Hinta: " + stringBuilder + "</b>Ⓖ")));
+                    gui.setTitle(ComponentHolder.of(toMM("<dark_green><b>Hinta: " + stringBuilder + "</b>Ⓖ")));
                 }
                 gui.update();
             }
         }), 3, 0);
         ItemStack confirm = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
         ItemMeta confirmMeta = confirm.getItemMeta();
-        confirmMeta.displayName(toMiniMessage("<green><b>Valmis<b>"));
+        confirmMeta.displayName(toMM("<green><b>Valmis<b>"));
         confirm.setItemMeta(confirmMeta);
         navigationPane.addItem(new GuiItem(confirm, event -> {
             if (!stringBuilder.isEmpty()) {
@@ -644,7 +649,7 @@ public class WarpMenu {
     }
 
 
-    public @NotNull Component toMiniMessage(@NotNull String string) {
+    public @NotNull Component toMM(@NotNull String string) {
         return MiniMessage.miniMessage().deserialize(string).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }
 }

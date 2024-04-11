@@ -3,9 +3,12 @@ package net.gahvila.selviytymisharpake.Resurssinether;
 import de.leonhard.storage.Json;
 import dev.jorel.commandapi.CommandAPICommand;
 import net.gahvila.selviytymisharpake.SelviytymisHarpake;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -29,12 +32,10 @@ public class ResourceNetherCMD  {
                     if (!generation) {
                         if (!cooldown.containsKey(p.getUniqueId())) {
                             if (!confirmation.containsKey(p) || confirmation.get(p) == null) {
-                                p.sendMessage("");
-                                p.sendMessage("§c§lʀᴇsᴜʀssɪɴᴇᴛʜᴇʀ");
-                                p.sendMessage("§fSinut teleportataan satunnaiseen sijaintiin resurssinetherissä.");
-                                p.sendMessage("");
-                                p.sendMessage("§fSijainti voi olla vaarallinen, joten tarkista ympäristösi ennen kuin alat juoksemaan satunnaiseen suuntaan.");
-                                p.sendMessage("§cOletko varma? Suorita komento uudelleen.");
+                                p.sendMessage(toMM("<br><red><b>ʀᴇsᴜʀssɪɴᴇᴛʜᴇʀ</b></red><br>" +
+                                        "<white>Sinut teleportataan satunnaiseen sijaintiin resurssinetherissä.<br><br>" +
+                                        "Sijainti voi olla vaarallinen, joten tarkista ympäristösi ennen kuin alat juoksemaan satunnaiseen suuntaan." +
+                                        "<red>Oletko varma? Suorita komento uudelleen.</red>"));
                                 confirmation.put(p, 1);
                                 Bukkit.getScheduler().runTaskLater(SelviytymisHarpake.instance, () -> confirmation.remove(p), 300);
                             } else if (confirmation.get(p) == 1) {
@@ -46,7 +47,7 @@ public class ResourceNetherCMD  {
                             }
                         } else {
                             long secondsleft = ((cooldown.get(p.getUniqueId()) / 1000) + cooldowntime) - (System.currentTimeMillis() / 1000);
-                            p.sendMessage("Voit suorittaa tuon uudelleen §e" + secondsleft + " §fsekuntin päästä.");
+                            p.sendMessage(toMM("Voit suorittaa tuon uudelleen <#85FF00>" + secondsleft + "</#85FF00> sekuntin päästä."));
                         }
                     }else {
                         p.sendMessage("Et voi mennä resurssinetheriin tällä hetkellä.");
@@ -54,5 +55,9 @@ public class ResourceNetherCMD  {
                 })
 
                 .register();
+    }
+
+    public @NotNull Component toMM(@NotNull String string) {
+        return MiniMessage.miniMessage().deserialize(string);
     }
 }

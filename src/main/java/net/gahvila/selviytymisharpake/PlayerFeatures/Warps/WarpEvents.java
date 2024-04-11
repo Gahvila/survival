@@ -1,12 +1,15 @@
 package net.gahvila.selviytymisharpake.PlayerFeatures.Warps;
 
 import net.gahvila.selviytymisharpake.SelviytymisHarpake;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class WarpEvents implements Listener {
     private final WarpManager warpManager;
@@ -27,7 +30,11 @@ public class WarpEvents implements Listener {
             Integer toBePaid = warpManager.getMoneyInQueue(String.valueOf(p.getUniqueId()));
             warpManager.setMoneyInQueue(p.getUniqueId().toString(), 0);
             SelviytymisHarpake.getEconomy().depositPlayer(p, toBePaid);
-            p.sendMessage("Sinun maksullista warppia käytettiin kun olit poissa, sait §e" + toBePaid + "Ⓖ§f.");
+            p.sendMessage(toMM("Sinun maksullista warppia käytettiin kun olit poissa, sait <#85FF00>" + toBePaid + "</#85FF00>."));
         }
+    }
+
+    public @NotNull Component toMM(@NotNull String string) {
+        return MiniMessage.miniMessage().deserialize(string);
     }
 }

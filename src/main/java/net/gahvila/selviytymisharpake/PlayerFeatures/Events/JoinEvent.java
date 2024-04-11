@@ -1,12 +1,16 @@
 package net.gahvila.selviytymisharpake.PlayerFeatures.Events;
 
 import net.gahvila.selviytymisharpake.PlayerFeatures.Spawn.SpawnTeleport;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class JoinEvent implements Listener {
     @EventHandler
@@ -18,7 +22,7 @@ public class JoinEvent implements Listener {
 
             SpawnTeleport.teleportSpawn(p);
 
-            e.setJoinMessage("§e" + p.getName() + "§r §fliittyi Survivaliin ensimmäistä kertaa, tervetuloa!");
+            e.joinMessage(toMM("<#85FF00>" + p.getName() + "</#85FF00> liittyi Survivaliin ensimmäistä kertaa, tervetuloa!"));
 
             //join kit
 
@@ -28,6 +32,8 @@ public class JoinEvent implements Listener {
             e.setJoinMessage(null);
         }
     }
-
+    public @NotNull Component toMM(@NotNull String string) {
+        return MiniMessage.miniMessage().deserialize(string).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+    }
 
 }

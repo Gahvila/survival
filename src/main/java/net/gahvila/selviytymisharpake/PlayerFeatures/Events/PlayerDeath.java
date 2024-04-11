@@ -2,6 +2,8 @@ package net.gahvila.selviytymisharpake.PlayerFeatures.Events;
 
 import net.gahvila.selviytymisharpake.PlayerFeatures.Back.BackListener;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Spawn.SpawnTeleport;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -9,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.jetbrains.annotations.NotNull;
 
 import static java.lang.Long.MAX_VALUE;
 
@@ -28,7 +31,7 @@ public class PlayerDeath implements Listener {
             if (e.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.END_PORTAL)){
                 p.sendMessage("Sinut teleportattiin sängyllesi.");
             }else{
-                p.sendMessage("Sinä kuolit. Sinut teleportattiin sängyllesi. Voit teleportata kuolinpaikallesi komennolla §e/back §fmaksamalla.");
+                p.sendMessage(toMM("Sinä kuolit. Sinut teleportattiin sängyllesi. Voit teleportata kuolinpaikallesi komennolla <#85FF00>/back</#85FF00> maksamalla."));
             }
         }else{
             p.sendMessage("");
@@ -36,7 +39,7 @@ public class PlayerDeath implements Listener {
             if (e.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.END_PORTAL)){
                 p.sendMessage("Sinut teleportattiin spawnille.");
             }else {
-                p.sendMessage("Sinä kuolit eikä sinulla ole sänkyä asetettuna. Sinut teleportattiin spawnille. Voit teleportata kuolinpaikallesi komennolla §e/back §fmaksamalla.");
+                p.sendMessage(toMM("Sinä kuolit eikä sinulla ole sänkyä asetettuna. Sinut teleportattiin spawnille. Voit teleportata kuolinpaikallesi komennolla <#85FF00>/back</#85FF00> maksamalla."));
             }
             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, MAX_VALUE, 1F);
             e.setRespawnLocation(new Location(Bukkit.getWorld("spawn"), 20.5, 81, -40.5, 180.0f, 0.0f));
@@ -48,5 +51,9 @@ public class PlayerDeath implements Listener {
             SpawnTeleport.teleportSpawn(p);
 
         }
+    }
+
+    public @NotNull Component toMM(@NotNull String string) {
+        return MiniMessage.miniMessage().deserialize(string);
     }
 }

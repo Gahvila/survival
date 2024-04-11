@@ -37,8 +37,8 @@ public class Pets implements Listener {
                         transferingPet.remove(p);
                     } else {
                         Player receiver = (Player) args.get("nimi");
-                        p.sendMessage(toMiniMessage("Aloitit lemmikin siirtämisen pelaajalle <#85FF00>" + receiver.getName() + "</#85FF00>."));
-                        p.sendMessage(toMiniMessage("Sinulla on <#85FF00>10 sekuntia</#85FF00> aikaa valita lemmikki. Siirrettävän valitset oikea-klikkaamalla sitä."));
+                        p.sendMessage(toMM("Aloitit lemmikin siirtämisen pelaajalle <#85FF00>" + receiver.getName() + "</#85FF00>."));
+                        p.sendMessage(toMM("Sinulla on <#85FF00>10 sekuntia</#85FF00> aikaa valita lemmikki. Siirrettävän valitset oikea-klikkaamalla sitä."));
                         transferingPet.put(p, receiver);
 
                         Bukkit.getServer().getScheduler().runTaskLater(SelviytymisHarpake.instance, new Runnable() {
@@ -46,7 +46,7 @@ public class Pets implements Listener {
                             public void run() {
                                 if (transferingPet.get(p) != null) {
                                     transferingPet.remove(p);
-                                    p.sendMessage(toMiniMessage("Siirto vanhentui."));
+                                    p.sendMessage(toMM("Siirto vanhentui."));
                                 }
                             }
                         }, 20 * 10);
@@ -75,8 +75,8 @@ public class Pets implements Listener {
         currentOwner.playSound(receiver.getLocation(), Sound.ENTITY_VILLAGER_YES, 2F, 1F);
         receiver.playSound(receiver.getLocation(), Sound.ENTITY_VILLAGER_YES, 2F, 1F);
 
-        currentOwner.sendMessage(toMiniMessage("Lemmikki siirretty pelaajalle <#85FF00>" + receiver.getName() + "</#85FF00> onnistuneesti."));
-        receiver.sendMessage(toMiniMessage("Pelaaja <#85FF00>" + currentOwner.getName() + "</#85FF00> siirsi lemmikin omistajuuden sinulle."));
+        currentOwner.sendMessage(toMM("Lemmikki siirretty pelaajalle <#85FF00>" + receiver.getName() + "</#85FF00> onnistuneesti."));
+        receiver.sendMessage(toMM("Pelaaja <#85FF00>" + currentOwner.getName() + "</#85FF00> siirsi lemmikin omistajuuden sinulle."));
 
         transferingPet.remove(currentOwner);
     }
@@ -112,7 +112,7 @@ public class Pets implements Listener {
 
     }
 
-    public @NotNull Component toMiniMessage(@NotNull String string) {
+    public @NotNull Component toMM(@NotNull String string) {
         return MiniMessage.miniMessage().deserialize(string);
     }
 }

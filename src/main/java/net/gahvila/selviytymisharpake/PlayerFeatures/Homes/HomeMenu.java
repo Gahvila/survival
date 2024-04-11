@@ -1,5 +1,6 @@
 package net.gahvila.selviytymisharpake.PlayerFeatures.Homes;
 
+import com.github.stefvanschie.inventoryframework.adventuresupport.ComponentHolder;
 import com.github.stefvanschie.inventoryframework.font.util.Font;
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
@@ -34,7 +35,7 @@ public class HomeMenu {
     }
 
     public void showGUI(Player player) {
-        ChestGui gui = new ChestGui(5, "§5§lKodit");
+        ChestGui gui = new ChestGui(5, ComponentHolder.of(toMM("<dark_purple><b>Kodit")));
         gui.show(player);
 
         gui.setOnGlobalClick(event -> event.setCancelled(true));
@@ -49,7 +50,7 @@ public class HomeMenu {
         PatternPane border = new PatternPane(0, 0, 9, 5, Pane.Priority.LOWEST, pattern);
         ItemStack background = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta backgroundMeta = background.getItemMeta();
-        backgroundMeta.displayName(toMiniMessage(""));
+        backgroundMeta.displayName(toMM(""));
         background.setItemMeta(backgroundMeta);
         border.bindItem('1', new GuiItem(background));
         gui.addPane(border);
@@ -78,7 +79,7 @@ public class HomeMenu {
             if (homeLocation != null){
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);
                 player.teleportAsync(homeLocation);
-                player.sendMessage(toMiniMessage("<white>Sinut teleportattiin kotiin</white> <#85FF00>" + homeName + "</#85FF00>."));
+                player.sendMessage(toMM("<white>Sinut teleportattiin kotiin</white> <#85FF00>" + homeName + "</#85FF00>."));
                 Bukkit.getServer().getScheduler().runTaskLater(SelviytymisHarpake.instance, new Runnable() {
                     @Override
                     public void run() {
@@ -95,7 +96,7 @@ public class HomeMenu {
 
         ItemStack previous = new ItemStack(Material.MANGROVE_BUTTON);
         ItemMeta previousMeta = previous.getItemMeta();
-        previousMeta.displayName(toMiniMessage("<b>Takaisin"));
+        previousMeta.displayName(toMM("<b>Takaisin"));
         previous.setItemMeta(previousMeta);
         navigationPane.addItem(new GuiItem(previous, event -> {
             if (pages.getPage() > 0) {
@@ -107,7 +108,7 @@ public class HomeMenu {
         }), 3, 0);
         ItemStack next = new ItemStack(Material.WARPED_BUTTON);
         ItemMeta nextMeta = next.getItemMeta();
-        nextMeta.displayName(toMiniMessage("<b>Seuraava"));
+        nextMeta.displayName(toMM("<b>Seuraava"));
         next.setItemMeta(nextMeta);
         navigationPane.addItem(new GuiItem(next, event -> {
             if (pages.getPage() < pages.getPages() - 1) {
@@ -122,7 +123,7 @@ public class HomeMenu {
         gui.update();
     }
 
-    public @NotNull Component toMiniMessage(@NotNull String string) {
+    public @NotNull Component toMM(@NotNull String string) {
         return MiniMessage.miniMessage().deserialize(string).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }
 }

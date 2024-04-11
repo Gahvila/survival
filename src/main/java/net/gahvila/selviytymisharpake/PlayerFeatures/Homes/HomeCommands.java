@@ -51,12 +51,12 @@ public class HomeCommands {
                     String nimi = args.getRaw("koti");
                     UUID uuid = p.getUniqueId();
                     if (homeManager.getHomes(uuid) == null) {
-                        p.sendMessage(toMiniMessage("</white>Sinulla ei ole kotia nimellä <#85FF00>" + nimi + "</#85FF00><white>.</white>"));
+                        p.sendMessage(toMM("</white>Sinulla ei ole kotia nimellä <#85FF00>" + nimi + "</#85FF00><white>.</white>"));
                     } else if (homeManager.getHomes(uuid).contains(nimi)) {
                         homeManager.deleteHome(uuid, nimi);
-                        p.sendMessage(toMiniMessage("<white>Koti nimellä</white> <#85FF00>" + nimi + "</#85FF00> <white>poistettu.</white>"));
+                        p.sendMessage(toMM("<white>Koti nimellä</white> <#85FF00>" + nimi + "</#85FF00> <white>poistettu.</white>"));
                     } else {
-                        p.sendMessage(toMiniMessage("<white>Sinulla ei ole kotia nimellä</white> <#85FF00>" + nimi + "</#85FF00><white>.</white>"));
+                        p.sendMessage(toMM("<white>Sinulla ei ole kotia nimellä</white> <#85FF00>" + nimi + "</#85FF00><white>.</white>"));
                     }
                 })
                 .register();
@@ -72,12 +72,12 @@ public class HomeCommands {
 
                     UUID uuid = p.getUniqueId();
                     if (homeManager.getHomes(uuid) == null) {
-                        p.sendMessage(toMiniMessage("</white>Sinulla ei ole kotia nimellä <#85FF00>" + oldName + "</#85FF00><white>.</white>"));
+                        p.sendMessage(toMM("</white>Sinulla ei ole kotia nimellä <#85FF00>" + oldName + "</#85FF00><white>.</white>"));
                     } else if (homeManager.getHomes(uuid).contains(oldName) && !(homeManager.getHomes(uuid).contains(newName))) {
                         homeManager.editHomeName(uuid, oldName, newName);
-                        p.sendMessage(toMiniMessage("<white>Kodin <#85FF00>" + oldName + " <white>nimi muutettu: <#85FF00>" + newName));
+                        p.sendMessage(toMM("<white>Kodin <#85FF00>" + oldName + " <white>nimi muutettu: <#85FF00>" + newName));
                     } else {
-                        p.sendMessage(toMiniMessage("<white>Sinulla ei ole kotia nimellä</white> <#85FF00>" + oldName + "</#85FF00><white>.</white>"));
+                        p.sendMessage(toMM("<white>Sinulla ei ole kotia nimellä</white> <#85FF00>" + oldName + "</#85FF00><white>.</white>"));
                     }
                 })
                 .register();
@@ -88,7 +88,7 @@ public class HomeCommands {
                             if (p.getBedSpawnLocation() != null){
                                 p.teleportAsync(p.getBedSpawnLocation());
                                 p.setWalkSpeed(0.2F);
-                                p.sendMessage(toMiniMessage("<white>Sinut teleportattiin kotiin</white> <#85FF00>sänky</#85FF00>."));
+                                p.sendMessage(toMM("<white>Sinut teleportattiin kotiin</white> <#85FF00>sänky</#85FF00>."));
                             }else{
                                 p.sendMessage("Sinulla ei ole sänkyä asetettuna.");
                             }
@@ -100,7 +100,7 @@ public class HomeCommands {
                         if (homeManager.getHomes(uuid) != null) {
                             homeMenu.showGUI(p);
                         }else{
-                            p.sendMessage(toMiniMessage("<white>Sinulla ei ole kotia. Voit asettaa kodin komennolla</white> <#85FF00>/sethome</#85FF00><white>.</white>"));
+                            p.sendMessage(toMM("<white>Sinulla ei ole kotia. Voit asettaa kodin komennolla</white> <#85FF00>/sethome</#85FF00><white>.</white>"));
                         }
                         return;
                     }
@@ -111,10 +111,10 @@ public class HomeCommands {
                         if (homeManager.getHomes(uuid).contains(nimi)) {
                             p.teleportAsync(homeManager.getHome(uuid, nimi));
                             p.setWalkSpeed(0.2F);
-                            p.sendMessage(toMiniMessage("<white>Sinut teleportattiin kotiin</white> <#85FF00>" + nimi + "</#85FF00>."));
+                            p.sendMessage(toMM("<white>Sinut teleportattiin kotiin</white> <#85FF00>" + nimi + "</#85FF00>."));
 
                         } else {
-                            p.sendMessage(toMiniMessage("<white>Sinulla ei ole kotia nimellä</white> <#85FF00>" + nimi + "</#85FF00><white>!</white>"));
+                            p.sendMessage(toMM("<white>Sinulla ei ole kotia nimellä</white> <#85FF00>" + nimi + "</#85FF00><white>!</white>"));
                         }
                     }
                 })
@@ -148,15 +148,15 @@ public class HomeCommands {
                             }
                             if (!p.getWorld().getName().equals("spawn") || (!p.getWorld().getName().equals("resurssinether"))) {
                                 homeManager.saveHome(uuid, nimi, p.getLocation());
-                                p.sendMessage(toMiniMessage("<white>Koti nimellä</white> <#85FF00>" + nimi + "</#85FF00> <white>asetettu.</white>"));
+                                p.sendMessage(toMM("<white>Koti nimellä</white> <#85FF00>" + nimi + "</#85FF00> <white>asetettu.</white>"));
                             } else {
                                 p.sendMessage("Et voi asettaa kotia tässä maassa.");
                             }
                         } else {
                             p.sendMessage("\n");
-                            p.sendMessage(toMiniMessage("<white>Kodin nimi voi olla maksimissaan</white> <#85FF00>16 kirjainta</#85FF00> <white>pitkä, ja se voi sisältää vain <#85FF00>aakkosia</#85FF00> <white>ja</white> <#85FF00>numeroita<#85FF00/><white>.</white>"));
-                            p.sendMessage(toMiniMessage("Komento asettaa kodin tarkasti siihen kohtaan missä seisot, mukaanlukien sen, minne suuntaan katsot."));
-                            p.sendMessage(toMiniMessage("<white>Suorita komento</white> <#85FF00>/sethome [kodin nimi]</#85FF00> <white>asettaaksesi kotisi.</white>"));
+                            p.sendMessage(toMM("<white>Kodin nimi voi olla maksimissaan</white> <#85FF00>16 kirjainta</#85FF00> <white>pitkä, ja se voi sisältää vain <#85FF00>aakkosia</#85FF00> <white>ja</white> <#85FF00>numeroita<#85FF00/><white>.</white>"));
+                            p.sendMessage(toMM("Komento asettaa kodin tarkasti siihen kohtaan missä seisot, mukaanlukien sen, minne suuntaan katsot."));
+                            p.sendMessage(toMM("<white>Suorita komento</white> <#85FF00>/sethome [kodin nimi]</#85FF00> <white>asettaaksesi kotisi.</white>"));
                         }
                     } else {
                         p.sendMessage("Sinulla on maksimi määrä koteja asetettuna.");
@@ -196,7 +196,7 @@ public class HomeCommands {
         }));
     }
 
-    public @NotNull Component toMiniMessage(@NotNull String string) {
+    public @NotNull Component toMM(@NotNull String string) {
         return MiniMessage.miniMessage().deserialize(string);
     }
 
@@ -233,8 +233,8 @@ public class HomeCommands {
                     public void run() {
                         //
                         player.showTitle(Title.title(
-                                toMiniMessage("<#85FF00>" + name),
-                                toMiniMessage("<gradient:#FFF226:#F91526>OIJJOI!! NYT NAUKAHTI!!</gradient:#FFF226:#F91526>"),
+                                toMM("<#85FF00>" + name),
+                                toMM("<gradient:#FFF226:#F91526>OIJJOI!! NYT NAUKAHTI!!</gradient:#FFF226:#F91526>"),
                                 Title.Times.times(
                                         Duration.ofSeconds(0),
                                         Duration.ofSeconds(8),
@@ -242,7 +242,7 @@ public class HomeCommands {
                                 ))
                         );
                         player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.5F, 1F);
-                        player.sendMessage(toMiniMessage("<white>Sinun uuden kotisi nimi on</white> <#85FF00>" + name + "</#85FF00><white>. Pääset sinne komennolla</white> <#85FF00>/home " + name + "</#85FF00><white>, tai klikkaamalla tätä viestiä.</white>").hoverEvent(HoverEvent.showText(toMiniMessage("<#85FF00>Klikkaa teleportataksesi!</#85FF00>"))).clickEvent(ClickEvent.runCommand("/home " + name)));
+                        player.sendMessage(toMM("<white>Sinun uuden kotisi nimi on</white> <#85FF00>" + name + "</#85FF00><white>. Pääset sinne komennolla</white> <#85FF00>/home " + name + "</#85FF00><white>, tai klikkaamalla tätä viestiä.</white>").hoverEvent(HoverEvent.showText(toMM("<#85FF00>Klikkaa teleportataksesi!</#85FF00>"))).clickEvent(ClickEvent.runCommand("/home " + name)));
                         gambling.remove(player);
                         Bukkit.getScheduler().cancelTask(taskID);
                         //
@@ -259,8 +259,8 @@ public class HomeCommands {
             String randomName = generateRandomString();
 
             player.showTitle(Title.title(
-                    toMiniMessage("<#FFD700>" + randomName),
-                    toMiniMessage("<#78e600>Arvotaan... naukahtaako??</#78e600>"),
+                    toMM("<#FFD700>" + randomName),
+                    toMM("<#78e600>Arvotaan... naukahtaako??</#78e600>"),
                     Title.Times.times(
                             Duration.ofSeconds(0),
                             Duration.ofSeconds(1),
