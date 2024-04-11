@@ -145,7 +145,7 @@ public class AddonMenu {
     }
 
     private void confirmMenu(Player player, ItemStack item, String addon) {
-        ChestGui gui = new ChestGui(3, "<dark_red><b>Varmista osto");
+        ChestGui gui = new ChestGui(3, ComponentHolder.of(toMM("<dark_red><b>Varmista osto")));
         gui.show(player);
 
         gui.setOnGlobalClick(event -> event.setCancelled(true));

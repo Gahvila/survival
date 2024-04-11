@@ -26,21 +26,21 @@ public class ResourceNetherCMD  {
     public void registerCommands() {
         new CommandAPICommand("resurssinether")
                 .executesPlayer((p, args) -> {
-                    ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
                     Json warpData = new Json("netherdata.json", instance.getDataFolder() + "/data/");
                     Boolean generation = warpData.getBoolean("generation");
                     if (!generation) {
                         if (!cooldown.containsKey(p.getUniqueId())) {
                             if (!confirmation.containsKey(p) || confirmation.get(p) == null) {
-                                p.sendMessage(toMM("<br><red><b>ʀᴇsᴜʀssɪɴᴇᴛʜᴇʀ</b></red><br>" +
-                                        "<white>Sinut teleportataan satunnaiseen sijaintiin resurssinetherissä.<br><br>" +
-                                        "Sijainti voi olla vaarallinen, joten tarkista ympäristösi ennen kuin alat juoksemaan satunnaiseen suuntaan." +
+                                p.sendMessage(toMM("<br>" +
+                                        "<red><b>ʀᴇsᴜʀssɪɴᴇᴛʜᴇʀ</b></red><br>" +
+                                        "<white>Sinut teleportataan satunnaiseen sijaintiin resurssinetherissä." +
+                                        "<br><br>" +
+                                        "Sijainti voi olla vaarallinen, joten tarkista ympäristösi ennen kuin alat juoksemaan satunnaiseen suuntaan.<br>" +
                                         "<red>Oletko varma? Suorita komento uudelleen.</red>"));
                                 confirmation.put(p, 1);
                                 Bukkit.getScheduler().runTaskLater(SelviytymisHarpake.instance, () -> confirmation.remove(p), 300);
                             } else if (confirmation.get(p) == 1) {
-                                String command = "forcertp " + p.getName() + " -c resurssinether";
-                                Bukkit.dispatchCommand(console, command);
+                                Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "forcertp " + p.getName() + " -c resurssinether");
                                 confirmation.remove(p);
                                 cooldown.put(p.getUniqueId(), System.currentTimeMillis());
                                 Bukkit.getScheduler().runTaskLater(SelviytymisHarpake.instance, () -> cooldown.remove(p.getUniqueId()), 600);

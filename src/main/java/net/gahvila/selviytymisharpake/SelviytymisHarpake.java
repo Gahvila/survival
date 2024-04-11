@@ -38,16 +38,8 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
     private PluginManager pluginManager;
     private static Economy econ = null;
     private SelviytymisHarpake plugin;
-
-    private AddonManager addonManager;
-    private BackManager backManager;
     private HomeManager homeManager;
-    private WarpManager warpManager;
     private ResurssinetherReset resurssinetherReset;
-    private AddonMenu addonMenu;
-    private WarpMenu warpMenu;
-    private HomeMenu homeMenu;
-    private BackMenu backMenu;
 
     @Override
     public void onEnable() {
@@ -64,15 +56,15 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         instance = this;
 
         pluginManager = Bukkit.getPluginManager();
-        backManager = new BackManager();
-        addonManager = new AddonManager();
         homeManager = new HomeManager();
-        warpManager = new WarpManager();
         resurssinetherReset = new ResurssinetherReset(homeManager, instance);
-        addonMenu = new AddonMenu(addonManager, homeManager);
-        warpMenu = new WarpMenu(warpManager);
-        homeMenu = new HomeMenu(homeManager);
-        backMenu = new BackMenu(backManager);
+        BackManager backManager = new BackManager();
+        AddonManager addonManager = new AddonManager();
+        WarpManager warpManager = new WarpManager();
+        AddonMenu addonMenu = new AddonMenu(addonManager, homeManager);
+        WarpMenu warpMenu = new WarpMenu(warpManager);
+        HomeMenu homeMenu = new HomeMenu(homeManager);
+        BackMenu backMenu = new BackMenu(backManager);
 
 
 

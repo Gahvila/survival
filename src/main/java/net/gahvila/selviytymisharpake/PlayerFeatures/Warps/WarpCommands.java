@@ -36,7 +36,7 @@ public class WarpCommands {
                                 SelviytymisHarpake.getEconomy().withdrawPlayer(p, price);
 
                                 warpManager.addAllowedWarps(p);
-                                p.sendMessage(toMM("Sinulla on nyt <#85FF00>" + warpManager.getAllowedWarps(p) + "</#85FF00> warppia yhteensä. Tässä on mukana myös sinun ilmaiswarppi."));
+                                p.sendMessage(toMM("Sinulla on nyt <#85FF00>" + warpManager.getAllowedWarps(p) + "</#85FF00> warppia yhteensä."));
                             } else {
                                 p.sendMessage(toMM("Warpin osto maksaa <#85FF00>" + price + "Ⓖ</#85FF00>, ja sinulla on vain <#85FF00>" + SelviytymisHarpake.getEconomy().getBalance(p)));
                             }
