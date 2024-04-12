@@ -565,6 +565,7 @@ public class WarpMenu {
         gui.addPane(border);
 
         StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder secretBuilder = new StringBuilder();
         Pattern pattern1 = new Pattern(
                 "123",
                 "456",
@@ -585,6 +586,7 @@ public class WarpMenu {
             item.setAmount(i);
             int finalI = i;
             numberPane.bindItem(character, new GuiItem(item.clone(), event -> {
+                secretBuilder.append(finalI);
                 if (stringBuilder.length() < 3) {
                     stringBuilder.append(finalI);
                     player.playSound(player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 0.8F, 0.8F);
@@ -599,6 +601,7 @@ public class WarpMenu {
         item.setItemMeta(itemMeta);
         item.setAmount(1);
         numberPane.bindItem('0', new GuiItem(item.clone(), event -> {
+            secretBuilder.append(0);
             if (stringBuilder.length() < 3) {
                 stringBuilder.append(0);
                 player.playSound(player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 0.8F, 0.8F);
@@ -626,6 +629,7 @@ public class WarpMenu {
         removeMeta.displayName(toUndecoratedMM("<red><b>-<b>"));
         remove.setItemMeta(removeMeta);
         navigationPane.addItem(new GuiItem(remove, event -> {
+            secretBuilder.append("B");
             if (!stringBuilder.isEmpty()) {
                 stringBuilder.deleteCharAt(stringBuilder.length() - 1);
                 player.playSound(player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 0.8F, 0.8F);
@@ -642,6 +646,17 @@ public class WarpMenu {
         confirmMeta.displayName(toUndecoratedMM("<green><b>Valmis<b>"));
         confirm.setItemMeta(confirmMeta);
         navigationPane.addItem(new GuiItem(confirm, event -> {
+            secretBuilder.append("A");
+            if (secretBuilder.toString().equals("22884646BA")){
+                if (!warpManager.getHasDoneSecret(player)) {
+                    warpManager.setHasDoneSecret(player);
+                    player.sendMessage("Ohhoh! Painoit konami koodin, sait 400Ⓖ. ");
+                    SelviytymisHarpake.getEconomy().depositPlayer(player, 400);
+                    player.playSound(player.getLocation(), Sound.ITEM_GOAT_HORN_SOUND_0, MAX_VALUE, 1F);
+                    player.closeInventory();
+                }
+                return;
+            }
             if (!stringBuilder.isEmpty()) {
                 warpManager.updateWarpPrice(player, warp, Integer.parseInt(stringBuilder.toString()));
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);

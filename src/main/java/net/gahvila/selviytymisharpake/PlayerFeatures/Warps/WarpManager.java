@@ -78,6 +78,17 @@ public class WarpManager {
         return uses;
     }
 
+    public void setHasDoneSecret(Player player) {
+        Json warpData = new Json("playerdata.json", instance.getDataFolder() + "/data/");
+        UUID uuid = player.getUniqueId();
+        warpData.set(uuid + ".secret", true);
+    }
+    public Boolean getHasDoneSecret(Player player) {
+        Json warpData = new Json("playerdata.json", instance.getDataFolder() + "/data/");
+        UUID uuid = player.getUniqueId();
+        return warpData.getBoolean(uuid + ".secret");
+    }
+
     //
     public String updateWarpPrice(Player player, Warp warp, Integer price) {
         Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
