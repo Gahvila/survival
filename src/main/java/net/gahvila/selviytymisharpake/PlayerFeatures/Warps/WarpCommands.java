@@ -95,7 +95,7 @@ public class WarpCommands {
                     if (warpManager.getOwnedWarps(p.getUniqueId()).size() < warpManager.getAllowedWarps(p)) {
                         if (!warpManager.getWarpNames().contains(name)) {
                             if (p.getWorld().getName().equals("world")) {
-                                if (name.matches("[\\p{L}\\p{N}]") && name.length() <= 16) {
+                                if (name.matches("[\\p{L}\\p{N}]+") && name.length() <= 16) {
                                     warpManager.setWarp(p, name, p.getLocation(), 0, Material.LODESTONE);
                                     p.sendMessage(toMM("Asetit warpin nimellä <#85FF00>" + name + "</#85FF00>. Voit muokata warpin nimeä, materiaalia ja hintaa komennolla <#85FF00>/editwarp " + name + "</#85FF00>.")
                                             .hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(toMM("Klikkaa muokataksesi")))

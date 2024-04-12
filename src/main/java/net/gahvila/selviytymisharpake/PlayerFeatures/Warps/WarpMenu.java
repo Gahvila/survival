@@ -439,7 +439,7 @@ public class WarpMenu {
         done.setItemMeta(doneMeta);
 
         GuiItem doneItem = new GuiItem(done, event -> {
-            if (gui.getRenameText().matches("[\\p{L}\\p{N}]") && gui.getRenameText().length() <= 16) {
+            if (gui.getRenameText().matches("[\\p{L}\\p{N}]+") && gui.getRenameText().length() <= 16) {
                 player.sendMessage("Vaihdettu nimi: " + gui.getRenameText());
                 warpManager.editWarpName(warp, gui.getRenameText());
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);
