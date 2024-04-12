@@ -439,10 +439,14 @@ public class WarpMenu {
         done.setItemMeta(doneMeta);
 
         GuiItem doneItem = new GuiItem(done, event -> {
-            player.sendMessage("Vaihdettu nimi: " + gui.getRenameText());
-            warpManager.editWarpName(warp, gui.getRenameText());
-            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);
-            showWarpEditMenu(player, warp);
+            if (gui.getRenameText().matches("[\\p{L}\\p{N}]") && gui.getRenameText().length() <= 16) {
+                player.sendMessage("Vaihdettu nimi: " + gui.getRenameText());
+                warpManager.editWarpName(warp, gui.getRenameText());
+                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);
+                showWarpEditMenu(player, warp);
+            } else {
+                player.sendMessage("Nimi voi sisältää vain aakkosia ja numeroita, ja se voi olla maks. 16 kirjainta pitkä.");
+            }
         });
 
         StaticPane pane3 = new StaticPane(0, 0, 1, 1);

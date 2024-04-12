@@ -85,7 +85,6 @@ public class WarpCommands {
                         return;
                     }
                     warpMenu.showWarpEditMenu(p, warp.get());
-                    p.sendMessage(toMM("Warp nimellä <#85FF00>" + nimi + "</#85FF00> poistettu."));
                 })
                 .register();
         new CommandAPICommand("setwarp")
@@ -97,9 +96,13 @@ public class WarpCommands {
                         if (!warpManager.getWarpNames().contains(name)) {
                             if (p.getWorld().getName().equals("world")) {
                                 warpManager.setWarp(p, name, p.getLocation(), 0, Material.LODESTONE);
-                                p.sendMessage(toMM("Asetit warpin nimellä <#85FF00>" + name + "</#85FF00>. Voit muokata warpin nimeä, materiaalia ja hintaa komennolla <#85FF00>/editwarp " + name + "</#85FF00>.")
-                                        .hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(toMM("Klikkaa muokataksesi")))
-                                        .clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand("/editwarp " + name)));
+                                if (name.matches("[\\p{L}\\p{N}]") && name.length() <= 16) {
+                                    p.sendMessage(toMM("Asetit warpin nimellä <#85FF00>" + name + "</#85FF00>. Voit muokata warpin nimeä, materiaalia ja hintaa komennolla <#85FF00>/editwarp " + name + "</#85FF00>.")
+                                            .hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(toMM("Klikkaa muokataksesi")))
+                                            .clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand("/editwarp " + name)));
+                                }else {
+                                    p.sendMessage("Nimi voi sisältää vain aakkosia ja numeroita, ja se voi olla maks. 16 kirjainta pitkä.");
+                                }
                             }else{
                                 p.sendMessage("Voit asettaa warpin vain päämaailmaan.");
                             }
