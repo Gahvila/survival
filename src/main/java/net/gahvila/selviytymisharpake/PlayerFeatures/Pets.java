@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static net.gahvila.selviytymisharpake.Utils.MiniMessageUtils.toMM;
+
 public class Pets implements Listener {
     public static HashMap<Player, Player> transferingPet = new HashMap<>();
     public void registerCommands() {
@@ -110,9 +112,5 @@ public class Pets implements Listener {
         e.setCancelled(true);
         damager.sendMessage("Et voi vahingoittaa tuota lemmikkiä.");
 
-    }
-
-    public @NotNull Component toMM(@NotNull String string) {
-        return MiniMessage.miniMessage().deserialize(string);
     }
 }

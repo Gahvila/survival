@@ -22,6 +22,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
+import static net.gahvila.selviytymisharpake.Utils.MiniMessageUtils.toMM;
+
 public class ResurssinetherReset {
 
     private final HomeManager homeManager;
@@ -74,9 +76,5 @@ public class ResurssinetherReset {
             Bukkit.broadcast(toMM("<red><b>Resurssinether on nollattu onnistuneesti. Tervetuloa pelailemaan!"));
             warpData.set("generation", false);
         }, 20);
-    }
-
-    public @NotNull Component toMM(@NotNull String string) {
-        return MiniMessage.miniMessage().deserialize(string).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }
 }

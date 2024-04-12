@@ -12,6 +12,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import static net.gahvila.selviytymisharpake.Utils.MiniMessageUtils.toMM;
+
 public class JoinEvent implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e){
@@ -32,8 +34,4 @@ public class JoinEvent implements Listener {
             e.setJoinMessage(null);
         }
     }
-    public @NotNull Component toMM(@NotNull String string) {
-        return MiniMessage.miniMessage().deserialize(string).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
-    }
-
 }

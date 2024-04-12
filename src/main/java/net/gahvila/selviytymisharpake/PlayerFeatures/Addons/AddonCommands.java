@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import static net.gahvila.selviytymisharpake.Utils.MiniMessageUtils.toMM;
+
 public class AddonCommands {
 
     private final AddonManager addonManager;
@@ -39,8 +41,7 @@ public class AddonCommands {
                         p.openWorkbench(null, true);
                         p.playSound(p.getLocation(), Sound.BLOCK_CHEST_OPEN, 2F, 1F);
                     }else{
-                        Component message = toMM("<white>Käytä</white> <#85FF00>/addon</#85FF00> <white>komentoa saadaksesi oikeudet tähän.");
-                        p.sendMessage(message);
+                        p.sendMessage(toMM("<white>Käytä</white> <#85FF00>/addon</#85FF00> <white>komentoa saadaksesi oikeudet tähän."));
                     }
                 })
                 .register();
@@ -89,11 +90,6 @@ public class AddonCommands {
                 .register();
 
     }
-
-    public @NotNull Component toMM(@NotNull String string) {
-        return MiniMessage.miniMessage().deserialize(string);
-    }
-
     public void setCooldown(UUID player, long time){
         if(time < 1) {
             cooldowns.remove(player);

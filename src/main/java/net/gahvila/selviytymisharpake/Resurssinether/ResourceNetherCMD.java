@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import static net.gahvila.selviytymisharpake.SelviytymisHarpake.instance;
+import static net.gahvila.selviytymisharpake.Utils.MiniMessageUtils.toMM;
 
 public class ResourceNetherCMD  {
 
@@ -55,9 +56,5 @@ public class ResourceNetherCMD  {
                 })
 
                 .register();
-    }
-
-    public @NotNull Component toMM(@NotNull String string) {
-        return MiniMessage.miniMessage().deserialize(string);
     }
 }

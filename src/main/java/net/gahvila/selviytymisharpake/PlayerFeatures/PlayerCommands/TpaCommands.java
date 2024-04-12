@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.UUID;
 
 import static net.gahvila.selviytymisharpake.SelviytymisHarpake.instance;
+import static net.gahvila.selviytymisharpake.Utils.MiniMessageUtils.toMM;
 
 public class TpaCommands {
     //player which sent the tpa request, player which received the teleport request
@@ -298,10 +299,6 @@ public class TpaCommands {
         UUID uuid = player.getUniqueId();
         Boolean toggle = playerData.getBoolean(uuid + ".tpaDisabled");
         return toggle;
-    }
-
-    public @NotNull Component toMM(@NotNull String string) {
-        return MiniMessage.miniMessage().deserialize(string);
     }
 
     public static HashSet<Material> bad_blocks = new HashSet<>();

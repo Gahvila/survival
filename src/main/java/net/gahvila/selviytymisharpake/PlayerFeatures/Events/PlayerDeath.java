@@ -14,6 +14,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.jetbrains.annotations.NotNull;
 
 import static java.lang.Long.MAX_VALUE;
+import static net.gahvila.selviytymisharpake.Utils.MiniMessageUtils.toMM;
 
 public class PlayerDeath implements Listener {
 
@@ -51,9 +52,5 @@ public class PlayerDeath implements Listener {
             SpawnTeleport.teleportSpawn(p);
 
         }
-    }
-
-    public @NotNull Component toMM(@NotNull String string) {
-        return MiniMessage.miniMessage().deserialize(string);
     }
 }

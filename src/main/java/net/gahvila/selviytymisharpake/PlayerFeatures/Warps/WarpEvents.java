@@ -11,6 +11,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 
+import static net.gahvila.selviytymisharpake.Utils.MiniMessageUtils.toMM;
+
 public class WarpEvents implements Listener {
     private final WarpManager warpManager;
 
@@ -32,9 +34,5 @@ public class WarpEvents implements Listener {
             SelviytymisHarpake.getEconomy().depositPlayer(p, toBePaid);
             p.sendMessage(toMM("Sinun maksullista warppia käytettiin kun olit poissa, sait <#85FF00>" + toBePaid + "</#85FF00>."));
         }
-    }
-
-    public @NotNull Component toMM(@NotNull String string) {
-        return MiniMessage.miniMessage().deserialize(string);
     }
 }

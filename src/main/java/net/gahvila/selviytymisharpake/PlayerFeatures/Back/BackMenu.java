@@ -22,6 +22,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import static net.gahvila.selviytymisharpake.Utils.MiniMessageUtils.toMM;
+
 public class BackMenu {
 
     private final BackManager backManager;
@@ -160,9 +162,5 @@ public class BackMenu {
         gui.addPane(pane);
 
         gui.update();
-    }
-
-    public @NotNull Component toMM(@NotNull String string) {
-        return MiniMessage.miniMessage().deserialize(string).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }
 }

@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static net.gahvila.selviytymisharpake.Utils.MiniMessageUtils.toMM;
+
 public class WarpCommands {
 
     private final WarpManager warpManager;
@@ -205,9 +207,5 @@ public class WarpCommands {
 
             return warpNames.toArray(new String[0]);
         }));
-    }
-
-    public @NotNull Component toMM(@NotNull String string) {
-        return MiniMessage.miniMessage().deserialize(string);
     }
 }

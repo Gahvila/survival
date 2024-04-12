@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Float.MAX_VALUE;
+import static net.gahvila.selviytymisharpake.Utils.MiniMessageUtils.toMM;
+import static net.gahvila.selviytymisharpake.Utils.MiniMessageUtils.toUndecoratedMM;
 
 public class HomeMenu {
     private final HomeManager homeManager;
@@ -35,7 +37,7 @@ public class HomeMenu {
     }
 
     public void showGUI(Player player) {
-        ChestGui gui = new ChestGui(5, ComponentHolder.of(toMM("<dark_purple><b>Kodit")));
+        ChestGui gui = new ChestGui(5, ComponentHolder.of(toUndecoratedMM("<dark_purple><b>Kodit")));
         gui.show(player);
 
         gui.setOnGlobalClick(event -> event.setCancelled(true));
@@ -50,7 +52,7 @@ public class HomeMenu {
         PatternPane border = new PatternPane(0, 0, 9, 5, Pane.Priority.LOWEST, pattern);
         ItemStack background = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta backgroundMeta = background.getItemMeta();
-        backgroundMeta.displayName(toMM(""));
+        backgroundMeta.displayName(toUndecoratedMM(""));
         background.setItemMeta(backgroundMeta);
         border.bindItem('1', new GuiItem(background));
         gui.addPane(border);
@@ -65,7 +67,7 @@ public class HomeMenu {
                 default -> item = new ItemStack(Material.LIME_BED);
             }
             ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(home);
+            meta.displayName(Component.text(home));
             item.setItemMeta(meta);
             items.add(item);
         }
@@ -96,7 +98,7 @@ public class HomeMenu {
 
         ItemStack previous = new ItemStack(Material.MANGROVE_BUTTON);
         ItemMeta previousMeta = previous.getItemMeta();
-        previousMeta.displayName(toMM("<b>Takaisin"));
+        previousMeta.displayName(toUndecoratedMM("<b>Takaisin"));
         previous.setItemMeta(previousMeta);
         navigationPane.addItem(new GuiItem(previous, event -> {
             if (pages.getPage() > 0) {
@@ -108,7 +110,7 @@ public class HomeMenu {
         }), 3, 0);
         ItemStack next = new ItemStack(Material.WARPED_BUTTON);
         ItemMeta nextMeta = next.getItemMeta();
-        nextMeta.displayName(toMM("<b>Seuraava"));
+        nextMeta.displayName(toUndecoratedMM("<b>Seuraava"));
         next.setItemMeta(nextMeta);
         navigationPane.addItem(new GuiItem(next, event -> {
             if (pages.getPage() < pages.getPages() - 1) {
@@ -121,9 +123,5 @@ public class HomeMenu {
         gui.addPane(navigationPane);
 
         gui.update();
-    }
-
-    public @NotNull Component toMM(@NotNull String string) {
-        return MiniMessage.miniMessage().deserialize(string).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }
 }
