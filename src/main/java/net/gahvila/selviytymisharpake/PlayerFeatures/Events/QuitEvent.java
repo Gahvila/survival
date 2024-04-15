@@ -11,7 +11,7 @@ public class QuitEvent implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e){
         Player p = e.getPlayer();
-        e.setQuitMessage(null);
+        e.quitMessage(null);
         p.setInvulnerable(false);
         HomeCommands.gambling.remove(p);
     }

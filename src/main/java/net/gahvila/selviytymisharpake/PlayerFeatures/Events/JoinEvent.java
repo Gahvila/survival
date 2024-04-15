@@ -31,7 +31,7 @@ public class JoinEvent implements Listener {
             p.getInventory().addItem(new ItemStack(Material.APPLE, 4));
             p.getInventory().addItem(new ItemStack(Material.GOLDEN_AXE, 1));
         }else{
-            e.setJoinMessage(null);
+            e.joinMessage(null);
         }
     }
 }

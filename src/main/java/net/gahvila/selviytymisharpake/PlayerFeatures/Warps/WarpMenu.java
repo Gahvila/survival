@@ -13,13 +13,12 @@ import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
@@ -60,6 +59,7 @@ public class WarpMenu {
 
         PaginatedPane pages = new PaginatedPane(1, 1, 7, 3);
         List<ItemStack> items = new ArrayList<>();
+        NamespacedKey key = new NamespacedKey(SelviytymisHarpake.instance, "selviytymisharpake");
         for (Warp warp : warpManager.getWarps()) {
             Date currentTime = new Date(warp.getCreationDate());
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -67,6 +67,7 @@ public class WarpMenu {
 
             ItemStack item = new ItemStack(warp.getCustomItem());
             ItemMeta meta = item.getItemMeta();
+            meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, warp.getName());
             meta.displayName(Component.text(warp.getName()));
             meta.lore(List.of(toUndecoratedMM("<white>Omistaja: <yellow>" + warp.getOwnerName()),
                     toUndecoratedMM("<white>Käyttökerrat: <yellow>" + warp.getUses()),
@@ -80,7 +81,8 @@ public class WarpMenu {
 
         pages.setOnClick(event -> {
             if (event.getCurrentItem() == null) return;
-            Optional<Warp> warp = warpManager.getWarp(event.getCurrentItem().getItemMeta().getDisplayName());
+            Optional<Warp> warp = warpManager.getWarp(event.getCurrentItem().getItemMeta().getPersistentDataContainer()
+                    .get(key, PersistentDataType.STRING));
             if (warp.get().getPrice() == 0){
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);
                 player.closeInventory();
@@ -250,6 +252,7 @@ public class WarpMenu {
 
         PaginatedPane pages = new PaginatedPane(1, 1, 7, 3);
         List<ItemStack> items = new ArrayList<>();
+        NamespacedKey key = new NamespacedKey(SelviytymisHarpake.instance, "selviytymisharpake");
         for (Warp warp : warpManager.getOwnedWarps(player.getUniqueId())) {
             Date currentTime = new Date(warp.getCreationDate());
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -257,6 +260,7 @@ public class WarpMenu {
 
             ItemStack item = new ItemStack(warp.getCustomItem());
             ItemMeta meta = item.getItemMeta();
+            meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, warp.getName());
             meta.displayName(Component.text(warp.getName()));
             meta.lore(List.of(toUndecoratedMM("<green><b>Klikkaa muokataksesi"),
                     toUndecoratedMM("<white>Käyttökerrat: <yellow>" + warp.getUses()),
@@ -271,7 +275,8 @@ public class WarpMenu {
         pages.setOnClick(event -> {
             if (event.getCurrentItem() == null) return;
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);
-            Optional<Warp> warp = warpManager.getWarp(event.getCurrentItem().getItemMeta().getDisplayName());
+            Optional<Warp> warp = warpManager.getWarp(event.getCurrentItem().getItemMeta().getPersistentDataContainer()
+                    .get(key, PersistentDataType.STRING));
             showWarpEditMenu(player, warp.get());
         });
 

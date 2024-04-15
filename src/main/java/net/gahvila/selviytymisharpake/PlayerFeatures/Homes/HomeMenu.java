@@ -11,13 +11,12 @@ import net.gahvila.selviytymisharpake.SelviytymisHarpake;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -59,6 +58,7 @@ public class HomeMenu {
 
         PaginatedPane pages = new PaginatedPane(1, 1, 7, 3);
         List<ItemStack> items = new ArrayList<>();
+        NamespacedKey key = new NamespacedKey(SelviytymisHarpake.instance, "selviytymisharpake");
         for (String home : homeManager.getHomes(player.getUniqueId())) {
             ItemStack item;
             switch (homeManager.getHome(player.getUniqueId(), home).getWorld().getEnvironment()){
@@ -67,6 +67,7 @@ public class HomeMenu {
                 default -> item = new ItemStack(Material.LIME_BED);
             }
             ItemMeta meta = item.getItemMeta();
+            meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, home);
             meta.displayName(Component.text(home));
             item.setItemMeta(meta);
             items.add(item);
@@ -76,7 +77,7 @@ public class HomeMenu {
 
         pages.setOnClick(event -> {
             if (event.getCurrentItem() == null) return;
-            String homeName = event.getCurrentItem().getItemMeta().getDisplayName();
+            String homeName = event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
             Location homeLocation = homeManager.getHome(player.getUniqueId(), homeName);
             if (homeLocation != null){
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);
