@@ -98,7 +98,7 @@ public class WarpManager {
     }
 
     //
-    public void setWarp(Player player, String warp, Location location, Integer price, Material customItem) {
+    public void setWarp(Player player, String warp, Location location, Integer price, String color, Material customItem) {
         Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         warpData.getFileData().insert(warp + ".owner", uuid);
@@ -106,6 +106,7 @@ public class WarpManager {
         warpData.getFileData().insert(warp + ".price", price);
         warpData.getFileData().insert(warp + ".uses", 0);
         warpData.getFileData().insert(warp + ".creationdate", System.currentTimeMillis());
+        warpData.getFileData().insert(warp + ".color", color == null ? "white" : color);
         warpData.getFileData().insert(warp + ".customItem", customItem == Material.AIR ? Material.LODESTONE : customItem);
         warpData.getFileData().insert(warp + ".world", location.getWorld().getName());
         warpData.getFileData().insert(warp + ".x", location.getX());
@@ -119,6 +120,7 @@ public class WarpManager {
                 0,
                 System.currentTimeMillis(),
                 location,
+                color,
                 customItem == Material.AIR ? Material.LODESTONE : customItem));
     }
 
@@ -145,6 +147,12 @@ public class WarpManager {
         Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
         warpData.set(warp.getName() + ".customItem", customItem == Material.AIR ? Material.DIRT : customItem);
         warp.setCustomItem(customItem);
+    }
+
+    public void editWarpColor(Warp warp, String color) {
+        Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
+        warpData.set(warp.getName() + ".color", color == null ? "white" : color);
+        warp.setColor(color);
     }
 
     public void editWarpName(Warp warp, String newName) {
@@ -191,7 +199,11 @@ public class WarpManager {
     public void loadWarps() {
         Json homeData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
         homeData.getFileData().singleLayerKeySet().forEach(key -> {
+            String color = "white";
             Material customItem = Material.LODESTONE;
+            if (homeData.contains(key + ".color")) {
+                color = homeData.getString(key + ".color");
+            }
             if (homeData.contains(key + ".customItem")) {
                 customItem = Material.getMaterial(homeData.getString(key + ".customItem"));
             }
@@ -206,7 +218,9 @@ public class WarpManager {
                             homeData.getDouble(key + ".z"),
                             homeData.getFloat(key + ".yaw"),
                             homeData.getFloat(key + ".pitch")
-                    ), customItem);
+                    ),
+                    color,
+                    customItem);
             warps.add(temp);
         });
     }

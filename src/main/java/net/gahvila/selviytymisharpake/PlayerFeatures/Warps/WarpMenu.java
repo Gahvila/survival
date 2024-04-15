@@ -18,6 +18,7 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.Wool;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
@@ -68,7 +69,7 @@ public class WarpMenu {
             ItemStack item = new ItemStack(warp.getCustomItem());
             ItemMeta meta = item.getItemMeta();
             meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, warp.getName());
-            meta.displayName(Component.text(warp.getName()));
+            meta.displayName(toUndecoratedMM("<" + warp.getColor() + ">" + warp.getName()));
             meta.lore(List.of(toUndecoratedMM("<white>Omistaja: <yellow>" + warp.getOwnerName()),
                     toUndecoratedMM("<white>Käyttökerrat: <yellow>" + warp.getUses()),
                     toUndecoratedMM("<white>Hinta: <yellow>" + warp.getPrice() + "Ⓖ"),
@@ -261,7 +262,7 @@ public class WarpMenu {
             ItemStack item = new ItemStack(warp.getCustomItem());
             ItemMeta meta = item.getItemMeta();
             meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, warp.getName());
-            meta.displayName(Component.text(warp.getName()));
+            meta.displayName(toUndecoratedMM("<" + warp.getColor() + ">" + warp.getName()));
             meta.lore(List.of(toUndecoratedMM("<green><b>Klikkaa muokataksesi"),
                     toUndecoratedMM("<white>Käyttökerrat: <yellow>" + warp.getUses()),
                     toUndecoratedMM("<white>Hinta: <yellow>" + warp.getPrice() + "Ⓖ"),
@@ -365,6 +366,17 @@ public class WarpMenu {
             showNameChangeMenu(player, warp);
         }), 0, 0);
 
+        ItemStack colorEdit = new ItemStack(Material.LIME_WOOL);
+        ItemMeta colorEditMeta = colorEdit.getItemMeta();
+        colorEditMeta.displayName(toUndecoratedMM("<white><b>Muokkaa väriä</b>"));
+        colorEditMeta.lore(List.of(toUndecoratedMM("<white>Nyt: <#85FF00>" + warp.getColor())));
+        colorEdit.setItemMeta(colorEditMeta);
+
+        settingPane.addItem(new GuiItem(colorEdit, event -> {
+            player.playSound(player.getLocation(), Sound.BLOCK_WOOL_PLACE, 1.0F, 0.8F);
+            showColorChangeMenu(player, warp);
+        }), 1, 0);
+
         ItemStack itemEdit = new ItemStack(warp.getCustomItem());
         ItemMeta itemEditMeta = itemEdit.getItemMeta();
         itemEditMeta.displayName(toUndecoratedMM("<white><b>Muokkaa materiaalia</b>"));
@@ -374,7 +386,7 @@ public class WarpMenu {
         settingPane.addItem(new GuiItem(itemEdit, event -> {
             player.playSound(player.getLocation(), Sound.ITEM_SPYGLASS_USE, 0.8F, 0.8F);
             showItemChangeMenu(player, warp);
-        }), 1, 0);
+        }), 2, 0);
 
         ItemStack priceEdit = new ItemStack(Material.GOLD_NUGGET);
         ItemMeta priceEditMeta = priceEdit.getItemMeta();
@@ -385,7 +397,7 @@ public class WarpMenu {
         settingPane.addItem(new GuiItem(priceEdit, event -> {
             player.playSound(player.getLocation(), Sound.ITEM_SPYGLASS_USE, 0.8F, 0.8F);
             showPriceChangeMenu(player, warp);
-        }), 2, 0);
+        }), 3, 0);
 
         ItemStack delete = new ItemStack(Material.REDSTONE_BLOCK);
         ItemMeta deleteMeta = delete.getItemMeta();
@@ -457,6 +469,93 @@ public class WarpMenu {
         StaticPane pane3 = new StaticPane(0, 0, 1, 1);
         pane3.addItem(doneItem, 0, 0);
         gui.getResultComponent().addPane(pane3);
+
+        gui.update();
+    }
+
+    public void showColorChangeMenu(Player player, Warp warp) {
+        ChestGui gui = new ChestGui(5, ComponentHolder.of(toUndecoratedMM("<dark_green><b>Valitse väri...")));
+        gui.show(player);
+
+        gui.setOnGlobalClick(event -> event.setCancelled(true));
+
+        Pattern pattern = new Pattern(
+                "111111111",
+                "1AAAAAAA1",
+                "1AAAAAAA1",
+                "1AAAAAAA1",
+                "111AAA111"
+        );
+        PatternPane border = new PatternPane(0, 0, 9, 5, Pane.Priority.LOWEST, pattern);
+        ItemStack background = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+        ItemMeta backgroundMeta = background.getItemMeta();
+        backgroundMeta.displayName(toUndecoratedMM(""));
+        background.setItemMeta(backgroundMeta);
+        border.bindItem('1', new GuiItem(background));
+        gui.addPane(border);
+
+        PaginatedPane pages = new PaginatedPane(1, 1, 7, 3);
+        ArrayList<ItemStack> items = new ArrayList<>();
+        for (Material material : Material.values()) {
+            if (material.isLegacy() || !Tag.WOOL.isTagged(material)) {
+                continue;
+            }
+            ItemStack item = new ItemStack(material);
+            ItemMeta meta = item.getItemMeta();
+            meta.displayName(toUndecoratedMM("<#85FF00><lang:" + material.getItemTranslationKey() + "></#85FF00>"));
+            meta.lore(List.of(toUndecoratedMM("<white>Klikkaa valitaksesi</white>")));
+            item.setItemMeta(meta);
+            items.add(item);
+        }
+        pages.populateWithItemStacks(items);
+        gui.addPane(pages);
+
+        pages.setOnClick(event -> {
+            if (event.getCurrentItem() == null) return;
+            player.sendMessage("Warpin uusi väri asetettu.");
+            warpManager.editWarpColor(warp, getColorAsMiniMessage(event.getCurrentItem().getType()));
+            player.playSound(player.getLocation(), Sound.BLOCK_BEEHIVE_ENTER, 1.1F, 0.7F);
+            showWarpEditMenu(player, warp);
+        });
+
+
+        StaticPane navigationPane = new StaticPane(0, 4, 9, 1);
+
+        ItemStack back = new ItemStack(Material.BARRIER);
+        ItemMeta backMeta = back.getItemMeta();
+        backMeta.displayName(toUndecoratedMM("<white><b>Peruuta<b>"));
+        back.setItemMeta(backMeta);
+        navigationPane.addItem(new GuiItem(back, event -> {
+            showWarpEditMenu(player, warp);
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);
+
+        }), 1, 0);
+
+        ItemStack previous = new ItemStack(Material.MANGROVE_BUTTON);
+        ItemMeta previousMeta = previous.getItemMeta();
+        previousMeta.displayName(toUndecoratedMM("<b>Takaisin"));
+        previous.setItemMeta(previousMeta);
+        navigationPane.addItem(new GuiItem(previous, event -> {
+            if (pages.getPage() > 0) {
+                pages.setPage(pages.getPage() - 1);
+                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.8F, 0.7F);
+
+                gui.update();
+            }
+        }), 3, 0);
+        ItemStack next = new ItemStack(Material.WARPED_BUTTON);
+        ItemMeta nextMeta = next.getItemMeta();
+        nextMeta.displayName(toUndecoratedMM("<b>Seuraava"));
+        next.setItemMeta(nextMeta);
+        navigationPane.addItem(new GuiItem(next, event -> {
+            if (pages.getPage() < pages.getPages() - 8) {
+                pages.setPage(pages.getPage() + 1);
+                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.8F, 0.8F);
+
+                gui.update();
+            }
+        }), 5, 0);
+        gui.addPane(navigationPane);
 
         gui.update();
     }
@@ -672,5 +771,30 @@ public class WarpMenu {
         gui.addPane(numberPane);
         gui.addPane(navigationPane);
         gui.update();
+    }
+
+    private static final Map<Material, String> colorToMiniMessage = new HashMap<>();
+
+    static {
+        colorToMiniMessage.put(Material.WHITE_WOOL, "white");
+        colorToMiniMessage.put(Material.ORANGE_WOOL, "gold");
+        colorToMiniMessage.put(Material.MAGENTA_WOOL, "#ff00ff");
+        colorToMiniMessage.put(Material.LIGHT_BLUE_WOOL, "aqua");
+        colorToMiniMessage.put(Material.YELLOW_WOOL, "yellow");
+        colorToMiniMessage.put(Material.LIME_WOOL, "green");
+        colorToMiniMessage.put(Material.PINK_WOOL, "light_purple");
+        colorToMiniMessage.put(Material.GRAY_WOOL, "dark_gray");
+        colorToMiniMessage.put(Material.LIGHT_GRAY_WOOL, "gray");
+        colorToMiniMessage.put(Material.CYAN_WOOL, "dark_aqua");
+        colorToMiniMessage.put(Material.PURPLE_WOOL, "dark_purple");
+        colorToMiniMessage.put(Material.BLUE_WOOL, "blue");
+        colorToMiniMessage.put(Material.BROWN_WOOL, "#8b4513");
+        colorToMiniMessage.put(Material.GREEN_WOOL, "dark_green");
+        colorToMiniMessage.put(Material.RED_WOOL, "red");
+        colorToMiniMessage.put(Material.BLACK_WOOL, "black");
+    }
+
+    public static String getColorAsMiniMessage(Material material) {
+        return colorToMiniMessage.get(material);
     }
 }
