@@ -37,7 +37,7 @@ public class AddonCommands {
                 .register();
         new CommandAPICommand("craft")
                 .executesPlayer((p, args) -> {
-                    if (addonManager.getAddon(p, "craft")){
+                    if (addonManager.getAddon(p, Addon.CRAFT)){
                         p.openWorkbench(null, true);
                         p.playSound(p.getLocation(), Sound.BLOCK_CHEST_OPEN, 2F, 1F);
                     }else{
@@ -48,7 +48,7 @@ public class AddonCommands {
         new CommandAPICommand("ec")
                 .withAliases("enderchest")
                 .executesPlayer((p, args) -> {
-                    if (addonManager.getAddon(p, "enderchest")){
+                    if (addonManager.getAddon(p, Addon.ENDERCHEST)){
                         p.openInventory(p.getEnderChest());
                         p.sendMessage("Sinun äärilaatikko avattiin!");
                         p.playSound(p.getLocation(), Sound.BLOCK_CHEST_OPEN, 2F, 1F);
@@ -60,7 +60,7 @@ public class AddonCommands {
                 .register();
         new CommandAPICommand("feed")
                 .executesPlayer((p, args) -> {
-                    if (addonManager.getAddon(p, "feed")){
+                    if (addonManager.getAddon(p, Addon.FEED)){
                         //Get the amount of milliseconds that have passed since the feature was last used.
                         long timeLeft = System.currentTimeMillis() - getCooldown(p.getUniqueId());
                         if(TimeUnit.MILLISECONDS.toSeconds(timeLeft) >= DEFAULT_COOLDOWN){
@@ -80,7 +80,17 @@ public class AddonCommands {
                 .register();
         new CommandAPICommand("kauppa")
                 .executesPlayer((p, args) -> {
-                    if (addonManager.getAddon(p, "shop")){
+                    if (addonManager.getAddon(p, Addon.SHOP)){
+                        ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+                        Bukkit.dispatchCommand(console, "shop open menu kauppa " + p.getName());
+                    }else{
+                        p.sendMessage(toMM("<white>Käytä </white><#85FF00>/addon</#85FF00> <white>komentoa saadaksesi oikeudet tähän.</white>"));
+                    }
+                })
+                .register();
+        new CommandAPICommand("fly")
+                .executesPlayer((p, args) -> {
+                    if (addonManager.getAddon(p, Addon.FLY)){
                         ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
                         Bukkit.dispatchCommand(console, "shop open menu kauppa " + p.getName());
                     }else{

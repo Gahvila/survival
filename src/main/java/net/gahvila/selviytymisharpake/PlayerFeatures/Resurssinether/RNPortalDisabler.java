@@ -1,4 +1,4 @@
-package net.gahvila.selviytymisharpake.Resurssinether;
+package net.gahvila.selviytymisharpake.PlayerFeatures.Resurssinether;
 
 import net.gahvila.selviytymisharpake.PlayerFeatures.Spawn.SpawnTeleport;
 import org.bukkit.entity.Entity;

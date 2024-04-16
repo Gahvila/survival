@@ -60,14 +60,14 @@ public class AddonMenu {
 
         ItemStack craft = new ItemStack(Material.CRAFTING_TABLE);
         ItemMeta craftMeta = craft.getItemMeta();
-        craftMeta.displayName(toUndecoratedMM("<white><b>Craft</b> <#85FF00>" + addonManager.getPrice("craft") + "Ⓖ"));
+        craftMeta.displayName(toUndecoratedMM("<white><b>Craft</b> <#85FF00>" + addonManager.getPrice(Addon.CRAFT, player) + "Ⓖ"));
         craftMeta.lore(List.of(toUndecoratedMM("<white>Antaa oikeudet <#85FF00>/craft <white>komentoon, "), toUndecoratedMM("<white>jolla voit craftata missä vain.")));
         craft.setItemMeta(craftMeta);
 
         navigationPane.addItem(new GuiItem(craft, event -> {
-            if (!addonManager.getAddon(player, "craft")) {
+            if (!addonManager.getAddon(player, Addon.CRAFT)) {
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
-                confirmMenu(player, craft, "craft");
+                confirmMenu(player, craft, Addon.CRAFT);
             }else{
                 player.sendMessage("Sinulla on jo tuo lisäosa.");
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
@@ -78,14 +78,14 @@ public class AddonMenu {
 
         ItemStack enderchest = new ItemStack(Material.ENDER_CHEST);
         ItemMeta enderchestMeta = enderchest.getItemMeta();
-        enderchestMeta.displayName(toUndecoratedMM("<white><b>Ender Chest</b> <#85FF00>" + addonManager.getPrice("enderchest") + "Ⓖ"));
+        enderchestMeta.displayName(toUndecoratedMM("<white><b>Ender Chest</b> <#85FF00>" + addonManager.getPrice(Addon.ENDERCHEST, player) + "Ⓖ"));
         enderchestMeta.lore(List.of(toUndecoratedMM("<white>Antaa oikeudet <#85FF00>/ec <white>komentoon, "), toUndecoratedMM("<white>jolla voit avata enderchestin missä vain.")));
         enderchest.setItemMeta(enderchestMeta);
 
         navigationPane.addItem(new GuiItem(enderchest, event -> {
-            if (!addonManager.getAddon(player, "enderchest")) {
+            if (!addonManager.getAddon(player, Addon.ENDERCHEST)) {
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
-                confirmMenu(player, enderchest, "enderchest");
+                confirmMenu(player, enderchest, Addon.ENDERCHEST);
             }else{
                 player.sendMessage("Sinulla on jo tuo lisäosa.");
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
@@ -96,14 +96,14 @@ public class AddonMenu {
 
         ItemStack feed = new ItemStack(Material.COOKED_BEEF);
         ItemMeta feedMeta = feed.getItemMeta();
-        feedMeta.displayName(toUndecoratedMM("<white><b>Feed</b> <#85FF00>" + addonManager.getPrice("feed") + "Ⓖ"));
+        feedMeta.displayName(toUndecoratedMM("<white><b>Feed</b> <#85FF00>" + addonManager.getPrice(Addon.FEED, player) + "Ⓖ"));
         feedMeta.lore(List.of(toUndecoratedMM("<white>Antaa oikeudet <#85FF00>/feed <white>komentoon, "), toUndecoratedMM("<white>jolla voit täyttää ruokapalkkisi 2 minuutin välein.")));
         feed.setItemMeta(feedMeta);
 
         navigationPane.addItem(new GuiItem(feed, event -> {
-            if (!addonManager.getAddon(player, "feed")) {
+            if (!addonManager.getAddon(player, Addon.FEED)) {
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
-                confirmMenu(player, feed, "feed");
+                confirmMenu(player, feed, Addon.FEED);
             }else{
                 player.sendMessage("Sinulla on jo tuo lisäosa.");
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
@@ -114,14 +114,14 @@ public class AddonMenu {
 
         ItemStack shop = new ItemStack(Material.CHEST);
         ItemMeta shopMeta = shop.getItemMeta();
-        shopMeta.displayName(toUndecoratedMM("<white><b>Kauppa</b> <#85FF00>" + addonManager.getPrice("shop") + "Ⓖ"));
+        shopMeta.displayName(toUndecoratedMM("<white><b>Kauppa</b> <#85FF00>" + addonManager.getPrice(Addon.SHOP, player) + "Ⓖ"));
         shopMeta.lore(List.of(toUndecoratedMM("<white>Antaa oikeudet <#85FF00>/kauppa <white>komentoon, "), toMM("<white>jolla voit avata kaupan valikon missä vain.")));
         shop.setItemMeta(shopMeta);
 
         navigationPane.addItem(new GuiItem(shop, event -> {
-            if (!addonManager.getAddon(player, "shop")) {
+            if (!addonManager.getAddon(player, Addon.SHOP)) {
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
-                confirmMenu(player, shop, "shop");
+                confirmMenu(player, shop, Addon.SHOP);
             }else{
                 player.sendMessage("Sinulla on jo tuo lisäosa.");
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
@@ -138,7 +138,7 @@ public class AddonMenu {
 
         navigationPane.addItem(new GuiItem(home, event -> {
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
-            confirmMenu(player, home, "home");
+            confirmMenu(player, home, Addon.HOME);
         }));
 
 
@@ -147,7 +147,7 @@ public class AddonMenu {
         gui.update();
     }
 
-    private void confirmMenu(Player player, ItemStack item, String addon) {
+    private void confirmMenu(Player player, ItemStack item, Addon addon) {
         ChestGui gui = new ChestGui(3, ComponentHolder.of(toMM("<dark_red><b>Varmista osto")));
         gui.show(player);
 
@@ -182,8 +182,8 @@ public class AddonMenu {
         pane.bindItem('A', new GuiItem(accept, event -> {
             player.closeInventory();
 
-            if (addon.equals("home")) {
-                int price = homeManager.getNextHomeCost(player);
+            if (addon.equals(Addon.HOME)) {
+                int price = addonManager.getPrice(Addon.HOME, player);
                 if (SelviytymisHarpake.getEconomy().getBalance(player) >= price) {
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_CELEBRATE, 0.5F, 1F);
                     SelviytymisHarpake.getEconomy().withdrawPlayer(player, price);
@@ -199,7 +199,7 @@ public class AddonMenu {
                 return;
             }
 
-            int price = addonManager.getPrice(addon);
+            int price = addonManager.getPrice(addon, player);
 
             if (SelviytymisHarpake.getEconomy().getBalance(player) >= price) {
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_CELEBRATE, 0.5F, 1F);

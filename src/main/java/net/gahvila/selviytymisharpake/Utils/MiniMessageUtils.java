@@ -11,7 +11,6 @@ public class MiniMessageUtils {
         return MiniMessage.miniMessage().deserialize(string);
     }
 
-
     public static @NotNull Component toUndecoratedMM(@NotNull String string) {
         return MiniMessage.miniMessage().deserialize(string).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }

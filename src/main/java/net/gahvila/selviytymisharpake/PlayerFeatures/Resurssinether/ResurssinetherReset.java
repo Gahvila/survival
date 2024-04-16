@@ -1,4 +1,4 @@
-package net.gahvila.selviytymisharpake.Resurssinether;
+package net.gahvila.selviytymisharpake.PlayerFeatures.Resurssinether;
 
 import de.leonhard.storage.Json;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Homes.HomeManager;

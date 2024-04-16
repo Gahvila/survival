@@ -21,9 +21,9 @@ import net.gahvila.selviytymisharpake.PlayerFeatures.VehicleBuffs.MinecartBuff;
 import net.gahvila.selviytymisharpake.PlayerFeatures.VehicleBuffs.RidableBuff;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Warps.*;
 import net.gahvila.selviytymisharpake.PluginCommands.MainCommand;
-import net.gahvila.selviytymisharpake.Resurssinether.RNPortalDisabler;
-import net.gahvila.selviytymisharpake.Resurssinether.ResourceNetherCMD;
-import net.gahvila.selviytymisharpake.Resurssinether.ResurssinetherReset;
+import net.gahvila.selviytymisharpake.PlayerFeatures.Resurssinether.RNPortalDisabler;
+import net.gahvila.selviytymisharpake.PlayerFeatures.Resurssinether.ResourceNetherCMD;
+import net.gahvila.selviytymisharpake.PlayerFeatures.Resurssinether.ResurssinetherReset;
 import net.gahvila.selviytymisharpake.Utils.EmptyChunkGenerator;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
@@ -59,7 +59,7 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         homeManager = new HomeManager();
         resurssinetherReset = new ResurssinetherReset(homeManager, instance);
         BackManager backManager = new BackManager();
-        AddonManager addonManager = new AddonManager();
+        AddonManager addonManager = new AddonManager(homeManager);
         WarpManager warpManager = new WarpManager();
         AddonMenu addonMenu = new AddonMenu(addonManager, homeManager);
         WarpMenu warpMenu = new WarpMenu(warpManager);
@@ -110,7 +110,6 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         for (Player player : Bukkit.getOnlinePlayers()) {
             homeManager.putHomeIntoRam(player.getUniqueId());
         }
-
         warpManager.loadWarps();
     }
 

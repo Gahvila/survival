@@ -21,8 +21,6 @@ public class EmptyChunkGenerator extends ChunkGenerator {
             worldCreator.generator(new EmptyChunkGenerator());
             worldCreator.generateStructures(false);
             worldCreator.createWorld();
-
-
         }
     }
 }
