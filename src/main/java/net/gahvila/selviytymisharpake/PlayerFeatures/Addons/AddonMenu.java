@@ -143,7 +143,7 @@ public class AddonMenu {
             }else{
                 player.sendMessage("Sinulla on jo tuo lisäosa.");
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
-                shop.setType(Material.BARRIER);
+                fly.setType(Material.BARRIER);
                 gui.update();
             }
         }));

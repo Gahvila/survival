@@ -70,8 +70,6 @@ public class SelviytymisHarpake extends JavaPlugin implements Listener {
         HomeMenu homeMenu = new HomeMenu(homeManager);
         BackMenu backMenu = new BackMenu(backManager);
 
-        addonManager.flyScheduler();
-
         RidableBuff ridableBuff = new RidableBuff();
         ridableBuff.ridableBuffScheduler();
 

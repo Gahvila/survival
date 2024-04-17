@@ -102,7 +102,7 @@ public class AddonCommands {
                             p.sendMessage("Et ole suojauksessa.");
                             return;
                         }
-                        if (crashClaim.getApi().getPermissionHelper().hasPermission(p.getLocation(), PermissionRoute.BUILD)) {
+                        if (!crashClaim.getApi().getPermissionHelper().hasPermission(p.getUniqueId(), p.getLocation(), PermissionRoute.BUILD)){
                             p.sendMessage("Sinulla ei ole tarpeeksi oikeuksia tässä suojauksessa. Tarvitset rakennusoikeudet.");
                             return;
                         }
@@ -112,6 +112,7 @@ public class AddonCommands {
                             p.sendMessage(toMM("Lentotila: <green>päällä"));
                         }
                         p.setAllowFlight(!p.getAllowFlight());
+                        addonManager.flyScheduler(p);
                     }else{
                         p.sendMessage(toMM("<white>Käytä </white><#85FF00>/addon</#85FF00> <white>komentoa saadaksesi oikeudet tähän.</white>"));
                     }
