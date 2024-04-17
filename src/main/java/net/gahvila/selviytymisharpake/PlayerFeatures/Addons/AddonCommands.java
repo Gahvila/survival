@@ -1,6 +1,8 @@
 package net.gahvila.selviytymisharpake.PlayerFeatures.Addons;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import net.crashcraft.crashclaim.CrashClaim;
+import net.crashcraft.crashclaim.permissions.PermissionRoute;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -16,14 +18,15 @@ import java.util.concurrent.TimeUnit;
 import static net.gahvila.selviytymisharpake.Utils.MiniMessageUtils.toMM;
 
 public class AddonCommands {
-
+    protected CrashClaim crashClaim;
     private final AddonManager addonManager;
     private final AddonMenu addonMenu;
 
     private final Map<UUID, Long> cooldowns = new HashMap<>();
     public static final long DEFAULT_COOLDOWN = 120;
 
-    public AddonCommands(AddonManager addonManager, AddonMenu addonMenu) {
+    public AddonCommands(AddonManager addonManager, AddonMenu addonMenu, CrashClaim crashClaim) {
+        this.crashClaim = crashClaim;
         this.addonManager = addonManager;
         this.addonMenu = addonMenu;
     }
@@ -91,8 +94,24 @@ public class AddonCommands {
         new CommandAPICommand("fly")
                 .executesPlayer((p, args) -> {
                     if (addonManager.getAddon(p, Addon.FLY)){
-                        ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-                        Bukkit.dispatchCommand(console, "shop open menu kauppa " + p.getName());
+                        if (p.getLocation().getY() < 63) {
+                            p.sendMessage("Voit käyttää tätä vain vedenpinnan yläpuolella.");
+                            return;
+                        }
+                        if (crashClaim.getApi().getClaim(p.getLocation()) == null) {
+                            p.sendMessage("Et ole suojauksessa.");
+                            return;
+                        }
+                        if (crashClaim.getApi().getPermissionHelper().hasPermission(p.getLocation(), PermissionRoute.BUILD)) {
+                            p.sendMessage("Sinulla ei ole tarpeeksi oikeuksia tässä suojauksessa. Tarvitset rakennusoikeudet.");
+                            return;
+                        }
+                        if (p.getAllowFlight()) {
+                            p.sendMessage(toMM("Lentotila: <red>pois päältä"));
+                        } else {
+                            p.sendMessage(toMM("Lentotila: <green>päällä"));
+                        }
+                        p.setAllowFlight(!p.getAllowFlight());
                     }else{
                         p.sendMessage(toMM("<white>Käytä </white><#85FF00>/addon</#85FF00> <white>komentoa saadaksesi oikeudet tähän.</white>"));
                     }

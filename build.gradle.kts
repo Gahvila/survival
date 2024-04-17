@@ -56,7 +56,7 @@ tasks {
         archiveFileName.set("${rootProject.name}-${version}.jar")
         dependencies {
             include(dependency("dev.jorel:commandapi-bukkit-shade:9.3.0"))
-            include(dependency("com.github.simplix-softworks:simplixstorage:3.2.7"))
+            include(dependency("com.github.DaJokni:simplixstorage:-SNAPSHOT"))
             include(dependency("com.github.stefvanschie.inventoryframework:IF:0.10.14-SNAPSHOT"))
 
         }

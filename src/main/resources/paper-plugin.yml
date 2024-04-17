@@ -11,9 +11,10 @@ dependencies:
     #needed for sethome
     NoteBlockAPI:
       required: false
+
     CarbonChat:
       required: false
       join-classpath: true
     CrashClaim:
-      required: false
+      required: true
       join-classpath: true

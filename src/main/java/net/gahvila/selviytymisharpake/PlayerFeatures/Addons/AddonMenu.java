@@ -56,7 +56,7 @@ public class AddonMenu {
 
         gui.addPane(background);
 
-        OutlinePane navigationPane = new OutlinePane(2, 1, 5, 1);
+        OutlinePane navigationPane = new OutlinePane(1, 1, 7, 1);
 
         ItemStack craft = new ItemStack(Material.CRAFTING_TABLE);
         ItemMeta craftMeta = craft.getItemMeta();
@@ -115,13 +115,31 @@ public class AddonMenu {
         ItemStack shop = new ItemStack(Material.CHEST);
         ItemMeta shopMeta = shop.getItemMeta();
         shopMeta.displayName(toUndecoratedMM("<white><b>Kauppa</b> <#85FF00>" + addonManager.getPrice(Addon.SHOP, player) + "Ⓖ"));
-        shopMeta.lore(List.of(toUndecoratedMM("<white>Antaa oikeudet <#85FF00>/kauppa <white>komentoon, "), toMM("<white>jolla voit avata kaupan valikon missä vain.")));
+        shopMeta.lore(List.of(toUndecoratedMM("<white>Antaa oikeudet <#85FF00>/kauppa <white>komentoon, "), toUndecoratedMM("<white>jolla voit avata kaupan valikon missä vain.")));
         shop.setItemMeta(shopMeta);
 
         navigationPane.addItem(new GuiItem(shop, event -> {
             if (!addonManager.getAddon(player, Addon.SHOP)) {
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
                 confirmMenu(player, shop, Addon.SHOP);
+            }else{
+                player.sendMessage("Sinulla on jo tuo lisäosa.");
+                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
+                shop.setType(Material.BARRIER);
+                gui.update();
+            }
+        }));
+
+        ItemStack fly = new ItemStack(Material.ELYTRA);
+        ItemMeta flyMeta = fly.getItemMeta();
+        flyMeta.displayName(toUndecoratedMM("<white><b>Lento</b> <#85FF00>" + addonManager.getPrice(Addon.FLY, player) + "Ⓖ"));
+        flyMeta.lore(List.of(toUndecoratedMM("<white>Antaa oikeudet <#85FF00>/fly <white>komentoon, "), toUndecoratedMM("<white>jolla voit lentää suojauksissa"), toUndecoratedMM("<white>vedentason (63) yläpuolella.")));
+        fly.setItemMeta(flyMeta);
+
+        navigationPane.addItem(new GuiItem(fly, event -> {
+            if (!addonManager.getAddon(player, Addon.FLY)) {
+                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
+                confirmMenu(player, shop, Addon.FLY);
             }else{
                 player.sendMessage("Sinulla on jo tuo lisäosa.");
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);

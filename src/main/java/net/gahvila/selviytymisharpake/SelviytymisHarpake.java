@@ -2,6 +2,7 @@ package net.gahvila.selviytymisharpake;
 
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
+import net.crashcraft.crashclaim.CrashClaim;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Addons.AddonCommands;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Addons.AddonManager;
 import net.gahvila.selviytymisharpake.PlayerFeatures.Addons.AddonMenu;
@@ -33,13 +34,15 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class SelviytymisHarpake extends JavaPlugin implements Listener {
+public class SelviytymisHarpake extends JavaPlugin implements Listener {
     public static SelviytymisHarpake instance;
     private PluginManager pluginManager;
     private static Economy econ = null;
     private SelviytymisHarpake plugin;
     private HomeManager homeManager;
     private ResurssinetherReset resurssinetherReset;
+    private CrashClaim crashClaim;
+
 
     @Override
     public void onEnable() {
@@ -56,17 +59,18 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         instance = this;
 
         pluginManager = Bukkit.getPluginManager();
+        crashClaim = CrashClaim.getPlugin();
         homeManager = new HomeManager();
         resurssinetherReset = new ResurssinetherReset(homeManager, instance);
         BackManager backManager = new BackManager();
-        AddonManager addonManager = new AddonManager(homeManager);
+        AddonManager addonManager = new AddonManager(homeManager, crashClaim);
         WarpManager warpManager = new WarpManager();
         AddonMenu addonMenu = new AddonMenu(addonManager, homeManager);
         WarpMenu warpMenu = new WarpMenu(warpManager);
         HomeMenu homeMenu = new HomeMenu(homeManager);
         BackMenu backMenu = new BackMenu(backManager);
 
-
+        addonManager.flyScheduler();
 
         RidableBuff ridableBuff = new RidableBuff();
         ridableBuff.ridableBuffScheduler();
@@ -74,7 +78,7 @@ public final class SelviytymisHarpake extends JavaPlugin implements Listener {
         // Commands
         CommandAPI.onLoad(new CommandAPIBukkitConfig(this).verboseOutput(false).silentLogs(true));
 
-        AddonCommands addonCommands = new AddonCommands(addonManager, addonMenu);
+        AddonCommands addonCommands = new AddonCommands(addonManager, addonMenu, crashClaim);
         addonCommands.registerCommands();
 
         BackCommand backCommand = new BackCommand(backManager, backMenu);
