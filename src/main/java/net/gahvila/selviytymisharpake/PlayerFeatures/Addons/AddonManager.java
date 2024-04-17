@@ -65,12 +65,6 @@ public class AddonManager {
             for (Player player : Bukkit.getOnlinePlayers()){
                 if (!getAddon(player, Addon.FLY)) return;
                 if (!player.getAllowFlight()) return;
-                if (player.getLocation().getY() < 63) {
-                    player.sendMessage("Voit lentää vain vedenpinnan yläpuolella.");
-                    player.sendMessage(toMM("Lentotila: <red>pois päältä"));
-                    player.setAllowFlight(false);
-                    return;
-                }
                 if (crashClaim.getApi().getClaim(player.getLocation()) == null) {
                     player.sendMessage("Et ole suojauksessa.");
                     player.sendMessage(toMM("Lentotila: <red>pois päältä"));
@@ -79,6 +73,13 @@ public class AddonManager {
                 }
                 if (crashClaim.getApi().getPermissionHelper().hasPermission(player.getLocation(), PermissionRoute.BUILD)){
                     player.sendMessage("Sinulla ei ole tarpeeksi oikeuksia tässä suojauksessa lentääksesi. Tarvitset rakennusoikeudet.");
+                    player.sendMessage(toMM("Lentotila: <red>pois päältä"));
+                    player.setAllowFlight(false);
+                    return;
+                }
+
+                if (player.getLocation().getY() < 63) {
+                    player.sendMessage("Voit lentää vain vedenpinnan yläpuolella.");
                     player.sendMessage(toMM("Lentotila: <red>pois päältä"));
                     player.setAllowFlight(false);
                     return;
