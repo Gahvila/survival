@@ -32,7 +32,7 @@ dependencies {
 
 group = "net.gahvila"
 version = "1.20"
-description = "SelviytymisHarpake"
+description = "survival"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 publishing {
@@ -60,9 +60,9 @@ tasks {
             include(dependency("com.github.stefvanschie.inventoryframework:IF:0.10.14-SNAPSHOT"))
 
         }
-        relocate("dev.jorel.commandapi", "net.gahvila.selviytymisharpake.shaded.commandapi")
-        relocate("de.leonhard.storage", "net.gahvila.selviytymisharpake.shaded.storage")
-        relocate ("com.github.stefvanschie.inventoryframework", "net.gahvila.selviytymisharpake.shaded.inventoryframework")
+        relocate("dev.jorel.commandapi", "net.gahvila.survival.shaded.commandapi")
+        relocate("de.leonhard.storage", "net.gahvila.survival.shaded.storage")
+        relocate ("com.github.stefvanschie.inventoryframework", "net.gahvila.survival.shaded.inventoryframework")
     }
 
     java {
