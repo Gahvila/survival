@@ -1,6 +1,6 @@
 package net.gahvila.survival.PlayerFeatures.Warps;
 
-import net.gahvila.survival.SelviytymisHarpake;
+import net.gahvila.survival.survival;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,7 +26,7 @@ public class WarpEvents implements Listener {
         if (money > 0){
             Integer toBePaid = warpManager.getMoneyInQueue(String.valueOf(p.getUniqueId()));
             warpManager.setMoneyInQueue(p.getUniqueId().toString(), 0);
-            SelviytymisHarpake.getEconomy().depositPlayer(p, toBePaid);
+            survival.getEconomy().depositPlayer(p, toBePaid);
             p.sendMessage(toMM("Sinun maksullista warppia käytettiin kun olit poissa, sait <#85FF00>" + toBePaid + "</#85FF00>."));
         }
     }

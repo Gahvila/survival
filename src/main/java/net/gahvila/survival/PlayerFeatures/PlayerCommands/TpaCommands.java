@@ -5,7 +5,7 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.PlayerArgument;
 import net.draycia.carbon.api.CarbonChatProvider;
 import net.draycia.carbon.api.users.CarbonPlayer;
-import net.gahvila.survival.SelviytymisHarpake;
+import net.gahvila.survival.survival;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
-import static net.gahvila.survival.SelviytymisHarpake.instance;
+import static net.gahvila.survival.survival.instance;
 import static net.gahvila.survival.Utils.MiniMessageUtils.toMM;
 
 public class TpaCommands {
@@ -69,7 +69,7 @@ public class TpaCommands {
                     tpareceiver.sendMessage(toMM("| <red><b>Kieltäydy</b>: /tpano " + tpasender.getName())
                             .hoverEvent(HoverEvent.showText(toMM("Klikkaa kieltäytyäksesi"))).clickEvent(ClickEvent.runCommand("/tpano " + tpasender.getName())));
 
-                    Bukkit.getServer().getScheduler().runTaskLater(SelviytymisHarpake.instance, new Runnable() {
+                    Bukkit.getServer().getScheduler().runTaskLater(survival.instance, new Runnable() {
                         @Override
                         public void run() {
                             if (tpa.get(tpasender) != null) {
@@ -122,7 +122,7 @@ public class TpaCommands {
                     tpareceiver.sendMessage(toMM("<white>| <red><b>Kieltäydy</b>: /tpano " + tpasender.getName())
                             .hoverEvent(HoverEvent.showText(toMM("Klikkaa kieltäytyäksesi"))).clickEvent(ClickEvent.runCommand("/tpano " + tpasender.getName())));
 
-                    Bukkit.getServer().getScheduler().runTaskLater(SelviytymisHarpake.instance, new Runnable() {
+                    Bukkit.getServer().getScheduler().runTaskLater(survival.instance, new Runnable() {
                         @Override
                         public void run() {
                             if (tpahere.get(tpasender) != null) {

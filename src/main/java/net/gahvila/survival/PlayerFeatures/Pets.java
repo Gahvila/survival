@@ -2,7 +2,7 @@ package net.gahvila.survival.PlayerFeatures;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.PlayerArgument;
-import net.gahvila.survival.SelviytymisHarpake;
+import net.gahvila.survival.survival;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Sound;
@@ -36,7 +36,7 @@ public class Pets implements Listener {
                         p.sendMessage(toMM("Sinulla on <#85FF00>10 sekuntia</#85FF00> aikaa valita lemmikki. Siirrettävän valitset oikea-klikkaamalla sitä."));
                         transferingPet.put(p, receiver);
 
-                        Bukkit.getServer().getScheduler().runTaskLater(SelviytymisHarpake.instance, new Runnable() {
+                        Bukkit.getServer().getScheduler().runTaskLater(survival.instance, new Runnable() {
                             @Override
                             public void run() {
                                 if (transferingPet.get(p) != null) {
@@ -82,11 +82,11 @@ public class Pets implements Listener {
         Chunk teleportedFrom = e.getFrom().getChunk();
         if (teleportedFrom.isForceLoaded()) return;
 
-        teleportedFrom.addPluginChunkTicket(SelviytymisHarpake.instance);
-        Bukkit.getServer().getScheduler().runTaskLater(SelviytymisHarpake.instance, new Runnable() {
+        teleportedFrom.addPluginChunkTicket(survival.instance);
+        Bukkit.getServer().getScheduler().runTaskLater(survival.instance, new Runnable() {
             @Override
             public void run() {
-                teleportedFrom.removePluginChunkTicket(SelviytymisHarpake.instance);
+                teleportedFrom.removePluginChunkTicket(survival.instance);
             }
         },20L * 10);
     }

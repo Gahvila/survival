@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
-import static net.gahvila.survival.SelviytymisHarpake.instance;
+import static net.gahvila.survival.survival.instance;
 
 public class WarpManager {
     public HashSet<Warp> warps = new HashSet<>();

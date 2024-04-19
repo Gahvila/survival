@@ -7,7 +7,7 @@ import net.gahvila.survival.PlayerFeatures.Homes.HomeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import static net.gahvila.survival.SelviytymisHarpake.instance;
+import static net.gahvila.survival.survival.instance;
 import static net.gahvila.survival.Utils.MiniMessageUtils.toMM;
 
 public class AddonManager {

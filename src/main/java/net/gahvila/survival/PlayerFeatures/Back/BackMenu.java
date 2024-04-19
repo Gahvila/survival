@@ -8,7 +8,7 @@ import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.PatternPane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import com.github.stefvanschie.inventoryframework.pane.util.Pattern;
-import net.gahvila.survival.SelviytymisHarpake;
+import net.gahvila.survival.survival;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -138,8 +138,8 @@ public class BackMenu {
         pane.bindItem('A', new GuiItem(accept, event -> {
             player.closeInventory();
             double price = backManager.getDeathPrice(player);
-            if (SelviytymisHarpake.getEconomy().getBalance(player) >= price) {
-                SelviytymisHarpake.getEconomy().withdrawPlayer(player, price);
+            if (survival.getEconomy().getBalance(player) >= price) {
+                survival.getEconomy().withdrawPlayer(player, price);
                 player.sendMessage(toMM("<white>Tililtäsi veloitettiin <yellow>" + price + "Ⓖ</yellow>."));
                 player.closeInventory();
                 player.teleportAsync(backManager.getDeath(player));

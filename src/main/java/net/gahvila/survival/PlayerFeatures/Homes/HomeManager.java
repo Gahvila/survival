@@ -1,7 +1,7 @@
 package net.gahvila.survival.PlayerFeatures.Homes;
 
 import de.leonhard.storage.Json;
-import net.gahvila.survival.SelviytymisHarpake;
+import net.gahvila.survival.survival;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -9,12 +9,12 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
-import static net.gahvila.survival.SelviytymisHarpake.instance;
+import static net.gahvila.survival.survival.instance;
 
 public class HomeManager {
     public HashMap<UUID, HashMap<String, Location>> homes = new HashMap<>();
     public void saveHome(UUID uuid, String home, Location location) {
-        Bukkit.getScheduler().runTaskAsynchronously(SelviytymisHarpake.instance, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(survival.instance, () -> {
             Json homeData = new Json("homedata.json", instance.getDataFolder() + "/data/");
             homeData.getFileData().insert(uuid + "." + home + ".world", location.getWorld().getName());
             homeData.getFileData().insert(uuid + "." + home + ".x", location.getX());
@@ -40,7 +40,7 @@ public class HomeManager {
 
     //
     public void deleteHome(UUID uuid, String home) {
-        Bukkit.getScheduler().runTaskAsynchronously(SelviytymisHarpake.instance, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(survival.instance, () -> {
             Json homeData = new Json("homedata.json", instance.getDataFolder() + "/data/");
             if (homeData.contains(uuid + "." + home)) {
                 homeData.set(uuid + "." + home, null);

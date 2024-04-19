@@ -6,7 +6,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import static net.gahvila.survival.SelviytymisHarpake.instance;
+import static net.gahvila.survival.survival.instance;
 
 public class RidableBuff {
 

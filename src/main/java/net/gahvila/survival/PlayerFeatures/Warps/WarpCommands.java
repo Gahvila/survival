@@ -2,7 +2,7 @@ package net.gahvila.survival.PlayerFeatures.Warps;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
-import net.gahvila.survival.SelviytymisHarpake;
+import net.gahvila.survival.survival;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -31,13 +31,13 @@ public class WarpCommands {
                         .executesPlayer((p, args) -> {
                             Integer price = getNextWarpCost(p);
 
-                            if (SelviytymisHarpake.getEconomy().getBalance(p) >= price) {
-                                SelviytymisHarpake.getEconomy().withdrawPlayer(p, price);
+                            if (survival.getEconomy().getBalance(p) >= price) {
+                                survival.getEconomy().withdrawPlayer(p, price);
 
                                 warpManager.addAllowedWarps(p);
                                 p.sendMessage(toMM("Sinulla on nyt <#85FF00>" + warpManager.getAllowedWarps(p) + "</#85FF00> warppia yhteensä."));
                             } else {
-                                p.sendMessage(toMM("Warpin osto maksaa <#85FF00>" + price + "Ⓖ</#85FF00>, ja sinulla on vain <#85FF00>" + SelviytymisHarpake.getEconomy().getBalance(p)));
+                                p.sendMessage(toMM("Warpin osto maksaa <#85FF00>" + price + "Ⓖ</#85FF00>, ja sinulla on vain <#85FF00>" + survival.getEconomy().getBalance(p)));
                             }
                         }))
                 .executesPlayer((p, args) -> {

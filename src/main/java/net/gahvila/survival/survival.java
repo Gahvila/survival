@@ -34,11 +34,11 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class SelviytymisHarpake extends JavaPlugin implements Listener {
-    public static SelviytymisHarpake instance;
+public class survival extends JavaPlugin implements Listener {
+    public static survival instance;
     private PluginManager pluginManager;
     private static Economy econ = null;
-    private SelviytymisHarpake plugin;
+    private survival plugin;
     private HomeManager homeManager;
     private ResurssinetherReset resurssinetherReset;
     private CrashClaim crashClaim;
@@ -155,7 +155,7 @@ public class SelviytymisHarpake extends JavaPlugin implements Listener {
     }
 
     //getters
-    public SelviytymisHarpake getPlugin() {
+    public survival getPlugin() {
         return plugin;
     }
 

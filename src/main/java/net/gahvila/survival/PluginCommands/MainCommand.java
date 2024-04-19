@@ -2,7 +2,7 @@ package net.gahvila.survival.PluginCommands;
 
 import dev.jorel.commandapi.CommandAPICommand;
 
-import static net.gahvila.survival.SelviytymisHarpake.instance;
+import static net.gahvila.survival.survival.instance;
 
 public class MainCommand {
 

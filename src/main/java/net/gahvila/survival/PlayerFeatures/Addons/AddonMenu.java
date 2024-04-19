@@ -8,7 +8,7 @@ import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.PatternPane;
 import com.github.stefvanschie.inventoryframework.pane.util.Pattern;
 import net.gahvila.survival.PlayerFeatures.Homes.HomeManager;
-import net.gahvila.survival.SelviytymisHarpake;
+import net.gahvila.survival.survival;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -198,9 +198,9 @@ public class AddonMenu {
 
             if (addon.equals(Addon.HOME)) {
                 int price = addonManager.getPrice(Addon.HOME, player);
-                if (SelviytymisHarpake.getEconomy().getBalance(player) >= price) {
+                if (survival.getEconomy().getBalance(player) >= price) {
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_CELEBRATE, 0.5F, 1F);
-                    SelviytymisHarpake.getEconomy().withdrawPlayer(player, price);
+                    survival.getEconomy().withdrawPlayer(player, price);
                     homeManager.addAdditionalHomes(player);
                     player.sendMessage(toMM("<white>Ohhoh. Ostit lisäkodin hintaan <#85FF00>" + price +
                             "Ⓖ</#85FF00><white>. Sinulla on nyt <#85FF00>" + homeManager.getAllowedHomes(player) + " kotia</#85FF00> <white>yhteensä."));
@@ -215,9 +215,9 @@ public class AddonMenu {
 
             int price = addonManager.getPrice(addon, player);
 
-            if (SelviytymisHarpake.getEconomy().getBalance(player) >= price) {
+            if (survival.getEconomy().getBalance(player) >= price) {
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_CELEBRATE, 0.5F, 1F);
-                SelviytymisHarpake.getEconomy().withdrawPlayer(player, price);
+                survival.getEconomy().withdrawPlayer(player, price);
                 player.sendMessage(toMM("<white>Ohhoh. Ostit lisäosan <#85FF00>" + addon + "</#85FF00> <white>onnistuneesti."));
                 addonManager.setAddon(player, addon);
                 player.closeInventory();

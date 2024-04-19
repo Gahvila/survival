@@ -2,14 +2,14 @@ package net.gahvila.survival.PlayerFeatures.Resurssinether;
 
 import de.leonhard.storage.Json;
 import dev.jorel.commandapi.CommandAPICommand;
-import net.gahvila.survival.SelviytymisHarpake;
+import net.gahvila.survival.survival;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.UUID;
 
-import static net.gahvila.survival.SelviytymisHarpake.instance;
+import static net.gahvila.survival.survival.instance;
 import static net.gahvila.survival.Utils.MiniMessageUtils.toMM;
 
 public class ResourceNetherCMD  {
@@ -35,12 +35,12 @@ public class ResourceNetherCMD  {
                                         "Sijainti voi olla vaarallinen, joten tarkista ympäristösi ennen kuin alat juoksemaan satunnaiseen suuntaan.<br>" +
                                         "<red>Oletko varma? Suorita komento uudelleen.</red>"));
                                 confirmation.put(p, 1);
-                                Bukkit.getScheduler().runTaskLater(SelviytymisHarpake.instance, () -> confirmation.remove(p), 300);
+                                Bukkit.getScheduler().runTaskLater(survival.instance, () -> confirmation.remove(p), 300);
                             } else if (confirmation.get(p) == 1) {
                                 Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "forcertp " + p.getName() + " -c resurssinether");
                                 confirmation.remove(p);
                                 cooldown.put(p.getUniqueId(), System.currentTimeMillis());
-                                Bukkit.getScheduler().runTaskLater(SelviytymisHarpake.instance, () -> cooldown.remove(p.getUniqueId()), 600);
+                                Bukkit.getScheduler().runTaskLater(survival.instance, () -> cooldown.remove(p.getUniqueId()), 600);
                             }
                         } else {
                             long secondsleft = ((cooldown.get(p.getUniqueId()) / 1000) + cooldowntime) - (System.currentTimeMillis() / 1000);

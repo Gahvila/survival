@@ -1,6 +1,6 @@
 name: survival
 version: '1.20'
-main: net.gahvila.selviytymisharpake.SelviytymisHarpake
+main: net.gahvila.survival.survival
 description: Lisäosa Gahvilan survival palvelimelle.
 api-version: '1.20'
 dependencies:

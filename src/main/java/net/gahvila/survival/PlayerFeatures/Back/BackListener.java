@@ -1,6 +1,6 @@
 package net.gahvila.survival.PlayerFeatures.Back;
 
-import net.gahvila.survival.SelviytymisHarpake;
+import net.gahvila.survival.survival;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -60,7 +60,7 @@ public class BackListener implements Listener {
     @EventHandler
     public void onRespawn(PlayerRespawnEvent e) {
         Player p = e.getPlayer();
-        Bukkit.getScheduler().runTaskLater(SelviytymisHarpake.instance, () -> died.remove(p.getUniqueId()), 100);
+        Bukkit.getScheduler().runTaskLater(survival.instance, () -> died.remove(p.getUniqueId()), 100);
 
     }
 }

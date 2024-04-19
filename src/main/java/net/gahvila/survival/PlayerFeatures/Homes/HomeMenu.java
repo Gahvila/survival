@@ -5,7 +5,7 @@ import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.*;
 import com.github.stefvanschie.inventoryframework.pane.util.Pattern;
-import net.gahvila.survival.SelviytymisHarpake;
+import net.gahvila.survival.survival;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -52,7 +52,7 @@ public class HomeMenu {
 
         PaginatedPane pages = new PaginatedPane(1, 1, 7, 3);
         List<ItemStack> items = new ArrayList<>();
-        NamespacedKey key = new NamespacedKey(SelviytymisHarpake.instance, "selviytymisharpake");
+        NamespacedKey key = new NamespacedKey(survival.instance, "gahvilasurvival");
         for (String home : homeManager.getHomes(player.getUniqueId())) {
             ItemStack item;
             switch (homeManager.getHome(player.getUniqueId(), home).getWorld().getEnvironment()){
@@ -77,7 +77,7 @@ public class HomeMenu {
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);
                 player.teleportAsync(homeLocation);
                 player.sendMessage(toMM("<white>Sinut teleportattiin kotiin</white> <#85FF00>" + homeName + "</#85FF00>."));
-                Bukkit.getServer().getScheduler().runTaskLater(SelviytymisHarpake.instance, new Runnable() {
+                Bukkit.getServer().getScheduler().runTaskLater(survival.instance, new Runnable() {
                     @Override
                     public void run() {
                         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 0.5F, 1F);

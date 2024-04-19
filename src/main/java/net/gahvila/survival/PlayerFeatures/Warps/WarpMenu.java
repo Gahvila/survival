@@ -6,7 +6,7 @@ import com.github.stefvanschie.inventoryframework.gui.type.AnvilGui;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.*;
 import com.github.stefvanschie.inventoryframework.pane.util.Pattern;
-import net.gahvila.survival.SelviytymisHarpake;
+import net.gahvila.survival.survival;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -51,7 +51,7 @@ public class WarpMenu {
 
         PaginatedPane pages = new PaginatedPane(1, 1, 7, 3);
         List<ItemStack> items = new ArrayList<>();
-        NamespacedKey key = new NamespacedKey(SelviytymisHarpake.instance, "selviytymisharpake");
+        NamespacedKey key = new NamespacedKey(survival.instance, "gahvilasurvival");
         for (Warp warp : warpManager.getWarps()) {
             Date currentTime = new Date(warp.getCreationDate());
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -80,7 +80,7 @@ public class WarpMenu {
                 player.closeInventory();
                 player.teleportAsync(warp.get().getLocation());
                 player.sendMessage(toMM("Sinut teleportattiin warppiin <#85FF00>" + warp.get().getName() + "</#85FF00>."));
-                Bukkit.getServer().getScheduler().runTaskLater(SelviytymisHarpake.instance, new Runnable() {
+                Bukkit.getServer().getScheduler().runTaskLater(survival.instance, new Runnable() {
                     @Override
                     public void run() {
                         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, MAX_VALUE, 1F);
@@ -185,8 +185,8 @@ public class WarpMenu {
             player.closeInventory();
             int price = warp.getPrice();
 
-            if (SelviytymisHarpake.getEconomy().getBalance(player) >= price) {
-                SelviytymisHarpake.getEconomy().withdrawPlayer(player, price);
+            if (survival.getEconomy().getBalance(player) >= price) {
+                survival.getEconomy().withdrawPlayer(player, price);
                 player.sendMessage(toMM("Tililtäsi veloitettiin <#85FF00>" + price + "Ⓖ</#85FF00>."));
                 player.closeInventory();
                 player.teleportAsync(warp.getLocation());
@@ -201,7 +201,7 @@ public class WarpMenu {
                     warpManager.addMoneyToQueue(ownerUUID.toString(), price);
                 }else{
                     Player owner = Bukkit.getPlayer(ownerUUID);
-                    SelviytymisHarpake.getEconomy().depositPlayer(owner, price);
+                    survival.getEconomy().depositPlayer(owner, price);
                     owner.sendMessage(toMM("Sinun maksullista warppia käytettiin, sait <#85FF00>" + price + "Ⓖ</#85FF00>."));
                 }
             } else {
@@ -244,7 +244,7 @@ public class WarpMenu {
 
         PaginatedPane pages = new PaginatedPane(1, 1, 7, 3);
         List<ItemStack> items = new ArrayList<>();
-        NamespacedKey key = new NamespacedKey(SelviytymisHarpake.instance, "selviytymisharpake");
+        NamespacedKey key = new NamespacedKey(survival.instance, "gahvilasurvival");
         for (Warp warp : warpManager.getOwnedWarps(player.getUniqueId())) {
             Date currentTime = new Date(warp.getCreationDate());
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -746,7 +746,7 @@ public class WarpMenu {
                 if (!warpManager.getHasDoneSecret(player)) {
                     warpManager.setHasDoneSecret(player);
                     player.sendMessage("Ohhoh! Painoit konami koodin, sait 400Ⓖ. ");
-                    SelviytymisHarpake.getEconomy().depositPlayer(player, 400);
+                    survival.getEconomy().depositPlayer(player, 400);
                     player.playSound(player.getLocation(), Sound.ITEM_GOAT_HORN_SOUND_0, MAX_VALUE, 1F);
                     player.closeInventory();
                 }

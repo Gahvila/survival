@@ -1,6 +1,6 @@
 package net.gahvila.survival.PlayerFeatures.Back;
 
-import net.gahvila.survival.SelviytymisHarpake;
+import net.gahvila.survival.survival;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -17,7 +17,7 @@ public class BackManager {
 
     public void setDeath(Player player, Location location) {
         deathLocation.put(player, location);
-        double playerBalance = SelviytymisHarpake.getEconomy().getBalance(player);
+        double playerBalance = survival.getEconomy().getBalance(player);
         double percentage;
         if (playerBalance >= 25000) {
             percentage = 0.03;
@@ -26,7 +26,7 @@ public class BackManager {
         } else {
             percentage = 0.05;
         }
-        deathPrice.put(player, (int) Math.round(SelviytymisHarpake.getEconomy().getBalance(player) * percentage));
+        deathPrice.put(player, (int) Math.round(survival.getEconomy().getBalance(player) * percentage));
 
     }
 

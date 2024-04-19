@@ -3,7 +3,7 @@ package net.gahvila.survival.PlayerFeatures.Resurssinether;
 import de.leonhard.storage.Json;
 import net.gahvila.survival.PlayerFeatures.Homes.HomeManager;
 import net.gahvila.survival.PlayerFeatures.Spawn.SpawnTeleport;
-import net.gahvila.survival.SelviytymisHarpake;
+import net.gahvila.survival.survival;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -18,9 +18,9 @@ import static net.gahvila.survival.Utils.MiniMessageUtils.toMM;
 public class ResurssinetherReset {
 
     private final HomeManager homeManager;
-    private final SelviytymisHarpake plugin;
+    private final survival plugin;
 
-    public ResurssinetherReset(HomeManager homeManager, SelviytymisHarpake plugin) {
+    public ResurssinetherReset(HomeManager homeManager, survival plugin) {
         this.homeManager = homeManager;
         this.plugin = plugin;
     }
