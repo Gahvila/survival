@@ -92,6 +92,14 @@ public class AddonCommands {
         new CommandAPICommand("fly")
                 .executesPlayer((p, args) -> {
                     if (addonManager.getAddon(p, Addon.FLY)){
+                        if (p.hasPermission("survival.fly.bypass")) {
+                            if (p.getAllowFlight()) {
+                                p.sendMessage(toMM("Lentotila: <red>pois päältä"));
+                            } else {
+                                p.sendMessage(toMM("Lentotila: <green>päällä"));
+                            }
+                            p.setAllowFlight(!p.getAllowFlight());
+                        }
                         if (p.getLocation().getY() < 63) {
                             p.sendMessage("Voit käyttää tätä vain vedenpinnan yläpuolella.");
                             return;

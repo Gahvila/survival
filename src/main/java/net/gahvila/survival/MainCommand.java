@@ -1,4 +1,4 @@
-package net.gahvila.survival.PluginCommands;
+package net.gahvila.survival;
 
 import dev.jorel.commandapi.CommandAPICommand;
 

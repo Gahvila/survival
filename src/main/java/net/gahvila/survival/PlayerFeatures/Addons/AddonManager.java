@@ -52,6 +52,10 @@ public class AddonManager {
 
     public void flyScheduler(Player player) {
         Bukkit.getScheduler().runTaskTimer(instance, task -> {
+            if (player.hasPermission("survival.fly.bypass")){
+                task.cancel();
+                return;
+            }
             if (!getAddon(player, Addon.FLY)) {
                 task.cancel();
                 return;
