@@ -15,19 +15,19 @@ repositories {
 
 dependencies {
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
-    compileOnly ("me.clip:placeholderapi:2.11.5")
+    compileOnly ("me.clip:placeholderapi:2.11.6")
     compileOnly ("net.luckperms:api:5.4")
     compileOnly("de.hexaoxi:carbonchat-api:3.0.0-beta.26")
     compileOnly ("com.github.koca2000:NoteBlockAPI:1.6.2")
-    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
-    implementation ("com.github.stefvanschie.inventoryframework:IF:0.10.14-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
+    implementation ("com.github.stefvanschie.inventoryframework:IF:0.10.14")
     implementation ("com.github.DaJokni:simplixstorage:-SNAPSHOT")
     compileOnly ("com.github.DaJokni:CrashClaim:-SNAPSHOT")
 
     //commandapi
-    implementation("dev.jorel:commandapi-bukkit-shade:9.3.0")
-    compileOnly("dev.jorel:commandapi-annotations:9.3.0")
-    annotationProcessor("dev.jorel:commandapi-annotations:9.3.0")
+    implementation("dev.jorel:commandapi-bukkit-shade-mojang-mapped:9.4.2")
+    compileOnly("dev.jorel:commandapi-annotations:9.4.2")
+    annotationProcessor("dev.jorel:commandapi-annotations:9.4.2")
 }
 
 group = "net.gahvila"
@@ -55,9 +55,9 @@ tasks {
     shadowJar {
         archiveFileName.set("${rootProject.name}-${version}.jar")
         dependencies {
-            include(dependency("dev.jorel:commandapi-bukkit-shade:9.3.0"))
+            include(dependency("dev.jorel:commandapi-bukkit-shade:9.4.2"))
             include(dependency("com.github.DaJokni:simplixstorage:-SNAPSHOT"))
-            include(dependency("com.github.stefvanschie.inventoryframework:IF:0.10.14-SNAPSHOT"))
+            include(dependency("com.github.stefvanschie.inventoryframework:IF:0.10.14"))
 
         }
         relocate("dev.jorel.commandapi", "net.gahvila.survival.shaded.commandapi")
