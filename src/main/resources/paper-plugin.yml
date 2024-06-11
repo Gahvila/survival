@@ -5,13 +5,15 @@ description: Lisäosa Gahvilan survival palvelimelle.
 api-version: '1.20'
 dependencies:
   server:
+    JakesRTP:
+      load: BEFORE
+      required: true
     Vault:
       load: BEFORE
       required: true
     #needed for sethome
     NoteBlockAPI:
       required: false
-
     CarbonChat:
       required: false
       join-classpath: true
