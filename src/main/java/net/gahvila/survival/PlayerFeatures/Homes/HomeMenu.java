@@ -30,7 +30,7 @@ public class HomeMenu {
     }
 
     public void showGUI(Player player) {
-        ChestGui gui = new ChestGui(5, ComponentHolder.of(toUndecoratedMM("<dark_purple><b>Kodit")));
+        ChestGui gui = new ChestGui(3, ComponentHolder.of(toUndecoratedMM("<dark_purple><b>Kodit")));
         gui.show(player);
 
         gui.setOnGlobalClick(event -> event.setCancelled(true));
@@ -38,11 +38,9 @@ public class HomeMenu {
         Pattern pattern = new Pattern(
                 "111111111",
                 "1AAAAAAA1",
-                "1AAAAAAA1",
-                "1AAAAAAA1",
-                "111AAA111"
+                "111111111"
         );
-        PatternPane border = new PatternPane(0, 0, 9, 5, Pane.Priority.LOWEST, pattern);
+        PatternPane border = new PatternPane(0, 0, 9, 3, Pane.Priority.LOWEST, pattern);
         ItemStack background = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta backgroundMeta = background.getItemMeta();
         backgroundMeta.displayName(toUndecoratedMM(""));
@@ -50,7 +48,7 @@ public class HomeMenu {
         border.bindItem('1', new GuiItem(background));
         gui.addPane(border);
 
-        PaginatedPane pages = new PaginatedPane(1, 1, 7, 3);
+        PaginatedPane pages = new PaginatedPane(1, 1, 7, 1);
         List<ItemStack> items = new ArrayList<>();
         NamespacedKey key = new NamespacedKey(survival.instance, "gahvilasurvival");
         for (String home : homeManager.getHomes(player.getUniqueId())) {
@@ -89,7 +87,7 @@ public class HomeMenu {
             }
         });
 
-        StaticPane navigationPane = new StaticPane(0, 4, 9, 1);
+        StaticPane navigationPane = new StaticPane(0, 2, 9, 1);
 
         ItemStack previous = new ItemStack(Material.MANGROVE_BUTTON);
         ItemMeta previousMeta = previous.getItemMeta();
