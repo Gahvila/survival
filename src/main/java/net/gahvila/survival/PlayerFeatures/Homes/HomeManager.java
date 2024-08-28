@@ -126,11 +126,10 @@ public class HomeManager {
         Json homeData = new Json("allowedhomes.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         if (homeData.contains(uuid)){
-            Integer allowedHomes = homeData.getInt(uuid + ".additionalHomes") + getAllowedHomesOfRank(player);
+            Integer allowedHomes = homeData.getInt(uuid + ".additionalHomes") + 1;
             return allowedHomes;
         }else{
-            Integer allowedHomes = getAllowedHomesOfRank(player);
-            return allowedHomes;
+            return 1;
         }
     }
 
@@ -144,22 +143,9 @@ public class HomeManager {
             return 0;
         }
     }
-
-    public Integer getAllowedHomesOfRank(Player player) {
-        if (player.hasPermission("survival.homes.pro")) {
-            return 9;
-        } else if (player.hasPermission("survival.homes.mvp")) {
-            return 7;
-        } else if (player.hasPermission("survival.homes.vip")) {
-            return 5;
-        }else{
-            return 3;
-        }
-    }
-
     public int getNextHomeCost(Player p) {
         double rate = 0.10;
-        int initialCost = 5000;
+        int initialCost = 15000;
         double cost = initialCost * Math.pow(1 + rate, getAllowedAdditionalHomes(p));
         return (int) cost;
     }

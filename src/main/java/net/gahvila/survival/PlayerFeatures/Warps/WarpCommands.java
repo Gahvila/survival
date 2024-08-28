@@ -152,7 +152,7 @@ public class WarpCommands {
 
     public int getNextWarpCost(Player p) {
         double rate = 0.10;
-        int initialCost = 10000;
+        int initialCost = 15000;
         double cost = initialCost * Math.pow(1 + rate, (warpManager.getAllowedWarps(p) - 1));
         return (int) cost;
     }
