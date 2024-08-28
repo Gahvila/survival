@@ -90,24 +90,6 @@ public class AddonMenu {
             }
         }));
 
-        ItemStack feed = new ItemStack(Material.COOKED_BEEF);
-        ItemMeta feedMeta = feed.getItemMeta();
-        feedMeta.displayName(toUndecoratedMM("<white><b>Feed</b> <#85FF00>" + addonManager.getPrice(Addon.FEED, player) + "Ⓖ"));
-        feedMeta.lore(List.of(toUndecoratedMM("<white>Antaa oikeudet <#85FF00>/feed <white>komentoon, "), toUndecoratedMM("<white>jolla voit täyttää ruokapalkkisi 2 minuutin välein.")));
-        feed.setItemMeta(feedMeta);
-
-        navigationPane.addItem(new GuiItem(feed, event -> {
-            if (!addonManager.getAddon(player, Addon.FEED)) {
-                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5F, 1F);
-                confirmMenu(player, feed, Addon.FEED);
-            }else{
-                player.sendMessage("Sinulla on jo tuo lisäosa.");
-                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
-                feed.setType(Material.BARRIER);
-                gui.update();
-            }
-        }));
-
         ItemStack shop = new ItemStack(Material.CHEST);
         ItemMeta shopMeta = shop.getItemMeta();
         shopMeta.displayName(toUndecoratedMM("<white><b>Kauppa</b> <#85FF00>" + addonManager.getPrice(Addon.SHOP, player) + "Ⓖ"));
@@ -147,7 +129,7 @@ public class AddonMenu {
         ItemStack home = new ItemStack(Material.OAK_DOOR);
         ItemMeta homeMeta = home.getItemMeta();
         homeMeta.displayName(toUndecoratedMM("<white><b>Lisäkoti</b> <#85FF00>" + homeManager.getNextHomeCost(player) + "Ⓖ"));
-        homeMeta.lore(List.of(toUndecoratedMM("<white>Sinulla on</white> <#85FF00>" + homeManager.getAllowedHomes(player) + "</#85FF00> <white>kotia yhteensä.</white>"), toUndecoratedMM("<gray>(Rank: " + homeManager.getAllowedHomesOfRank(player) + "</gray> <dark_gray>|</dark_gray> <gray>Lisäkodit: " + homeManager.getAllowedAdditionalHomes(player) + ")</gray>"), toUndecoratedMM("<white>Ostamalla tämän saat yhden uuden kodin.")));
+        homeMeta.lore(List.of(toUndecoratedMM("<white>Sinulla on</white> <#85FF00>" + homeManager.getAllowedHomes(player) + "</#85FF00> <white>kotia yhteensä.</white>"), toUndecoratedMM("<white>Ostamalla tämän saat yhden uuden kodin.")));
         home.setItemMeta(homeMeta);
 
         navigationPane.addItem(new GuiItem(home, event -> {

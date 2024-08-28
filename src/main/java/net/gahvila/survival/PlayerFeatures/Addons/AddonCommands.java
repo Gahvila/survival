@@ -59,26 +59,6 @@ public class AddonCommands {
                     }
                 })
                 .register();
-        new CommandAPICommand("feed")
-                .executesPlayer((p, args) -> {
-                    if (addonManager.getAddon(p, Addon.FEED)){
-                        //Get the amount of milliseconds that have passed since the feature was last used.
-                        long timeLeft = System.currentTimeMillis() - getCooldown(p.getUniqueId());
-                        if(TimeUnit.MILLISECONDS.toSeconds(timeLeft) >= DEFAULT_COOLDOWN){
-                            p.setFoodLevel(20);
-                            p.setSaturation(20F);
-                            p.sendMessage(toMM("<white>Täytit ruokapalkkisi. Voit käyttää komentoa uudelleen </white><#85FF00>kahden minuutin</#85FF00> <white>kuluttua."));
-                            p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_BURP, 2F, 1F);
-                            setCooldown(p.getUniqueId(), System.currentTimeMillis());
-                        }else{
-                            String secondsleft = String.valueOf((DEFAULT_COOLDOWN - TimeUnit.MILLISECONDS.toSeconds(timeLeft)));
-                            p.sendMessage(toMM("<#85FF00>" + secondsleft + " sekuntia</#85FF00><white> kunnes voit käyttää komentoa uudelleen."));
-                        }
-                    }else{
-                        p.sendMessage(toMM("<white>Käytä</white> <#85FF00>/addon</#85FF00> <white>komentoa saadaksesi oikeudet tähän."));
-                    }
-                })
-                .register();
         new CommandAPICommand("kauppa")
                 .executesPlayer((p, args) -> {
                     if (addonManager.getAddon(p, Addon.SHOP)){

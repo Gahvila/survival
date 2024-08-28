@@ -25,8 +25,6 @@ public class AddonManager {
                 return 1000;
             case ENDERCHEST:
                 return 2750;
-            case FEED:
-                return 5000;
             case SHOP:
                 return 2500;
             case HOME:
