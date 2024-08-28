@@ -38,7 +38,6 @@ public class survival extends JavaPlugin implements Listener {
     private static Economy econ = null;
     private survival plugin;
     private HomeManager homeManager;
-    private ResurssinetherReset resurssinetherReset;
     private CrashClaim crashClaim;
 
 
@@ -59,7 +58,6 @@ public class survival extends JavaPlugin implements Listener {
         pluginManager = Bukkit.getPluginManager();
         crashClaim = CrashClaim.getPlugin();
         homeManager = new HomeManager();
-        resurssinetherReset = new ResurssinetherReset(homeManager, instance);
         BackManager backManager = new BackManager();
         AddonManager addonManager = new AddonManager(homeManager, crashClaim);
         WarpManager warpManager = new WarpManager();
@@ -98,13 +96,9 @@ public class survival extends JavaPlugin implements Listener {
         WarpCommands warpCommands = new WarpCommands(warpManager, warpMenu);
         warpCommands.registerCommands();
 
-        ResourceNetherCMD resourceNetherCMD = new ResourceNetherCMD();
-        resourceNetherCMD.registerCommands();
-
-
         //register events
         registerListeners(new PlayerDeath(), new JoinEvent(), new QuitEvent(), new BackListener(backManager),
-                new WarpEvents(warpManager), new RNPortalDisabler(), new ExplodeEvent(), new Pets(), new HomeEvents(homeManager));
+                new WarpEvents(warpManager), new Pets(), new HomeEvents(homeManager));
 
         //fix reload argh
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -155,10 +149,6 @@ public class survival extends JavaPlugin implements Listener {
     //getters
     public survival getPlugin() {
         return plugin;
-    }
-
-    public ResurssinetherReset getResurssinetherReset() {
-        return resurssinetherReset;
     }
 
     public static Economy getEconomy() {
