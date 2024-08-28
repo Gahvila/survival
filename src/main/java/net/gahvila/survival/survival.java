@@ -18,7 +18,6 @@ import net.gahvila.survival.PlayerFeatures.Homes.HomeMenu;
 import net.gahvila.survival.PlayerFeatures.Pets;
 import net.gahvila.survival.PlayerFeatures.PlayerCommands.TpaCommands;
 import net.gahvila.survival.PlayerFeatures.Spawn.SpawnCMD;
-import net.gahvila.survival.PlayerFeatures.VehicleBuffs.MinecartBuff;
 import net.gahvila.survival.PlayerFeatures.VehicleBuffs.RidableBuff;
 import net.gahvila.survival.PlayerFeatures.Warps.*;
 import net.gahvila.survival.PlayerFeatures.Resurssinether.RNPortalDisabler;
@@ -105,7 +104,7 @@ public class survival extends JavaPlugin implements Listener {
 
         //register events
         registerListeners(new PlayerDeath(), new JoinEvent(), new QuitEvent(), new BackListener(backManager),
-                new WarpEvents(warpManager), new RNPortalDisabler(), new ExplodeEvent(), new MinecartBuff(), new Pets(), new HomeEvents(homeManager));
+                new WarpEvents(warpManager), new RNPortalDisabler(), new ExplodeEvent(), new Pets(), new HomeEvents(homeManager));
 
         //fix reload argh
         for (Player player : Bukkit.getOnlinePlayers()) {
