@@ -16,7 +16,6 @@ import net.gahvila.survival.PlayerFeatures.Homes.HomeEvents;
 import net.gahvila.survival.PlayerFeatures.Homes.HomeManager;
 import net.gahvila.survival.PlayerFeatures.Homes.HomeMenu;
 import net.gahvila.survival.PlayerFeatures.Pets;
-import net.gahvila.survival.PlayerFeatures.PlayerCommands.TpaCommands;
 import net.gahvila.survival.PlayerFeatures.Spawn.SpawnCMD;
 import net.gahvila.survival.PlayerFeatures.VehicleBuffs.RidableBuff;
 import net.gahvila.survival.PlayerFeatures.Warps.*;
@@ -81,9 +80,6 @@ public class survival extends JavaPlugin implements Listener {
         SpawnCMD spawnCMD = new SpawnCMD();
         spawnCMD.registerCommands();
 
-        TpaCommands tpaCommands = new TpaCommands();
-        tpaCommands.registerCommands();
-
         Pets pets = new Pets();
         pets.registerCommands();
 
@@ -122,13 +118,6 @@ public class survival extends JavaPlugin implements Listener {
         //unregister back
         CommandAPI.unregister("back");
         CommandAPI.unregister("fback");
-        //unregister tpa
-        CommandAPI.unregister("tpacancel");
-        CommandAPI.unregister("tpayes");
-        CommandAPI.unregister("tpano");
-        CommandAPI.unregister("tpahere");
-        CommandAPI.unregister("tpa");
-        CommandAPI.unregister("tpatoggle");
         //unregister misc.
         CommandAPI.unregister("selviytymishärpäke");
         CommandAPI.unregister("resurssinether");
