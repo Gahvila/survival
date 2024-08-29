@@ -20,9 +20,6 @@ import net.gahvila.survival.PlayerFeatures.PlayerCommands.TpaCommands;
 import net.gahvila.survival.PlayerFeatures.Spawn.SpawnCMD;
 import net.gahvila.survival.PlayerFeatures.VehicleBuffs.RidableBuff;
 import net.gahvila.survival.PlayerFeatures.Warps.*;
-import net.gahvila.survival.PlayerFeatures.Resurssinether.RNPortalDisabler;
-import net.gahvila.survival.PlayerFeatures.Resurssinether.ResourceNetherCMD;
-import net.gahvila.survival.PlayerFeatures.Resurssinether.ResurssinetherReset;
 import net.gahvila.survival.Utils.EmptyChunkGenerator;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
@@ -186,16 +183,5 @@ public class survival extends JavaPlugin implements Listener {
         World spawn = getServer().getWorld("spawn");
         spawn.getWorldBorder().setSize(602);
         spawn.setDifficulty(Difficulty.PEACEFUL);
-
-
-        WorldCreator resurssinethercreator = new WorldCreator("resurssinether");
-
-        resurssinethercreator.environment(World.Environment.NETHER);
-        resurssinethercreator.type(WorldType.NORMAL);
-        resurssinethercreator.createWorld();
-
-        World resurssinether = getServer().getWorld("resurssinether");
-        resurssinether.getWorldBorder().setSize(2000);
-        resurssinether.setDifficulty(Difficulty.HARD);
     }
 }
