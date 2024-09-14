@@ -14,11 +14,6 @@ public class MainCommand {
                             instance.reloadConfig();
                             sender.sendMessage("ladattu uusiks toivotaan että servu ei lahonnut");
                         }))
-                .withSubcommand(new CommandAPICommand("resetnether")
-                        .executes((sender, args) -> {
-                            sender.sendMessage("nether reset alotettu toivottavasti");
-                            instance.getResurssinetherReset().performNetherReset();
-                        }))
                 .register();
 
     }
