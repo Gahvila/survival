@@ -10,10 +10,6 @@ public class SpawnCMD {
                     SpawnTeleport.teleportSpawn(p);
                     p.sendMessage("Teleporttasit spawnille.");
                 })
-
             .register();
-
     }
-
-
 }

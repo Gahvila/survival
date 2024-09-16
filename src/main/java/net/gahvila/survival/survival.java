@@ -6,22 +6,17 @@ import net.crashcraft.crashclaim.CrashClaim;
 import net.gahvila.survival.Events.JoinEvent;
 import net.gahvila.survival.Events.PlayerDeath;
 import net.gahvila.survival.Events.QuitEvent;
-import net.gahvila.survival.Addons.AddonCommands;
-import net.gahvila.survival.Addons.AddonManager;
-import net.gahvila.survival.Addons.AddonMenu;
 import net.gahvila.survival.Back.BackCommand;
 import net.gahvila.survival.Back.BackListener;
 import net.gahvila.survival.Back.BackManager;
 import net.gahvila.survival.Back.BackMenu;
 import net.gahvila.survival.Pets.Pets;
-import net.gahvila.survival.PlayerFeatures.Events.*;
 import net.gahvila.survival.Homes.HomeCommands;
 import net.gahvila.survival.Homes.HomeEvents;
 import net.gahvila.survival.Homes.HomeManager;
 import net.gahvila.survival.Homes.HomeMenu;
 import net.gahvila.survival.Spawn.SpawnCMD;
 import net.gahvila.survival.VehicleBuffs.RidableBuff;
-import net.gahvila.survival.PlayerFeatures.Warps.*;
 import net.gahvila.survival.Utils.EmptyChunkGenerator;
 import net.gahvila.survival.Warps.WarpCommands;
 import net.gahvila.survival.Warps.WarpEvents;
@@ -62,9 +57,7 @@ public class survival extends JavaPlugin implements Listener {
         crashClaim = CrashClaim.getPlugin();
         homeManager = new HomeManager();
         BackManager backManager = new BackManager();
-        AddonManager addonManager = new AddonManager(homeManager, crashClaim);
         WarpManager warpManager = new WarpManager();
-        AddonMenu addonMenu = new AddonMenu(addonManager, homeManager);
         WarpMenu warpMenu = new WarpMenu(warpManager);
         HomeMenu homeMenu = new HomeMenu(homeManager);
         BackMenu backMenu = new BackMenu(backManager);
@@ -74,9 +67,6 @@ public class survival extends JavaPlugin implements Listener {
 
         // Commands
         CommandAPI.onLoad(new CommandAPIBukkitConfig(this).verboseOutput(false).silentLogs(true));
-
-        AddonCommands addonCommands = new AddonCommands(addonManager, addonMenu, crashClaim);
-        addonCommands.registerCommands();
 
         BackCommand backCommand = new BackCommand(backManager, backMenu);
         backCommand.registerCommands();
