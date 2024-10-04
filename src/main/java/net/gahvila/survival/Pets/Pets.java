@@ -19,7 +19,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static net.gahvila.survival.Utils.MiniMessageUtils.toMM;
+import static net.gahvila.gahvilacore.Utils.MiniMessageUtils.toMM;
 
 public class Pets implements Listener {
     public static HashMap<Player, Player> transferingPet = new HashMap<>();

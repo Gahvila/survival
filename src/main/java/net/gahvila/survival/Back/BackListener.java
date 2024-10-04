@@ -29,31 +29,16 @@ public class BackListener implements Listener {
     @EventHandler
     public void onDeath(PlayerDeathEvent e) {
         Player p = e.getEntity().getPlayer();
-        Location loc = p.getLocation();
         died.add(p.getUniqueId());
 
-        backManager.setDeath(p, loc);
+        backManager.setBack(p, p.getLocation());
 
     }
     @EventHandler
     public void onTeleport(PlayerTeleportEvent e) {
         Player p = e.getPlayer();
-        PlayerTeleportEvent.TeleportCause cause = e.getCause();
-
-        // make sure teleport isn't due to a death, and not due to the causes listed
-        if (!died.contains(p.getUniqueId()) &&
-                cause != PlayerTeleportEvent.TeleportCause.DISMOUNT &&
-                cause != PlayerTeleportEvent.TeleportCause.END_GATEWAY &&
-                cause != PlayerTeleportEvent.TeleportCause.END_PORTAL &&
-                cause != PlayerTeleportEvent.TeleportCause.ENDER_PEARL &&
-                cause != PlayerTeleportEvent.TeleportCause.NETHER_PORTAL &&
-                cause != PlayerTeleportEvent.TeleportCause.SPECTATE) {
-
-            World fromWorld = e.getFrom().getWorld();
-            //not spawn
-            if (!fromWorld.equals(Bukkit.getWorld("spawn"))) {
-                backManager.setBack(p, e.getFrom());
-            }
+        if (!e.getFrom().getWorld().equals(Bukkit.getWorld("spawn"))) {
+            backManager.setBack(p, e.getFrom());
         }
     }
 

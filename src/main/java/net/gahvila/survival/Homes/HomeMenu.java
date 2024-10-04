@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Float.MAX_VALUE;
-import static net.gahvila.survival.Utils.MiniMessageUtils.toMM;
-import static net.gahvila.survival.Utils.MiniMessageUtils.toUndecoratedMM;
+import static net.gahvila.gahvilacore.Utils.MiniMessageUtils.toMM;
+import static net.gahvila.gahvilacore.Utils.MiniMessageUtils.toUndecoratedMM;
 
 public class HomeMenu {
     private final HomeManager homeManager;

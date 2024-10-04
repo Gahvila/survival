@@ -17,12 +17,6 @@ public class BackCommand {
     public void registerCommands() {
         new CommandAPICommand("back")
                 .executesPlayer((p, args) -> {
-                    backMenu.showGUI(p);
-                })
-                .register();
-        new CommandAPICommand("fback")
-                .withAliases("fb")
-                .executesPlayer((p, args) -> {
                     Location previousLocation = backManager.getBack(p);
 
                     if (previousLocation != null) {

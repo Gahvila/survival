@@ -18,8 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static java.lang.Float.MAX_VALUE;
-import static net.gahvila.survival.Utils.MiniMessageUtils.toMM;
-import static net.gahvila.survival.Utils.MiniMessageUtils.toUndecoratedMM;
+import static net.gahvila.gahvilacore.Utils.MiniMessageUtils.toMM;
+import static net.gahvila.gahvilacore.Utils.MiniMessageUtils.toUndecoratedMM;
 
 public class WarpMenu {
     private final WarpManager warpManager;
@@ -575,7 +575,7 @@ public class WarpMenu {
         ArrayList<ItemStack> items = new ArrayList<>();
         World world = warp.getLocation().getWorld();
         for (Material material : Material.values()) {
-            if (material.isLegacy() || material == Material.AIR || !material.isEnabledByFeature(world)) {
+            if (material.isLegacy() || material == Material.AIR) {
                 continue;
             }
             ItemStack item = new ItemStack(material);

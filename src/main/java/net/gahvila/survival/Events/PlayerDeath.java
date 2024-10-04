@@ -11,7 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import static java.lang.Long.MAX_VALUE;
-import static net.gahvila.survival.Utils.MiniMessageUtils.toMM;
+import static net.gahvila.gahvilacore.Utils.MiniMessageUtils.toMM;
 
 public class PlayerDeath implements Listener {
 

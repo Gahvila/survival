@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
 
+import static net.gahvila.gahvilacore.Utils.MiniMessageUtils.toMM;
 import static net.gahvila.survival.survival.instance;
-import static net.gahvila.survival.Utils.MiniMessageUtils.toMM;
 
 public class HomeCommands {
 
