@@ -3,6 +3,7 @@ package net.gahvila.survival;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import net.crashcraft.crashclaim.CrashClaim;
+import net.gahvila.gahvilacore.Teleport.TeleportManager;
 import net.gahvila.survival.Events.JoinEvent;
 import net.gahvila.survival.Events.PlayerDeath;
 import net.gahvila.survival.Events.QuitEvent;
@@ -37,6 +38,7 @@ public class survival extends JavaPlugin implements Listener {
     private survival plugin;
     private HomeManager homeManager;
     private CrashClaim crashClaim;
+    private TeleportManager teleportManager;
 
 
     @Override
@@ -56,6 +58,7 @@ public class survival extends JavaPlugin implements Listener {
         pluginManager = Bukkit.getPluginManager();
         crashClaim = CrashClaim.getPlugin();
         homeManager = new HomeManager();
+        teleportManager = new TeleportManager();
         BackManager backManager = new BackManager();
         WarpManager warpManager = new WarpManager();
         WarpMenu warpMenu = new WarpMenu(warpManager);
@@ -71,10 +74,10 @@ public class survival extends JavaPlugin implements Listener {
         BackCommand backCommand = new BackCommand(backManager, backMenu);
         backCommand.registerCommands();
 
-        MainCommand mainCommand = new MainCommand();
+        MainCommand mainCommand = new MainCommand(teleportManager);
         mainCommand.registerCommands();
 
-        SpawnCMD spawnCMD = new SpawnCMD();
+        SpawnCMD spawnCMD = new SpawnCMD(teleportManager);
         spawnCMD.registerCommands();
 
         Pets pets = new Pets();
@@ -87,7 +90,7 @@ public class survival extends JavaPlugin implements Listener {
         warpCommands.registerCommands();
 
         //register events
-        registerListeners(new PlayerDeath(), new JoinEvent(), new QuitEvent(), new BackListener(backManager),
+        registerListeners(new PlayerDeath(teleportManager), new JoinEvent(teleportManager), new QuitEvent(), new BackListener(backManager),
                 new WarpEvents(warpManager), new Pets(), new HomeEvents(homeManager));
 
         //fix reload argh
@@ -165,9 +168,5 @@ public class survival extends JavaPlugin implements Listener {
         World end = getServer().getWorld("world_the_end");
         end.getWorldBorder().setSize(1000000);
         end.setDifficulty(Difficulty.HARD);
-
-        World spawn = getServer().getWorld("spawn");
-        spawn.getWorldBorder().setSize(602);
-        spawn.setDifficulty(Difficulty.PEACEFUL);
     }
 }

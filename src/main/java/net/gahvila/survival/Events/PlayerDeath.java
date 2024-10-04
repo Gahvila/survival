@@ -1,7 +1,7 @@
 package net.gahvila.survival.Events;
 
+import net.gahvila.gahvilacore.Teleport.TeleportManager;
 import net.gahvila.survival.Back.BackListener;
-import net.gahvila.survival.Spawn.SpawnTeleport;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -14,6 +14,12 @@ import static java.lang.Long.MAX_VALUE;
 import static net.gahvila.survival.Utils.MiniMessageUtils.toMM;
 
 public class PlayerDeath implements Listener {
+
+    private final TeleportManager teleportManager;
+
+    public PlayerDeath(TeleportManager teleportManager) {
+        this.teleportManager = teleportManager;
+    }
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent e){
@@ -46,7 +52,8 @@ public class PlayerDeath implements Listener {
                     BackListener.back.put(p, p.getLocation());
                 }
             }
-            SpawnTeleport.teleportSpawn(p);
+            Location loc = teleportManager.getTeleport("spawn");
+            p.teleport(loc);
 
         }
     }

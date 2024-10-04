@@ -14,6 +14,7 @@ repositories {
 }
 
 dependencies {
+    compileOnly("net.gahvila:GahvilaCore:2.0")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly ("me.clip:placeholderapi:2.11.6")
     compileOnly ("net.luckperms:api:5.4")
@@ -21,7 +22,7 @@ dependencies {
     compileOnly ("com.github.koca2000:NoteBlockAPI:1.6.2")
     compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
     implementation ("com.github.stefvanschie.inventoryframework:IF:0.10.17")
-    implementation ("com.github.DaJokni:simplixstorage:-SNAPSHOT")
+    implementation("com.github.simplix-softworks:simplixstorage:3.2.7")
     compileOnly ("com.github.DaJokni:CrashClaim:-SNAPSHOT")
 
     //commandapi
