@@ -26,8 +26,7 @@ public class JoinEvent implements Listener {
         p.setInvulnerable(false);
         if (!p.hasPlayedBefore()){
 
-            Location loc = teleportManager.getTeleport("spawn");
-            p.teleport(loc);
+            p.teleport(teleportManager.getTeleport("spawn"));
 
             e.joinMessage(toMM("<#85FF00>" + p.getName() + "</#85FF00> liittyi Survivaliin ensimmäistä kertaa, tervetuloa!"));
 

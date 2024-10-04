@@ -93,7 +93,7 @@ public class WarpCommands {
                         if (!warpManager.getWarpNames().contains(name)) {
                             if (p.getWorld().getName().equals("world")) {
                                 if (name.matches("[\\p{L}\\p{N}]+") && name.length() <= 16) {
-                                    warpManager.setWarp(p, name, p.getLocation(), 0, "white", Material.LODESTONE);
+                                    warpManager.setWarp(p, name, p.getLocation(), "white", Material.LODESTONE);
                                     p.sendMessage(toMM("Asetit warpin nimellä <#85FF00>" + name + "</#85FF00>. Voit muokata warpin nimeä, materiaalia ja hintaa komennolla <#85FF00>/editwarp " + name + "</#85FF00>.")
                                             .hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(toMM("Klikkaa muokataksesi")))
                                             .clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand("/editwarp " + name)));
@@ -130,16 +130,11 @@ public class WarpCommands {
 
                     Optional<Warp> warp = warpManager.getWarp(nimi);
                     if (warp.isPresent()) {
-                        Integer price = warp.get().getPrice();
-                        if (price > 0 && price < 51) {
-                            p.sendMessage("Maksullisiin warppeihin pääsee vain valikon kautta.");
-                        } else {
-                            if (warpManager.isLocationSafe(warp.get().getLocation())){
-                                p.teleportAsync(warp.get().getLocation());
-                                p.setWalkSpeed(0.2F);
-                            }else{
-                                p.sendMessage("Warpin sijainti ei ole turvallinen. Teleportti peruttu.");
-                            }
+                        if (warpManager.isLocationSafe(warp.get().getLocation())){
+                            p.teleportAsync(warp.get().getLocation());
+                            p.setWalkSpeed(0.2F);
+                        }else{
+                            p.sendMessage("Warpin sijainti ei ole turvallinen. Teleportti peruttu.");
                         }
 
                     } else {

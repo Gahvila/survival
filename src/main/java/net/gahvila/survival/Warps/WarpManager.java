@@ -76,32 +76,12 @@ public class WarpManager {
         return uses;
     }
 
-    public void setHasDoneSecret(Player player) {
-        Json warpData = new Json("playerdata.json", instance.getDataFolder() + "/data/");
-        UUID uuid = player.getUniqueId();
-        warpData.set(uuid + ".secret", true);
-    }
-    public Boolean getHasDoneSecret(Player player) {
-        Json warpData = new Json("playerdata.json", instance.getDataFolder() + "/data/");
-        UUID uuid = player.getUniqueId();
-        return warpData.getBoolean(uuid + ".secret");
-    }
-
     //
-    public String updateWarpPrice(Player player, Warp warp, Integer price) {
-        Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
-        warpData.set(warp.getName() + ".price", price);
-        warp.setPrice(price);
-        return null;
-    }
-
-    //
-    public void setWarp(Player player, String warp, Location location, Integer price, String color, Material customItem) {
+    public void setWarp(Player player, String warp, Location location, String color, Material customItem) {
         Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         warpData.getFileData().insert(warp + ".owner", uuid);
         warpData.getFileData().insert(warp + ".currentOwnerName", player.getName());
-        warpData.getFileData().insert(warp + ".price", price);
         warpData.getFileData().insert(warp + ".uses", 0);
         warpData.getFileData().insert(warp + ".creationdate", System.currentTimeMillis());
         warpData.getFileData().insert(warp + ".color", color == null ? "white" : color);
@@ -114,7 +94,6 @@ public class WarpManager {
         warpData.set(warp + ".pitch", location.getPitch());
         warps.add(new Warp(warp, player.getUniqueId(),
                 player.getName(),
-                price,
                 0,
                 System.currentTimeMillis(),
                 location,
@@ -162,7 +141,6 @@ public class WarpManager {
         String uuid = warp.getOwner().toString();
         warpData.getFileData().insert(newName + ".owner", uuid);
         warpData.getFileData().insert(newName + ".currentOwnerName", warp.getOwnerName());
-        warpData.getFileData().insert(newName + ".price", warp.getPrice());
         warpData.getFileData().insert(newName + ".uses", warp.getUses());
         warpData.getFileData().insert(newName + ".creationdate", warp.getCreationDate());
         warpData.getFileData().insert(newName + ".customItem", warp.getCustomItem());
@@ -207,7 +185,6 @@ public class WarpManager {
             }
             Warp temp = new Warp(key, UUID.fromString(homeData.getString(key + ".owner")),
                     homeData.getString(key + ".currentOwnerName"),
-                    homeData.getInt(key + ".price"),
                     homeData.getInt(key + ".uses"),
                     homeData.getLong(key + ".creationdate"),
                     new Location(Bukkit.getWorld(homeData.getString(key + ".world")),

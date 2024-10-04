@@ -29,14 +29,13 @@ public class WarpMenu {
     }
 
     public void showGUI(Player player) {
-        ChestGui gui = new ChestGui(5, ComponentHolder.of(toUndecoratedMM("<dark_purple><b>Warpit")));
+        ChestGui gui = new ChestGui(4, ComponentHolder.of(toUndecoratedMM("<dark_purple><b>Warpit")));
         gui.show(player);
 
         gui.setOnGlobalClick(event -> event.setCancelled(true));
 
         Pattern pattern = new Pattern(
                 "111111111",
-                "1AAAAAAA1",
                 "1AAAAAAA1",
                 "1AAAAAAA1",
                 "111AAA111"
@@ -49,7 +48,7 @@ public class WarpMenu {
         border.bindItem('1', new GuiItem(background));
         gui.addPane(border);
 
-        PaginatedPane pages = new PaginatedPane(1, 1, 7, 3);
+        PaginatedPane pages = new PaginatedPane(1, 1, 7, 2);
         List<ItemStack> items = new ArrayList<>();
         NamespacedKey key = new NamespacedKey(survival.instance, "gahvilasurvival");
         for (Warp warp : warpManager.getWarps()) {
@@ -63,7 +62,6 @@ public class WarpMenu {
             meta.displayName(toUndecoratedMM("<" + warp.getColor() + ">" + warp.getName()));
             meta.lore(List.of(toUndecoratedMM("<white>Omistaja: <yellow>" + warp.getOwnerName()),
                     toUndecoratedMM("<white>Käyttökerrat: <yellow>" + warp.getUses()),
-                    toUndecoratedMM("<white>Hinta: <yellow>" + warp.getPrice() + "Ⓖ"),
                     toUndecoratedMM("<gray><i>" + dateString)));
             item.setItemMeta(meta);
             items.add(item);
@@ -75,27 +73,23 @@ public class WarpMenu {
             if (event.getCurrentItem() == null) return;
             Optional<Warp> warp = warpManager.getWarp(event.getCurrentItem().getItemMeta().getPersistentDataContainer()
                     .get(key, PersistentDataType.STRING));
-            if (warp.get().getPrice() == 0){
-                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);
-                player.closeInventory();
-                player.teleportAsync(warp.get().getLocation());
-                player.sendMessage(toMM("Sinut teleportattiin warppiin <#85FF00>" + warp.get().getName() + "</#85FF00>."));
-                Bukkit.getServer().getScheduler().runTaskLater(survival.instance, new Runnable() {
-                    @Override
-                    public void run() {
-                        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, MAX_VALUE, 1F);
-                    }
-                }, 5);
-                if (!player.getName().equals(warp.get().getOwnerName())){
-                    warpManager.addUses(warp.get());
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);
+            player.closeInventory();
+            player.teleportAsync(warp.get().getLocation());
+            player.sendMessage(toMM("Sinut teleportattiin warppiin <#85FF00>" + warp.get().getName() + "</#85FF00>."));
+            Bukkit.getServer().getScheduler().runTaskLater(survival.instance, new Runnable() {
+                @Override
+                public void run() {
+                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, MAX_VALUE, 1F);
                 }
-            }else {
-                confirmMenu(player, event.getCurrentItem(), warp.get());
+            }, 5);
+            if (!player.getName().equals(warp.get().getOwnerName())){
+                warpManager.addUses(warp.get());
             }
         });
 
 
-        StaticPane navigationPane = new StaticPane(0, 4, 9, 1);
+        StaticPane navigationPane = new StaticPane(0, 3, 9, 1);
 
         ItemStack ownWarps = new ItemStack(Material.OAK_SIGN);
         ItemMeta ownWarpsMeta = ownWarps.getItemMeta();
@@ -149,78 +143,6 @@ public class WarpMenu {
         gui.update();
     }
 
-    private void confirmMenu(Player player, ItemStack item, Warp warp) {
-        ChestGui gui = new ChestGui(3, ComponentHolder.of(toUndecoratedMM("<dark_red><b>Varmista osto")));
-        gui.show(player);
-
-        gui.setOnGlobalClick(event -> event.setCancelled(true));
-
-        Pattern pattern = new Pattern(
-                "111111111",
-                "1AAAICCC1",
-                "111111111"
-        );
-
-        PatternPane pane = new PatternPane(0, 0, 9, 3, pattern);
-
-        ItemStack accept = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
-        ItemMeta acceptMeta = accept.getItemMeta();
-        acceptMeta.displayName(toUndecoratedMM("<green><b>Hyväksy"));
-        accept.setItemMeta(acceptMeta);
-
-        ItemStack cancel = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-        ItemMeta cancelMeta = cancel.getItemMeta();
-        cancelMeta.displayName(toUndecoratedMM("<red><b>Hylkää"));
-        cancel.setItemMeta(cancelMeta);
-
-        ItemStack background = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
-        ItemMeta backgroundMeta = background.getItemMeta();
-        backgroundMeta.displayName(toUndecoratedMM(""));
-        background.setItemMeta(backgroundMeta);
-
-        pane.bindItem('1', new GuiItem(background));
-        pane.bindItem('I', new GuiItem(item));
-
-        pane.bindItem('A', new GuiItem(accept, event -> {
-            player.closeInventory();
-            int price = warp.getPrice();
-
-            if (survival.getEconomy().getBalance(player) >= price) {
-                survival.getEconomy().withdrawPlayer(player, price);
-                player.sendMessage(toMM("Tililtäsi veloitettiin <#85FF00>" + price + "Ⓖ</#85FF00>."));
-                player.closeInventory();
-                player.teleportAsync(warp.getLocation());
-                player.sendMessage(toMM("Sinut teleportattiin warppiin <#85FF00>" + warp.getName() + "</#85FF00>."));
-
-                if (!player.getName().equals(warp.getOwnerName())){
-                    warpManager.addUses(warp);
-                }
-                //
-                UUID ownerUUID = warp.getOwner();
-                if (Bukkit.getPlayer(ownerUUID) == null){
-                    warpManager.addMoneyToQueue(ownerUUID.toString(), price);
-                }else{
-                    Player owner = Bukkit.getPlayer(ownerUUID);
-                    survival.getEconomy().depositPlayer(owner, price);
-                    owner.sendMessage(toMM("Sinun maksullista warppia käytettiin, sait <#85FF00>" + price + "Ⓖ</#85FF00>."));
-                }
-            } else {
-                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
-                player.sendMessage(toMM("Nyt kyllä loppu hilut kesken, tarviit <#85FF00>" + price + "Ⓖ</#85FF00> käyttääksesi tätä warppia."));
-                player.closeInventory();
-            }
-        }));
-
-        pane.bindItem('C', new GuiItem(cancel, event -> {
-            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
-            showGUI(player);
-        }));
-
-        gui.addPane(pane);
-
-        gui.update();
-    }
-
     public void showOwnWarps(Player player) {
         ChestGui gui = new ChestGui(5, ComponentHolder.of(toUndecoratedMM("<dark_green><b>Omat warpit")));
         gui.show(player);
@@ -256,7 +178,6 @@ public class WarpMenu {
             meta.displayName(toUndecoratedMM("<" + warp.getColor() + ">" + warp.getName()));
             meta.lore(List.of(toUndecoratedMM("<green><b>Klikkaa muokataksesi"),
                     toUndecoratedMM("<white>Käyttökerrat: <yellow>" + warp.getUses()),
-                    toUndecoratedMM("<white>Hinta: <yellow>" + warp.getPrice() + "Ⓖ"),
                     toUndecoratedMM("<gray><i>" + dateString)));
             item.setItemMeta(meta);
             items.add(item);
@@ -378,17 +299,6 @@ public class WarpMenu {
             player.playSound(player.getLocation(), Sound.ITEM_SPYGLASS_USE, 0.8F, 0.8F);
             showItemChangeMenu(player, warp);
         }), 2, 0);
-
-        ItemStack priceEdit = new ItemStack(Material.GOLD_NUGGET);
-        ItemMeta priceEditMeta = priceEdit.getItemMeta();
-        priceEditMeta.displayName(toUndecoratedMM("<white><b>Muokkaa hintaa</b>"));
-        priceEditMeta.lore(List.of(toUndecoratedMM("<white>Nyt: <#85FF00>" + warp.getPrice() + "Ⓖ")));
-        priceEdit.setItemMeta(priceEditMeta);
-
-        settingPane.addItem(new GuiItem(priceEdit, event -> {
-            player.playSound(player.getLocation(), Sound.ITEM_SPYGLASS_USE, 0.8F, 0.8F);
-            showPriceChangeMenu(player, warp);
-        }), 3, 0);
 
         ItemStack delete = new ItemStack(Material.REDSTONE_BLOCK);
         ItemMeta deleteMeta = delete.getItemMeta();
@@ -635,132 +545,6 @@ public class WarpMenu {
         }), 5, 0);
         gui.addPane(navigationPane);
 
-        gui.update();
-    }
-
-    public void showPriceChangeMenu(Player player, Warp warp) {
-        ChestGui gui = new ChestGui(5, ComponentHolder.of(toUndecoratedMM("<dark_green><b>Syötä hinta...")));
-        gui.show(player);
-
-        gui.setOnGlobalClick(event -> event.setCancelled(true));
-
-        Pattern pattern = new Pattern(
-                "111111111",
-                "1AAAAAAA1",
-                "1AAAAAAA1",
-                "1AAAAAAA1",
-                "111AAA111"
-        );
-        PatternPane border = new PatternPane(0, 0, 9, 5, Pane.Priority.LOWEST, pattern);
-        ItemStack background = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
-        ItemMeta backgroundMeta = background.getItemMeta();
-        backgroundMeta.displayName(toUndecoratedMM(""));
-        background.setItemMeta(backgroundMeta);
-        border.bindItem('1', new GuiItem(background));
-        gui.addPane(border);
-
-        StringBuilder stringBuilder = new StringBuilder();
-        StringBuilder secretBuilder = new StringBuilder();
-        Pattern pattern1 = new Pattern(
-                "123",
-                "456",
-                "789",
-                "N0N"
-        );
-
-        PatternPane numberPane = new PatternPane(3, 1, 3, 4, pattern1);
-        ItemStack item = new ItemStack(Material.CYAN_STAINED_GLASS_PANE);
-        ItemMeta itemMeta = item.getItemMeta();
-        itemMeta.displayName(toUndecoratedMM("<#85FF00><b>" + "?")); // Set a placeholder display name
-
-        for (int i = 1; i <= 9; i++) {
-            String numberString = String.valueOf(i);
-            char character = numberString.charAt(0); // Get first character (character code)
-            itemMeta.displayName(toUndecoratedMM("<#85FF00><b>" + numberString)); // Set display name with string
-            item.setItemMeta(itemMeta);
-            item.setAmount(i);
-            int finalI = i;
-            numberPane.bindItem(character, new GuiItem(item.clone(), event -> {
-                secretBuilder.append(finalI);
-                if (stringBuilder.length() < 3) {
-                    stringBuilder.append(finalI);
-                    player.playSound(player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 0.8F, 0.8F);
-                    gui.setTitle(ComponentHolder.of(toUndecoratedMM("<dark_green><b>Hinta: " + stringBuilder + "</b>Ⓖ")));
-                    gui.update();
-                } else {
-                    player.sendMessage("Warpin hinta voi olla korkeintaan 3 lukua pitkä (max 999).");
-                }
-            }));
-        }
-        itemMeta.displayName(toUndecoratedMM("<#85FF00><b>0")); // Set a placeholder display name
-        item.setItemMeta(itemMeta);
-        item.setAmount(1);
-        numberPane.bindItem('0', new GuiItem(item.clone(), event -> {
-            secretBuilder.append(0);
-            if (stringBuilder.length() < 3) {
-                stringBuilder.append(0);
-                player.playSound(player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 0.8F, 0.8F);
-                gui.setTitle(ComponentHolder.of(toUndecoratedMM("<dark_green><b>Hinta: " + stringBuilder + "</b>Ⓖ")));
-                gui.update();
-            } else {
-                player.sendMessage("Warpin hinta voi olla korkeintaan 3 lukua pitkä (max 999).");
-            }
-        }));
-
-        StaticPane navigationPane = new StaticPane(0, 4, 9, 1);
-
-        ItemStack back = new ItemStack(Material.BARRIER);
-        ItemMeta backMeta = back.getItemMeta();
-        backMeta.displayName(toUndecoratedMM("<white><b>Peruuta<b>"));
-        back.setItemMeta(backMeta);
-        navigationPane.addItem(new GuiItem(back, event -> {
-            showWarpEditMenu(player, warp);
-            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);
-            gui.update();
-
-        }), 1, 0);
-        ItemStack remove = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-        ItemMeta removeMeta = remove.getItemMeta();
-        removeMeta.displayName(toUndecoratedMM("<red><b>-<b>"));
-        remove.setItemMeta(removeMeta);
-        navigationPane.addItem(new GuiItem(remove, event -> {
-            secretBuilder.append("B");
-            if (!stringBuilder.isEmpty()) {
-                stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-                player.playSound(player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 0.8F, 0.8F);
-                if (stringBuilder.isEmpty()){
-                    gui.setTitle(ComponentHolder.of(toMM("<dark_green><b>Syötä hinta...")));
-                } else {
-                    gui.setTitle(ComponentHolder.of(toMM("<dark_green><b>Hinta: " + stringBuilder + "</b>Ⓖ")));
-                }
-                gui.update();
-            }
-        }), 3, 0);
-        ItemStack confirm = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
-        ItemMeta confirmMeta = confirm.getItemMeta();
-        confirmMeta.displayName(toUndecoratedMM("<green><b>Valmis<b>"));
-        confirm.setItemMeta(confirmMeta);
-        navigationPane.addItem(new GuiItem(confirm, event -> {
-            secretBuilder.append("A");
-            if (secretBuilder.toString().equals("22884646BA")){
-                if (!warpManager.getHasDoneSecret(player)) {
-                    warpManager.setHasDoneSecret(player);
-                    player.sendMessage("Ohhoh! Painoit konami koodin, sait 400Ⓖ. ");
-                    survival.getEconomy().depositPlayer(player, 400);
-                    player.playSound(player.getLocation(), Sound.ITEM_GOAT_HORN_SOUND_0, MAX_VALUE, 1F);
-                    player.closeInventory();
-                }
-                return;
-            }
-            if (!stringBuilder.isEmpty()) {
-                warpManager.updateWarpPrice(player, warp, Integer.parseInt(stringBuilder.toString()));
-                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);
-                showWarpEditMenu(player, warp);
-            }
-        }), 5, 0);
-
-        gui.addPane(numberPane);
-        gui.addPane(navigationPane);
         gui.update();
     }
 

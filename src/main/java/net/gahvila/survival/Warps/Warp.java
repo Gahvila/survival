@@ -10,7 +10,6 @@ public class Warp {
     private String name;
     private UUID owner;
     private String ownerName;
-    private Integer price;
     private Integer uses;
     private Long creationDate;
     private Location location;
@@ -18,11 +17,10 @@ public class Warp {
 
     private Material customItem;
 
-    public Warp(String name, UUID owner, String ownerName, Integer price, Integer uses, Long creationDate, Location location, String color) {
+    public Warp(String name, UUID owner, String ownerName, Integer uses, Long creationDate, Location location, String color) {
         this.name = name;
         this.owner = owner;
         this.ownerName = ownerName;
-        this.price = price;
         this.uses = uses;
         this.creationDate = creationDate;
         this.location = location;
@@ -30,11 +28,10 @@ public class Warp {
         this.customItem = Material.DIRT;
     }
 
-    public Warp(String name, UUID owner, String ownerName, Integer price, Integer uses, Long creationDate, Location location, String color, Material customItem) {
+    public Warp(String name, UUID owner, String ownerName, Integer uses, Long creationDate, Location location, String color, Material customItem) {
         this.name = name;
         this.owner = owner;
         this.ownerName = ownerName;
-        this.price = price;
         this.uses = uses;
         this.creationDate = creationDate;
         this.location = location;
@@ -63,14 +60,6 @@ public class Warp {
 
     public void setOwnerName(String ownerName) {
         this.ownerName = ownerName;
-    }
-
-    public Integer getPrice() {
-        return price;
-    }
-
-    public void setPrice(Integer price) {
-        this.price = price;
     }
 
     public Integer getUses() {
