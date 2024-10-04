@@ -10,7 +10,6 @@ import net.gahvila.survival.Events.QuitEvent;
 import net.gahvila.survival.Back.BackCommand;
 import net.gahvila.survival.Back.BackListener;
 import net.gahvila.survival.Back.BackManager;
-import net.gahvila.survival.Back.BackMenu;
 import net.gahvila.survival.Pets.Pets;
 import net.gahvila.survival.Homes.HomeCommands;
 import net.gahvila.survival.Homes.HomeEvents;
@@ -63,7 +62,6 @@ public class survival extends JavaPlugin implements Listener {
         WarpManager warpManager = new WarpManager();
         WarpMenu warpMenu = new WarpMenu(warpManager);
         HomeMenu homeMenu = new HomeMenu(homeManager);
-        BackMenu backMenu = new BackMenu(backManager);
 
         RidableBuff ridableBuff = new RidableBuff();
         ridableBuff.ridableBuffScheduler();
@@ -71,7 +69,7 @@ public class survival extends JavaPlugin implements Listener {
         // Commands
         CommandAPI.onLoad(new CommandAPIBukkitConfig(this).verboseOutput(false).silentLogs(true));
 
-        BackCommand backCommand = new BackCommand(backManager, backMenu);
+        BackCommand backCommand = new BackCommand(backManager);
         backCommand.registerCommands();
 
         MainCommand mainCommand = new MainCommand(teleportManager);

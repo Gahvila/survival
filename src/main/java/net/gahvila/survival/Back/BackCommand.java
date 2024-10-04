@@ -6,12 +6,10 @@ import org.bukkit.Location;
 public class BackCommand {
 
     private final BackManager backManager;
-    private final BackMenu backMenu;
 
 
-    public BackCommand(BackManager backManager, BackMenu backMenu) {
+    public BackCommand(BackManager backManager) {
         this.backManager = backManager;
-        this.backMenu = backMenu;
     }
 
     public void registerCommands() {
