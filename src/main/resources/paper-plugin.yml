@@ -5,6 +5,8 @@ description: Lisäosa Gahvilan survival palvelimelle.
 api-version: '1.20'
 dependencies:
   server:
+    GahvilaCore:
+      required: true
     JakesRTP:
       load: AFTER
       required: true

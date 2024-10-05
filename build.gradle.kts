@@ -56,9 +56,9 @@ tasks {
     shadowJar {
         archiveFileName.set("${rootProject.name}-${version}.jar")
         dependencies {
-            include(dependency("dev.jorel:commandapi-bukkit-shade-mojang-mapped:9.5.1"))
-            include(dependency("com.github.DaJokni:simplixstorage:-SNAPSHOT"))
-            include(dependency("com.github.stefvanschie.inventoryframework:IF:0.10.16"))
+            include(dependency("dev.jorel:commandapi-bukkit-shade-mojang-mapped:9.5.3"))
+            include(dependency("com.github.simplix-softworks:simplixstorage:3.2.7"))
+            include(dependency("com.github.stefvanschie.inventoryframework:IF:0.10.17"))
 
         }
         relocate("dev.jorel.commandapi", "net.gahvila.survival.shaded.commandapi")

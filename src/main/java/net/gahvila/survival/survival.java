@@ -45,12 +45,6 @@ public class survival extends JavaPlugin implements Listener {
         //load worlds
         setupWorlds();
 
-        //economy check
-        if (!setupEconomy() ) {
-            getServer().shutdown();
-            return;
-        }
-
         // initialize managers for handling various functionalities
         instance = this;
 
