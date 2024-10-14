@@ -3,6 +3,7 @@ package net.gahvila.survival;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import net.crashcraft.crashclaim.CrashClaim;
+import net.gahvila.gahvilacore.Profiles.Playtime.PlaytimeManager;
 import net.gahvila.gahvilacore.Teleport.TeleportManager;
 import net.gahvila.survival.Events.JoinEvent;
 import net.gahvila.survival.Events.PlayerDeath;
@@ -17,7 +18,6 @@ import net.gahvila.survival.Homes.HomeManager;
 import net.gahvila.survival.Homes.HomeMenu;
 import net.gahvila.survival.Spawn.SpawnCMD;
 import net.gahvila.survival.VehicleBuffs.RidableBuff;
-import net.gahvila.survival.Utils.EmptyChunkGenerator;
 import net.gahvila.survival.Warps.WarpCommands;
 import net.gahvila.survival.Warps.WarpEvents;
 import net.gahvila.survival.Warps.WarpManager;
@@ -37,7 +37,6 @@ public class survival extends JavaPlugin implements Listener {
     private survival plugin;
     private HomeManager homeManager;
     private CrashClaim crashClaim;
-    private TeleportManager teleportManager;
 
 
     @Override
@@ -50,10 +49,11 @@ public class survival extends JavaPlugin implements Listener {
 
         pluginManager = Bukkit.getPluginManager();
         crashClaim = CrashClaim.getPlugin();
-        homeManager = new HomeManager();
-        teleportManager = new TeleportManager();
+        PlaytimeManager playtimeManager = new PlaytimeManager();
+        homeManager = new HomeManager(playtimeManager);
+        TeleportManager teleportManager = new TeleportManager();
         BackManager backManager = new BackManager();
-        WarpManager warpManager = new WarpManager();
+        WarpManager warpManager = new WarpManager(playtimeManager);
         WarpMenu warpMenu = new WarpMenu(warpManager);
         HomeMenu homeMenu = new HomeMenu(homeManager);
 
@@ -133,32 +133,17 @@ public class survival extends JavaPlugin implements Listener {
         return econ;
     }
 
-    //setup
-    private boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
-            return false;
-        }
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) {
-            return false;
-        }
-        econ = rsp.getProvider();
-        return econ != null;
-    }
-
     public void setupWorlds() {
-        EmptyChunkGenerator.createWorld();
-
         World overworld = getServer().getWorld("world");
-        overworld.getWorldBorder().setSize(20000);
+        overworld.getWorldBorder().setSize(30000000);
         overworld.setDifficulty(Difficulty.HARD);
 
         World nether = getServer().getWorld("world_nether");
-        nether.getWorldBorder().setSize(2500);
+        nether.getWorldBorder().setSize(3750000);
         nether.setDifficulty(Difficulty.HARD);
 
         World end = getServer().getWorld("world_the_end");
-        end.getWorldBorder().setSize(1000000);
+        end.getWorldBorder().setSize(100000);
         end.setDifficulty(Difficulty.HARD);
     }
 }

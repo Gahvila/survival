@@ -1,6 +1,7 @@
 package net.gahvila.survival.Homes;
 
 import de.leonhard.storage.Json;
+import net.gahvila.gahvilacore.Profiles.Playtime.PlaytimeManager;
 import net.gahvila.survival.survival;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -12,6 +13,12 @@ import java.util.*;
 import static net.gahvila.survival.survival.instance;
 
 public class HomeManager {
+
+    private final PlaytimeManager playtimeManager;
+    public HomeManager(PlaytimeManager playtimeManager) {
+        this.playtimeManager = playtimeManager;
+    }
+
     public HashMap<UUID, HashMap<String, Location>> homes = new HashMap<>();
     public void saveHome(UUID uuid, String home, Location location) {
         Bukkit.getScheduler().runTaskAsynchronously(survival.instance, () -> {
@@ -115,38 +122,11 @@ public class HomeManager {
         }
     }
 
-
-    public void addAdditionalHomes(Player player) {
-        Json homeData = new Json("allowedhomes.json", instance.getDataFolder() + "/data/");
-        String uuid = player.getUniqueId().toString();
-        homeData.set(uuid + ".additionalHomes", homeData.getInt(uuid + ".additionalHomes") + 1);
-    }
-
     public Integer getAllowedHomes(Player player) {
-        Json homeData = new Json("allowedhomes.json", instance.getDataFolder() + "/data/");
-        String uuid = player.getUniqueId().toString();
-        if (homeData.contains(uuid)){
-            Integer allowedHomes = homeData.getInt(uuid + ".additionalHomes") + 1;
-            return allowedHomes;
-        }else{
-            return 1;
-        }
-    }
+        long playtime = playtimeManager.getPlaytime(player).join();
+        long timePerHome = 180000L; //50 hours
+        int allowedHomes = (int) (playtime / timePerHome);
 
-    public Integer getAllowedAdditionalHomes(Player player) {
-        Json homeData = new Json("allowedhomes.json", instance.getDataFolder() + "/data/");
-        String uuid = player.getUniqueId().toString();
-        if (homeData.contains(uuid)){
-            Integer allowedHomes = homeData.getInt(uuid + ".additionalHomes");
-            return allowedHomes;
-        }else{
-            return 0;
-        }
-    }
-    public int getNextHomeCost(Player p) {
-        double rate = 0.05;
-        int initialCost = 15000;
-        double cost = initialCost * Math.pow(1 + rate, getAllowedAdditionalHomes(p));
-        return (int) cost;
+        return Math.max(allowedHomes, 1);
     }
 }

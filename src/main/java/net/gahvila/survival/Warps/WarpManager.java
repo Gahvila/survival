@@ -1,6 +1,7 @@
 package net.gahvila.survival.Warps;
 
 import de.leonhard.storage.Json;
+import net.gahvila.gahvilacore.Profiles.Playtime.PlaytimeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,9 +13,14 @@ import java.util.*;
 import static net.gahvila.survival.survival.instance;
 
 public class WarpManager {
+
+    private final PlaytimeManager playtimeManager;
+
+    public WarpManager(PlaytimeManager playtimeManager) {
+        this.playtimeManager = playtimeManager;
+    }
+
     public HashSet<Warp> warps = new HashSet<>();
-
-
 
     public static HashSet<Material> bad_blocks = new HashSet<>();
     static {
@@ -219,37 +225,12 @@ public class WarpManager {
 
     //
 
-    public void addAllowedWarps(Player player) {
-        Json warpData = new Json("allowedwarps.json", instance.getDataFolder() + "/data/");
-        String uuid = player.getUniqueId().toString();
-        warpData.set(uuid + ".allowed", (getAllowedWarps(player) - 1) + 1);
-    }
-
     public Integer getAllowedWarps(Player player) {
-        Json warpData = new Json("allowedwarps.json", instance.getDataFolder() + "/data/");
-        String uuid = player.getUniqueId().toString();
-        Integer allowedHomes = warpData.getInt(uuid + ".allowed") + 1; //+1 for free warp for everyone
-        return allowedHomes;
-    }
+        long playtime = playtimeManager.getPlaytime(player).join();
+        long timePerWarp = 270000; //75 hours
+        int allowedWarps = (int) (playtime / timePerWarp);
 
-    //
-
-    public void setMoneyInQueue(String uuid, Integer money) {
-        Json warpData = new Json("warpmoney.json", instance.getDataFolder() + "/data/");;
-        warpData.set(uuid + ".inQueue", + money);
-    }
-
-    public void addMoneyToQueue(String uuid, Integer money) {
-        Json warpData = new Json("warpmoney.json", instance.getDataFolder() + "/data/");
-        Integer currMoney = getMoneyInQueue(uuid);
-        Integer newMoney = currMoney + money;
-        warpData.set(uuid + ".inQueue", + newMoney);
-    }
-
-    public Integer getMoneyInQueue(String uuid) {
-        Json warpData = new Json("warpmoney.json", instance.getDataFolder() + "/data/");
-        Integer inHold = warpData.getInt(uuid + ".inQueue");
-        return inHold;
+        return Math.max(allowedWarps, 1);
     }
 
 }

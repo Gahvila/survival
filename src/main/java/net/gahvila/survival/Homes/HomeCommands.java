@@ -36,12 +36,6 @@ public class HomeCommands {
         this.homeMenu = homeMenu;
     }
     public void registerCommands() {
-        new CommandAPICommand("buyhome")
-                .executesPlayer((p, args) -> {
-                    p.performCommand("addon");
-                })
-
-                .register();
         new CommandAPICommand("delhome")
                 .withArguments(customHomeArgument("koti"))
                 .executesPlayer((p, args) -> {
