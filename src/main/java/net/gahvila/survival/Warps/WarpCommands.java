@@ -26,31 +26,6 @@ public class WarpCommands {
     }
 
     public void registerCommands() {
-        new CommandAPICommand("buywarp")
-                .withSubcommand(new CommandAPICommand("forcebuy")
-                        .executesPlayer((p, args) -> {
-                            Integer price = getNextWarpCost(p);
-
-                            if (survival.getEconomy().getBalance(p) >= price) {
-                                survival.getEconomy().withdrawPlayer(p, price);
-
-                                warpManager.addAllowedWarps(p);
-                                p.sendMessage(toMM("Sinulla on nyt <#85FF00>" + warpManager.getAllowedWarps(p) + "</#85FF00> warppia yhteensä."));
-                            } else {
-                                p.sendMessage(toMM("Warpin osto maksaa <#85FF00>" + price + "Ⓖ</#85FF00>, ja sinulla on vain <#85FF00>" + survival.getEconomy().getBalance(p)));
-                            }
-                        }))
-                .executesPlayer((p, args) -> {
-                    Integer price = getNextWarpCost(p);
-
-                    p.sendMessage(toMM("Sinulla on <#85FF00>" + warpManager.getAllowedWarps(p) + "</#85FF00> warppia yhteensä. Tässä on mukana myös sinun ilmaiswarppi."));
-                    p.sendMessage(toMM("Haluatko varmasti ostaa warpin? \nHinta: <#85FF00>" + price + "Ⓖ"));
-                    p.sendMessage(toMM("Jokaisen warpin osto nostaa hintaa <#85FF00>10%</#85FF00>."));
-                    p.sendMessage(toMM("<#85FF00><b>Hyväksy painamalla")
-                            .hoverEvent(HoverEvent.showText(toMM("<#85FF00>Klikkaa ostaaksesi."))).clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand("/buywarp forcebuy")));
-                })
-
-                .register();
         new CommandAPICommand("delwarp")
                 .withArguments(customOwnedWarpArgument("warp"))
                 .executesPlayer((p, args) -> {
@@ -144,14 +119,6 @@ public class WarpCommands {
                 .register();
 
     }
-
-    public int getNextWarpCost(Player p) {
-        double rate = 0.05;
-        int initialCost = 15000;
-        double cost = initialCost * Math.pow(1 + rate, (warpManager.getAllowedWarps(p) - 1));
-        return (int) cost;
-    }
-
 
     public Argument<List<String>> customWarpArgument(String nodeName) {
         // Construct our CustomArgument that takes in a String input and returns a list of home names

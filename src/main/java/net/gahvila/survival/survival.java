@@ -22,7 +22,6 @@ import net.gahvila.survival.Warps.WarpCommands;
 import net.gahvila.survival.Warps.WarpEvents;
 import net.gahvila.survival.Warps.WarpManager;
 import net.gahvila.survival.Warps.WarpMenu;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -33,7 +32,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class survival extends JavaPlugin implements Listener {
     public static survival instance;
     private PluginManager pluginManager;
-    private static Economy econ = null;
     private survival plugin;
     private HomeManager homeManager;
     private CrashClaim crashClaim;
@@ -127,10 +125,6 @@ public class survival extends JavaPlugin implements Listener {
     //getters
     public survival getPlugin() {
         return plugin;
-    }
-
-    public static Economy getEconomy() {
-        return econ;
     }
 
     public void setupWorlds() {

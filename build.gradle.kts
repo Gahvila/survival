@@ -15,7 +15,6 @@ repositories {
 
 dependencies {
     compileOnly("net.gahvila:GahvilaCore:2.0")
-    compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly ("me.clip:placeholderapi:2.11.6")
     compileOnly ("net.luckperms:api:5.4")
     compileOnly("de.hexaoxi:carbonchat-api:3.0.0-beta.27")
