@@ -238,8 +238,6 @@ public class WarpManager {
             return 0;
         }
 
-        int allowedWarps = 1 + (int) ((playtime - initialWarpTime) / timePerWarp);
-
-        return allowedWarps;
+        return 1 + (int) ((playtime - initialWarpTime) / timePerWarp);
     }
 }
