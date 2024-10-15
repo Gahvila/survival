@@ -6,6 +6,8 @@ import com.github.stefvanschie.inventoryframework.gui.type.AnvilGui;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.*;
 import com.github.stefvanschie.inventoryframework.pane.util.Pattern;
+import net.gahvila.gahvilacore.Profiles.Prefix.Backend.Enum.PrefixType.Gradient;
+import net.gahvila.gahvilacore.Profiles.Prefix.Backend.Enum.PrefixType.Single;
 import net.gahvila.survival.survival;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
@@ -18,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static java.lang.Float.MAX_VALUE;
+import static net.gahvila.gahvilacore.GahvilaCore.instance;
 import static net.gahvila.gahvilacore.Utils.MiniMessageUtils.toMM;
 import static net.gahvila.gahvilacore.Utils.MiniMessageUtils.toUndecoratedMM;
 
@@ -29,13 +32,14 @@ public class WarpMenu {
     }
 
     public void showGUI(Player player) {
-        ChestGui gui = new ChestGui(4, ComponentHolder.of(toUndecoratedMM("<dark_purple><b>Warpit")));
+        ChestGui gui = new ChestGui(5, ComponentHolder.of(toUndecoratedMM("<dark_purple><b>Warpit")));
         gui.show(player);
 
         gui.setOnGlobalClick(event -> event.setCancelled(true));
 
         Pattern pattern = new Pattern(
                 "111111111",
+                "1AAAAAAA1",
                 "1AAAAAAA1",
                 "1AAAAAAA1",
                 "111AAA111"
@@ -48,7 +52,7 @@ public class WarpMenu {
         border.bindItem('1', new GuiItem(background));
         gui.addPane(border);
 
-        PaginatedPane pages = new PaginatedPane(1, 1, 7, 2);
+        PaginatedPane pages = new PaginatedPane(1, 1, 7, 3);
         List<ItemStack> items = new ArrayList<>();
         NamespacedKey key = new NamespacedKey(survival.instance, "gahvilasurvival");
         for (Warp warp : warpManager.getWarps()) {
@@ -59,7 +63,7 @@ public class WarpMenu {
             ItemStack item = new ItemStack(warp.getCustomItem());
             ItemMeta meta = item.getItemMeta();
             meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, warp.getName());
-            meta.displayName(toUndecoratedMM("<" + warp.getColor() + ">" + warp.getName()));
+            meta.displayName(toUndecoratedMM("<" + warp.getColor().getColor() + ">" + warp.getName()));
             meta.lore(List.of(toUndecoratedMM("<white>Omistaja: <yellow>" + warp.getOwnerName()),
                     toUndecoratedMM("<white>Käyttökerrat: <yellow>" + warp.getUses()),
                     toUndecoratedMM("<gray><i>" + dateString)));
@@ -89,7 +93,7 @@ public class WarpMenu {
         });
 
 
-        StaticPane navigationPane = new StaticPane(0, 3, 9, 1);
+        StaticPane navigationPane = new StaticPane(0, 4, 9, 1);
 
         ItemStack ownWarps = new ItemStack(Material.OAK_SIGN);
         ItemMeta ownWarpsMeta = ownWarps.getItemMeta();
@@ -175,7 +179,7 @@ public class WarpMenu {
             ItemStack item = new ItemStack(warp.getCustomItem());
             ItemMeta meta = item.getItemMeta();
             meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, warp.getName());
-            meta.displayName(toUndecoratedMM("<" + warp.getColor() + ">" + warp.getName()));
+            meta.displayName(toUndecoratedMM("<" + warp.getColor().getColor() + ">" + warp.getName()));
             meta.lore(List.of(toUndecoratedMM("<green><b>Klikkaa muokataksesi"),
                     toUndecoratedMM("<white>Käyttökerrat: <yellow>" + warp.getUses()),
                     toUndecoratedMM("<gray><i>" + dateString)));
@@ -281,7 +285,7 @@ public class WarpMenu {
         ItemStack colorEdit = new ItemStack(Material.LIME_WOOL);
         ItemMeta colorEditMeta = colorEdit.getItemMeta();
         colorEditMeta.displayName(toUndecoratedMM("<white><b>Muokkaa väriä</b>"));
-        colorEditMeta.lore(List.of(toUndecoratedMM("<white>Nyt: <#85FF00>" + warp.getColor())));
+        colorEditMeta.lore(List.of(toUndecoratedMM("<white>Nyt: <" + warp.getColor().getColor() + ">" + warp.getColor().getDisplayName())));
         colorEdit.setItemMeta(colorEditMeta);
 
         settingPane.addItem(new GuiItem(colorEdit, event -> {
@@ -397,25 +401,26 @@ public class WarpMenu {
 
         PaginatedPane pages = new PaginatedPane(1, 1, 7, 3);
         ArrayList<ItemStack> items = new ArrayList<>();
-        for (Material material : Material.values()) {
-            if (material.isLegacy() || !Tag.WOOL.isTagged(material)) {
-                continue;
+        NamespacedKey key = new NamespacedKey(instance, "color");
+        for (Single single : Single.values()) {
+            if (player.hasPermission(single.getPermissionNode())) {
+                ItemStack item = new ItemStack(Material.PAPER);
+                ItemMeta meta = item.getItemMeta();
+                meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, single.toString());
+                meta.displayName(toUndecoratedMM("<" + single.getColor() + ">" + single.getDisplayName()));
+                item.setItemMeta(meta);
+                items.add(item);
             }
-            ItemStack item = new ItemStack(material);
-            ItemMeta meta = item.getItemMeta();
-            meta.displayName(toUndecoratedMM("<#85FF00><lang:" + material.getItemTranslationKey() + "></#85FF00>"));
-            meta.lore(List.of(toUndecoratedMM("<white>Klikkaa valitaksesi</white>")));
-            item.setItemMeta(meta);
-            items.add(item);
         }
         pages.populateWithItemStacks(items);
         gui.addPane(pages);
 
         pages.setOnClick(event -> {
             if (event.getCurrentItem() == null) return;
-            player.sendMessage("Warpin uusi väri asetettu.");
-            warpManager.editWarpColor(warp, getColorAsMiniMessage(event.getCurrentItem().getType()));
+            String data = event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
+            warpManager.editWarpColor(warp, Single.valueOf(data));
             player.playSound(player.getLocation(), Sound.BLOCK_BEEHIVE_ENTER, 1.1F, 0.7F);
+            player.sendMessage("Warpin uusi väri asetettu.");
             showWarpEditMenu(player, warp);
         });
 
@@ -449,7 +454,7 @@ public class WarpMenu {
         nextMeta.displayName(toUndecoratedMM("<b>Seuraava"));
         next.setItemMeta(nextMeta);
         navigationPane.addItem(new GuiItem(next, event -> {
-            if (pages.getPage() < pages.getPages() - 8) {
+            if (pages.getPage() < pages.getPages() - 1) {
                 pages.setPage(pages.getPage() + 1);
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.8F, 0.8F);
 
@@ -546,30 +551,5 @@ public class WarpMenu {
         gui.addPane(navigationPane);
 
         gui.update();
-    }
-
-    private static final Map<Material, String> colorToMiniMessage = new HashMap<>();
-
-    static {
-        colorToMiniMessage.put(Material.WHITE_WOOL, "white");
-        colorToMiniMessage.put(Material.ORANGE_WOOL, "gold");
-        colorToMiniMessage.put(Material.MAGENTA_WOOL, "#ff00ff");
-        colorToMiniMessage.put(Material.LIGHT_BLUE_WOOL, "aqua");
-        colorToMiniMessage.put(Material.YELLOW_WOOL, "yellow");
-        colorToMiniMessage.put(Material.LIME_WOOL, "green");
-        colorToMiniMessage.put(Material.PINK_WOOL, "light_purple");
-        colorToMiniMessage.put(Material.GRAY_WOOL, "dark_gray");
-        colorToMiniMessage.put(Material.LIGHT_GRAY_WOOL, "gray");
-        colorToMiniMessage.put(Material.CYAN_WOOL, "dark_aqua");
-        colorToMiniMessage.put(Material.PURPLE_WOOL, "dark_purple");
-        colorToMiniMessage.put(Material.BLUE_WOOL, "blue");
-        colorToMiniMessage.put(Material.BROWN_WOOL, "#8b4513");
-        colorToMiniMessage.put(Material.GREEN_WOOL, "dark_green");
-        colorToMiniMessage.put(Material.RED_WOOL, "red");
-        colorToMiniMessage.put(Material.BLACK_WOOL, "black");
-    }
-
-    public static String getColorAsMiniMessage(Material material) {
-        return colorToMiniMessage.get(material);
     }
 }

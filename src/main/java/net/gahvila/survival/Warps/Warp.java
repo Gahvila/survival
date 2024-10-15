@@ -1,5 +1,6 @@
 package net.gahvila.survival.Warps;
 
+import net.gahvila.gahvilacore.Profiles.Prefix.Backend.Enum.PrefixType.Single;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
@@ -13,11 +14,11 @@ public class Warp {
     private Integer uses;
     private Long creationDate;
     private Location location;
-    private String color;
+    private Single color;
 
     private Material customItem;
 
-    public Warp(String name, UUID owner, String ownerName, Integer uses, Long creationDate, Location location, String color) {
+    public Warp(String name, UUID owner, String ownerName, Integer uses, Long creationDate, Location location, Single color) {
         this.name = name;
         this.owner = owner;
         this.ownerName = ownerName;
@@ -28,7 +29,7 @@ public class Warp {
         this.customItem = Material.DIRT;
     }
 
-    public Warp(String name, UUID owner, String ownerName, Integer uses, Long creationDate, Location location, String color, Material customItem) {
+    public Warp(String name, UUID owner, String ownerName, Integer uses, Long creationDate, Location location, Single color, Material customItem) {
         this.name = name;
         this.owner = owner;
         this.ownerName = ownerName;
@@ -86,11 +87,11 @@ public class Warp {
         this.location = location;
     }
 
-    public String getColor() {
+    public Single getColor() {
         return color;
     }
 
-    public void setColor(String color) {
+    public void setColor(Single color) {
         this.color = color;
     }
 

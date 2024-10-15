@@ -3,6 +3,7 @@ package net.gahvila.survival;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import net.crashcraft.crashclaim.CrashClaim;
+import net.gahvila.gahvilacore.GahvilaCore;
 import net.gahvila.gahvilacore.Profiles.Playtime.PlaytimeManager;
 import net.gahvila.gahvilacore.Teleport.TeleportManager;
 import net.gahvila.survival.Events.JoinEvent;
@@ -47,7 +48,7 @@ public class survival extends JavaPlugin implements Listener {
 
         pluginManager = Bukkit.getPluginManager();
         crashClaim = CrashClaim.getPlugin();
-        PlaytimeManager playtimeManager = new PlaytimeManager();
+        PlaytimeManager playtimeManager = GahvilaCore.instance.getPlaytimeManager();
         homeManager = new HomeManager(playtimeManager);
         TeleportManager teleportManager = new TeleportManager();
         BackManager backManager = new BackManager();

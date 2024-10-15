@@ -125,7 +125,7 @@ public class HomeManager {
     public Integer getAllowedHomes(Player player) {
         long playtime = playtimeManager.getPlaytime(player).join();
         long timePerHome = 180000L; //50 hours
-        int allowedHomes = (int) (playtime / timePerHome);
+        int allowedHomes = (int) (playtime / timePerHome) + 1;
 
         return Math.max(allowedHomes, 1);
     }

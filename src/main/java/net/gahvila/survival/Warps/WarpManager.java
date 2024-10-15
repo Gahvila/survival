@@ -2,6 +2,7 @@ package net.gahvila.survival.Warps;
 
 import de.leonhard.storage.Json;
 import net.gahvila.gahvilacore.Profiles.Playtime.PlaytimeManager;
+import net.gahvila.gahvilacore.Profiles.Prefix.Backend.Enum.PrefixType.Single;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -62,35 +63,42 @@ public class WarpManager {
     //1 vanhimmat warpit ensin
     //2 aakkosjärjestys
 
-    public String changeSorting(Player player) {
+    public void changeSorting(Player player) {
         Json warpData = new Json("playerdata.json", instance.getDataFolder() + "/data/");
         UUID uuid = player.getUniqueId();
-        if (getSorting(player) == null || getSorting(player) == 0) {
-            warpData.set(uuid + ".sorting", 1);
-        } else if (getSorting(player) == 1){
-            warpData.set(uuid + ".sorting", 2);
-        } else if (getSorting(player) == 2){
-            warpData.set(uuid + ".sorting", 0);
-        }
-        return null;
+
+        WarpSorting currentSorting = getSorting(player);
+
+        WarpSorting[] values = WarpSorting.values();
+
+        int nextOrdinal = (currentSorting.ordinal() + 1) % values.length;
+        WarpSorting nextSorting = values[nextOrdinal];
+
+        warpData.set(uuid + ".sorting", nextSorting);
     }
 
-    public Integer getSorting(Player player) {
+    public WarpSorting getSorting(Player player) {
         Json warpData = new Json("playerdata.json", instance.getDataFolder() + "/data/");
         UUID uuid = player.getUniqueId();
-        Integer uses = warpData.getInt(uuid + ".sorting");
-        return uses;
+
+        WarpSorting sorting = warpData.getEnum(uuid + ".sorting", WarpSorting.class);
+
+        if (sorting == null) {
+            return WarpSorting.ALPHABETICAL;
+        }
+
+        return sorting;
     }
 
     //
-    public void setWarp(Player player, String warp, Location location, String color, Material customItem) {
+    public void setWarp(Player player, String warp, Location location, Single color, Material customItem) {
         Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
         String uuid = player.getUniqueId().toString();
         warpData.getFileData().insert(warp + ".owner", uuid);
         warpData.getFileData().insert(warp + ".currentOwnerName", player.getName());
         warpData.getFileData().insert(warp + ".uses", 0);
         warpData.getFileData().insert(warp + ".creationdate", System.currentTimeMillis());
-        warpData.getFileData().insert(warp + ".color", color == null ? "white" : color);
+        warpData.getFileData().insert(warp + ".color", color == null ? Single.VALKOINEN : color);
         warpData.getFileData().insert(warp + ".customItem", customItem == Material.AIR ? Material.LODESTONE : customItem);
         warpData.getFileData().insert(warp + ".world", location.getWorld().getName());
         warpData.getFileData().insert(warp + ".x", location.getX());
@@ -132,9 +140,9 @@ public class WarpManager {
         warp.setCustomItem(customItem);
     }
 
-    public void editWarpColor(Warp warp, String color) {
+    public void editWarpColor(Warp warp, Single color) {
         Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
-        warpData.set(warp.getName() + ".color", color == null ? "white" : color);
+        warpData.set(warp.getName() + ".color", color == null ? Single.VALKOINEN : color);
         warp.setColor(color);
     }
 
@@ -181,10 +189,10 @@ public class WarpManager {
     public void loadWarps() {
         Json homeData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
         homeData.getFileData().singleLayerKeySet().forEach(key -> {
-            String color = "white";
+            Single color = Single.VALKOINEN;
             Material customItem = Material.LODESTONE;
             if (homeData.contains(key + ".color")) {
-                color = homeData.getString(key + ".color");
+                color = homeData.getEnum(key + ".color", Single.class);
             }
             if (homeData.contains(key + ".customItem")) {
                 customItem = Material.getMaterial(homeData.getString(key + ".customItem"));
@@ -217,13 +225,9 @@ public class WarpManager {
         return warps.stream().filter(warp -> warp.getOwner().equals(uuid)).toList();
     }
 
-    //
     public List<String> getOwnedWarpNames(UUID uuid){
         return warps.stream().filter(warp -> warp.getOwner().equals(uuid)).map(Warp::getName).toList();
     }
-
-
-    //
 
     public Integer getAllowedWarps(Player player) {
         long playtime = playtimeManager.getPlaytime(player).join();
@@ -232,5 +236,4 @@ public class WarpManager {
 
         return Math.max(allowedWarps, 1);
     }
-
 }
