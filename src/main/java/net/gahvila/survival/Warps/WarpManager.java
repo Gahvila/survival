@@ -231,9 +231,15 @@ public class WarpManager {
 
     public Integer getAllowedWarps(Player player) {
         long playtime = playtimeManager.getPlaytime(player).join();
-        long timePerWarp = 270000; //75 hours
-        int allowedWarps = (int) (playtime / timePerWarp);
+        long initialWarpTime = 36000; // 10 hours in seconds
+        long timePerWarp = 270000; // 75 hours in seconds
 
-        return Math.max(allowedWarps, 1);
+        if (playtime < initialWarpTime) {
+            return 0;
+        }
+
+        int allowedWarps = 1 + (int) ((playtime - initialWarpTime) / timePerWarp);
+
+        return allowedWarps;
     }
 }
