@@ -100,5 +100,29 @@ public class TradeCommand {
                     }
                 })
                 .register();
+        new CommandAPICommand("tradeyes")
+                .withOptionalArguments(new PlayerArgument("nimi"))
+                .executesPlayer((tradeReceiver, args) -> {
+                    if (args.get("nimi") == null){
+                        if (latestTrader.containsKey(tradeReceiver)) {
+                            if (trade.containsKey(latestTrader.get(tradeReceiver))) {
+                                Player tradeSender = latestTrader.get(tradeReceiver);
+                                //acceptTrade(tradeSender, tradeReceiver, 0);
+                            } else {
+                                tradeReceiver.sendMessage("Sinulla ei ole vaihtokauppapyyntöjä.");
+                            }
+                        } else {
+                            tradeReceiver.sendMessage("Sinulla ei ole vaihtokauppapyyntöjä.");
+                        }
+                    }else{
+                        Player tradeSender = (Player) args.get("nimi");
+                        if (trade.containsKey(tradeSender) && trade.get(tradeSender).equals(tradeReceiver)){
+                            //acceptTrade(tradeSender, tradeReceiver, 0);
+                        } else {
+                            tradeReceiver.sendMessage(toMM("<white>Sinulla ei ole vaihtokauppapyyntöjä pelaajalta <#85FF00>" + tradeSender.getName() + "</#85FF00>."));
+                        }
+                    }
+                })
+                .register();
     }
 }

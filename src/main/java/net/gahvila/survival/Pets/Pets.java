@@ -96,6 +96,7 @@ public class Pets implements Listener {
     public void onDamage(EntityDamageByEntityEvent e) {
         if (!(e.getDamager() instanceof Player damager)) return;
         if (!(e.getEntity() instanceof Tameable pet)) return;
+        if (e.getEntityType() == EntityType.TRADER_LLAMA) return;
 
         UUID currentOwnerUUID = pet.getOwnerUniqueId();
         UUID damagerUUID = damager.getUniqueId();
