@@ -18,6 +18,10 @@ import net.gahvila.survival.Homes.HomeEvents;
 import net.gahvila.survival.Homes.HomeManager;
 import net.gahvila.survival.Homes.HomeMenu;
 import net.gahvila.survival.Spawn.SpawnCMD;
+import net.gahvila.survival.Trade.TradeBundleRemover;
+import net.gahvila.survival.Trade.TradeCommand;
+import net.gahvila.survival.Trade.TradeManager;
+import net.gahvila.survival.Trade.TradeMenu;
 import net.gahvila.survival.VehicleBuffs.RidableBuff;
 import net.gahvila.survival.Warps.WarpCommands;
 import net.gahvila.survival.Warps.WarpEvents;
@@ -79,6 +83,14 @@ public class survival extends JavaPlugin implements Listener {
 
         WarpCommands warpCommands = new WarpCommands(warpManager, warpMenu);
         warpCommands.registerCommands();
+
+        //trade
+        TradeManager tradeManager = new TradeManager();
+        TradeMenu tradeMenu = new TradeMenu();
+        TradeCommand tradeCommand = new TradeCommand(tradeManager, tradeMenu);
+        tradeCommand.registerCommands();
+        registerListeners(new TradeBundleRemover());
+
 
         //register events
         registerListeners(new PlayerDeath(teleportManager), new JoinEvent(teleportManager), new QuitEvent(), new BackListener(backManager),

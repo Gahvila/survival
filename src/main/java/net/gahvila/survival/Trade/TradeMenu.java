@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static java.lang.Float.MAX_VALUE;
@@ -25,8 +26,10 @@ import static net.gahvila.gahvilacore.Utils.MiniMessageUtils.toUndecoratedMM;
 
 public class TradeMenu {
 
+    public static HashMap<Player, ItemStack> tradeItem = new HashMap<>();
+
     public void showGUI(Player player) {
-        ChestGui gui = new ChestGui(4, ComponentHolder.of(toUndecoratedMM("<dark_purple><b>Kodit")));
+        ChestGui gui = new ChestGui(4, ComponentHolder.of(toUndecoratedMM("<dark_purple><b>Trade")));
         gui.show(player);
 
         gui.setOnGlobalClick(event -> event.setCancelled(true));
@@ -45,7 +48,7 @@ public class TradeMenu {
                 "AAAABAAAA",
                 "1BB2BBBBB"
         );
-        PatternPane border = new PatternPane(0, 0, 9, 3, Pane.Priority.LOWEST, pattern);
+        PatternPane border = new PatternPane(0, 0, 9, 4, Pane.Priority.LOWEST, pattern);
 
         ItemStack background = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta backgroundMeta = background.getItemMeta();
@@ -65,6 +68,18 @@ public class TradeMenu {
         navigationPane.addItem(new GuiItem(cancel, event -> {
             //fff
         }), 0, 0);
+
+        ItemStack confirm = new ItemStack(Material.WARPED_BUTTON);
+        ItemMeta confirmMeta = confirm.getItemMeta();
+        confirmMeta.displayName(toUndecoratedMM("<#ff0000><b>Hyväksy vaihtokauppa"));
+        confirmMeta.lore(List.of(toUndecoratedMM("<white>Kun hyväksyt vaihtokaupan, vaihtokauppa lukitaan sinulta.</white>"),
+                toUndecoratedMM("<white>Jos vaihtokaupan toinen osapuoli vaihtaa tavaroita, hyväksyminen poistuu."),
+                toUndecoratedMM("<white>test")
+        ));
+        confirm.setItemMeta(confirmMeta);
+        navigationPane.addItem(new GuiItem(confirm, event -> {
+            //fff
+        }), 3, 0);
         gui.addPane(navigationPane);
 
         gui.update();

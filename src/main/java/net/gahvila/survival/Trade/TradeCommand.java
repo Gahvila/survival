@@ -12,14 +12,15 @@ import org.bukkit.entity.Player;
 
 import static net.gahvila.gahvilacore.GahvilaCore.instance;
 import static net.gahvila.gahvilacore.Utils.MiniMessageUtils.toMM;
-import static net.gahvila.survival.Trade.TradeManager.latestTrader;
-import static net.gahvila.survival.Trade.TradeManager.trade;
+import static net.gahvila.survival.Trade.TradeManager.*;
 
 public class TradeCommand {
 
     private final TradeManager tradeManager;
-    public TradeCommand(TradeManager tradeManager) {
+    private final TradeMenu tradeMenu;
+    public TradeCommand(TradeManager tradeManager, TradeMenu tradeMenu) {
         this.tradeManager = tradeManager;
+        this.tradeMenu = tradeMenu;
     }
 
     public void registerCommands() {
@@ -35,7 +36,7 @@ public class TradeCommand {
                         tradeSender.sendMessage("Et voi tehdä vaihtokauppaa tuon pelaajan kanssa.");
                         return;
                     }
-                    if (trade.containsKey(tradeSender)) {
+                    if (tradeRequest.containsKey(tradeSender)) {
                         tradeSender.sendMessage(toMM("Sinulla on jo aktiivinen trade-pyyntö. Lähettääksesi uuden sinun täytyy perua aikaisempi klikkaamalla tätä viestiä tai /tradecancel.")
                                 .hoverEvent(HoverEvent.showText(toMM("Klikkaa peruaksesi"))).clickEvent(ClickEvent.runCommand("/tradecancel")));
                         return;
@@ -48,7 +49,7 @@ public class TradeCommand {
                         }
                     }
 
-                    trade.put(tradeSender, tradeReceiver);
+                    tradeRequest.put(tradeSender, tradeReceiver);
                     latestTrader.put(tradeReceiver, tradeSender);
                     tradeReceiver.playSound(tradeReceiver.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 2F, 1.2F);
                     tradeSender.sendMessage(toMM("Lähetit pyyntösi vaihtokaupasta <#85FF00>" + tradeReceiver.getName() + ":lle</#85FF00>."));
@@ -63,8 +64,8 @@ public class TradeCommand {
                     Bukkit.getServer().getScheduler().runTaskLater(instance, new Runnable() {
                         @Override
                         public void run() {
-                            if (trade.get(tradeSender) != null) {
-                                trade.remove(tradeSender);
+                            if (tradeRequest.get(tradeSender) != null) {
+                                tradeRequest.remove(tradeSender);
                                 latestTrader.remove(tradeReceiver);
                                 tradeSender.sendMessage("Vaihtokauppapyyntösi vanhentui.");
                                 tradeReceiver.sendMessage(toMM("<#85FF00>" + tradeSender.getName() + ":n </#85FF00>lähettämä vaihtokauppapyyntö vanhentui."));
@@ -78,10 +79,10 @@ public class TradeCommand {
         new CommandAPICommand("tradecancel")
                 .withAliases("tpc")
                 .executesPlayer((tradeSender, args) -> {
-                    if (trade.get(tradeSender) != null) {
-                        Player tradeReceiver = trade.get(tradeSender);
+                    if (tradeRequest.get(tradeSender) != null) {
+                        Player tradeReceiver = tradeRequest.get(tradeSender);
 
-                        trade.remove(tradeSender);
+                        tradeRequest.remove(tradeSender);
                         latestTrader.remove(tradeReceiver);
 
                         tradeSender.sendMessage("Peruit vaihtopyyntösi.");
@@ -105,7 +106,7 @@ public class TradeCommand {
                 .executesPlayer((tradeReceiver, args) -> {
                     if (args.get("nimi") == null){
                         if (latestTrader.containsKey(tradeReceiver)) {
-                            if (trade.containsKey(latestTrader.get(tradeReceiver))) {
+                            if (tradeRequest.containsKey(latestTrader.get(tradeReceiver))) {
                                 Player tradeSender = latestTrader.get(tradeReceiver);
                                 //acceptTrade(tradeSender, tradeReceiver, 0);
                             } else {
@@ -116,12 +117,17 @@ public class TradeCommand {
                         }
                     }else{
                         Player tradeSender = (Player) args.get("nimi");
-                        if (trade.containsKey(tradeSender) && trade.get(tradeSender).equals(tradeReceiver)){
+                        if (tradeRequest.containsKey(tradeSender) && tradeRequest.get(tradeSender).equals(tradeReceiver)){
                             //acceptTrade(tradeSender, tradeReceiver, 0);
                         } else {
                             tradeReceiver.sendMessage(toMM("<white>Sinulla ei ole vaihtokauppapyyntöjä pelaajalta <#85FF00>" + tradeSender.getName() + "</#85FF00>."));
                         }
                     }
+                })
+                .register();
+        new CommandAPICommand("trademenutestcommand")
+                .executesPlayer((player, args) -> {
+                    tradeMenu.showGUI(player);
                 })
                 .register();
     }
