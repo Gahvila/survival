@@ -1,5 +1,6 @@
 package net.gahvila.survival.Trade;
 
+import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
 import net.gahvila.gahvilacore.Profiles.Prefix.Backend.Enum.PrefixType.Single;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -12,6 +13,8 @@ public class TradeSession {
 
     private Player tradeCreator;
     private Player tradeReceiver;
+    private Gui creatorTradeGui;
+    private Gui receiverTradeGui;
     private List<ItemStack> creatorItems;
     private List<ItemStack> receiverItems;
     private boolean creatorAccepted = false;

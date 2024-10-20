@@ -27,6 +27,7 @@ public class TradeManager {
         TradeSession tradeSession = new TradeSession(tradeSender, tradeReceiver, new ArrayList<>(), new ArrayList<>(), false, false);
         activeTradeSessions.put(tradeSender, tradeSession);
         activeTradeSessions.put(tradeReceiver, tradeSession);
+
         survival.instance.getLogger().info("Trade session created between " + tradeSender.getName() + " and " + tradeReceiver.getName());
     }
 
@@ -126,9 +127,15 @@ public class TradeManager {
 
     private void checkTradeCompletion(TradeSession session) {
         if (session.isCreatorAccepted() && session.isReceiverAccepted()) {
+            Player tradeCreator = session.getTradeCreator();
+            Player tradeReceiver = session.getTradeReceiver();
+
             survival.instance.getLogger().info("Both players have accepted the trade. Completing the trade...");
 
             completeTrade(session);
+
+            tradeCreator.closeInventory();
+            tradeReceiver.closeInventory();
 
             activeTradeSessions.remove(session.getTradeCreator());
             activeTradeSessions.remove(session.getTradeReceiver());
@@ -137,6 +144,12 @@ public class TradeManager {
 
     private void completeTrade(TradeSession session) {
         //item transfer logic here
+        Player tradeCreator = session.getTradeCreator();
+        Player tradeReceiver = session.getTradeReceiver();
+
+        tradeCreator.closeInventory();
+        tradeReceiver.closeInventory();
+
 
         survival.instance.getLogger().info("Items exchanged between " + session.getTradeCreator().getName() + " and " + session.getTradeReceiver().getName());
     }

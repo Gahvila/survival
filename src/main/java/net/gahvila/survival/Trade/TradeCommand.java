@@ -104,31 +104,39 @@ public class TradeCommand {
         new CommandAPICommand("tradeyes")
                 .withOptionalArguments(new PlayerArgument("nimi"))
                 .executesPlayer((tradeReceiver, args) -> {
-                    if (args.get("nimi") == null){
+                    Player tradeSender;
+
+                    if (args.get("nimi") == null) {
+                        // No specific player mentioned, use the latest trader
                         if (latestTrader.containsKey(tradeReceiver)) {
-                            if (tradeRequest.containsKey(latestTrader.get(tradeReceiver))) {
-                                Player tradeSender = latestTrader.get(tradeReceiver);
-                                //acceptTrade(tradeSender, tradeReceiver, 0);
-                            } else {
-                                tradeReceiver.sendMessage("Sinulla ei ole vaihtokauppapyyntöjä.");
-                            }
+                            tradeSender = latestTrader.get(tradeReceiver);
                         } else {
                             tradeReceiver.sendMessage("Sinulla ei ole vaihtokauppapyyntöjä.");
+                            return;
                         }
-                    }else{
-                        Player tradeSender = (Player) args.get("nimi");
-                        if (tradeRequest.containsKey(tradeSender) && tradeRequest.get(tradeSender).equals(tradeReceiver)){
-                            //acceptTrade(tradeSender, tradeReceiver, 0);
-                        } else {
-                            tradeReceiver.sendMessage(toMM("<white>Sinulla ei ole vaihtokauppapyyntöjä pelaajalta <#85FF00>" + tradeSender.getName() + "</#85FF00>."));
-                        }
+                    } else {
+                        // Player is specified in command args
+                        tradeSender = (Player) args.get("nimi");
+                    }
+
+                    if (tradeRequest.containsKey(tradeSender) && tradeRequest.get(tradeSender).equals(tradeReceiver)) {
+                        // Accept the trade and create the trade session
+                        tradeManager.createTradeSession(tradeSender, tradeReceiver);
+                        tradeSender.sendMessage(tradeReceiver.getName() + " hyväksyi vaihtokaupan.");
+                        tradeReceiver.sendMessage("Hyväksyit vaihtokaupan " + tradeSender.getName() + " kanssa.");
+
+                        // Remove trade requests after acceptance
+                        tradeRequest.remove(tradeSender);
+                        latestTrader.remove(tradeReceiver);
+
+                        // Open trade GUI for the sender and receiver
+                        tradeMenu.openTradeGui(tradeSender);
+                        tradeMenu.openTradeGui(tradeReceiver);
+                    } else {
+                        tradeReceiver.sendMessage(toMM("<white>Sinulla ei ole vaihtokauppapyyntöjä pelaajalta <#85FF00>" + tradeSender.getName() + "</#85FF00>."));
                     }
                 })
                 .register();
-        new CommandAPICommand("trademenutestcommand")
-                .executesPlayer((player, args) -> {
-                    tradeMenu.showGUI(player);
-                })
-                .register();
+
     }
 }

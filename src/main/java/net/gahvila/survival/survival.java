@@ -86,7 +86,7 @@ public class survival extends JavaPlugin implements Listener {
 
         //trade
         TradeManager tradeManager = new TradeManager();
-        TradeMenu tradeMenu = new TradeMenu();
+        TradeMenu tradeMenu = new TradeMenu(tradeManager);
         TradeCommand tradeCommand = new TradeCommand(tradeManager, tradeMenu);
         tradeCommand.registerCommands();
         registerListeners(new TradeBundleRemover());
