@@ -3,11 +3,14 @@ package net.gahvila.survival.Trade;
 import de.leonhard.storage.Json;
 import net.gahvila.survival.survival;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BundleMeta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import static net.gahvila.gahvilacore.GahvilaCore.instance;
@@ -31,12 +34,17 @@ public class TradeManager {
         survival.instance.getLogger().info("Trade session created between " + tradeSender.getName() + " and " + tradeReceiver.getName());
     }
 
-    public void cancelTradeSession(Player tradeSender, Player tradeReceiver) {
-        TradeSession session = activeTradeSessions.get(tradeSender);
-        if (session != null && session.getTradeReceiver().equals(tradeReceiver)) {
-            activeTradeSessions.remove(tradeSender);
+    public void cancelTradeSession(TradeSession tradeSession) {
+        if (tradeSession != null) {
+            Player tradeCreator = tradeSession.getTradeCreator();
+            Player tradeReceiver = tradeSession.getTradeReceiver();
+            activeTradeSessions.remove(tradeCreator);
             activeTradeSessions.remove(tradeReceiver);
-            survival.instance.getLogger().info("Trade session canceled between " + tradeSender.getName() + " and " + tradeReceiver.getName());
+
+            tradeCreator.closeInventory();
+            tradeReceiver.closeInventory();
+
+            survival.instance.getLogger().info("Trade session canceled between " + tradeCreator.getName() + " and " + tradeReceiver.getName());
         } else {
             survival.instance.getLogger().warning("Attempted to cancel an invalid TradeSession, investigate please.");
         }
@@ -143,15 +151,26 @@ public class TradeManager {
     }
 
     private void completeTrade(TradeSession session) {
-        //item transfer logic here
         Player tradeCreator = session.getTradeCreator();
         Player tradeReceiver = session.getTradeReceiver();
 
         tradeCreator.closeInventory();
         tradeReceiver.closeInventory();
 
+        givePlayerBundle(tradeCreator, session.getReceiverItems()); //give receiver items to creator
+        givePlayerBundle(tradeReceiver, session.getCreatorItems()); //give creator items to receiver
 
         survival.instance.getLogger().info("Items exchanged between " + session.getTradeCreator().getName() + " and " + session.getTradeReceiver().getName());
+    }
+
+    private void givePlayerBundle(Player player, List<ItemStack> items) {
+        ItemStack bundle = new ItemStack(Material.BUNDLE);
+        BundleMeta bundleMeta = (BundleMeta) bundle.getItemMeta();
+
+        for (ItemStack item : items) bundleMeta.addItem(item);
+
+        bundle.setItemMeta(bundleMeta);
+        player.getInventory().addItem(bundle);
     }
 
     public void toggleTrades(Player player) {

@@ -45,6 +45,10 @@ public class TradeMenu {
 
         TradeSession tradeSession = TradeManager.activeTradeSessions.get(player);
 
+        gui.setOnClose(event -> {
+            tradeManager.cancelTradeSession(tradeSession);
+        });
+
         Pattern borderPattern = new Pattern(
                 "AAAABAAAA",
                 "AAAABAAAA",
@@ -74,35 +78,57 @@ public class TradeMenu {
         border.bindItem('B', new GuiItem(background));
         gui.addPane(border);
 
-        StaticPane navigationPane = new StaticPane(0, 3, 9, 1);
+        StaticPane creatorTradePane = new StaticPane(1, 1, 2, 1);
 
-        //tradebundle item
-        ItemStack tradeBundle = new ItemStack(Material.BUNDLE);
-        ItemMeta tradeBundleMeta = tradeBundle.getItemMeta();
-        tradeBundleMeta.displayName(toUndecoratedMM("(pelaaja):n tavarat"));
-        tradeBundle.setItemMeta(tradeBundleMeta);
-
-
-        StaticPane tradePane = new StaticPane(0, 1, 9, 1);
+        ItemStack tradeBundleCreator = new ItemStack(Material.BUNDLE);
+        ItemMeta tradeBundleCreatorMeta = tradeBundleCreator.getItemMeta();
+        tradeBundleCreatorMeta.displayName(toUndecoratedMM(tradeSession.getTradeCreator().getName() + ":n tavarat"));
+        tradeBundleCreator.setItemMeta(tradeBundleCreatorMeta);
 
         for (HumanEntity viewers : gui.getViewers()){
             Player viewer = (Player) viewers;
             if (tradeSession.getTradeCreator() == viewer) {
-                navigationPane.addItem(new GuiItem(tradeBundle, event -> {
+                creatorTradePane.addItem(new GuiItem(tradeBundleCreator, event -> {
                     ItemStack item = viewer.getItemOnCursor();
                     viewer.setItemOnCursor(null);
 
                     tradeSession.getCreatorItems().add(item);
-                }), 2, 0);
+                }), 0, 0);
             } else if (tradeSession.getTradeReceiver() == viewer) {
-                navigationPane.addItem(new GuiItem(tradeBundle, event -> {
+                creatorTradePane.addItem(new GuiItem(tradeBundleCreator, event -> {
+                    //open gui with all the items here
+                }), 0, 0);
+            }
+        }
+
+        gui.addPane(creatorTradePane);
+
+        StaticPane receiverTradePane = new StaticPane(6, 1, 2, 1);
+
+        ItemStack tradeBundleReceiver = new ItemStack(Material.BUNDLE);
+        ItemMeta tradeBundleReceiverMeta = tradeBundleReceiver.getItemMeta();
+        tradeBundleReceiverMeta.displayName(toUndecoratedMM(tradeSession.getTradeReceiver().getName() + ":n tavarat"));
+        tradeBundleReceiver.setItemMeta(tradeBundleReceiverMeta);
+
+        for (HumanEntity viewers : gui.getViewers()){
+            Player viewer = (Player) viewers;
+            if (tradeSession.getTradeReceiver() == viewer) {
+                receiverTradePane.addItem(new GuiItem(tradeBundleReceiver, event -> {
                     ItemStack item = viewer.getItemOnCursor();
                     viewer.setItemOnCursor(null);
 
                     tradeSession.getReceiverItems().add(item);
-                }), 6, 0);
+                }), 1, 0);
+            } else if (tradeSession.getTradeCreator() == viewer) {
+                receiverTradePane.addItem(new GuiItem(tradeBundleReceiver, event -> {
+                    //open gui with all the items here
+                }), 1, 0);
             }
         }
+
+        gui.addPane(receiverTradePane);
+
+        StaticPane navigationPane = new StaticPane(0, 3, 9, 1);
 
         // Cancel button
         ItemStack cancel = new ItemStack(Material.BARRIER);
@@ -113,14 +139,14 @@ public class TradeMenu {
             Player viewer = (Player) viewers;
             if (tradeSession.getTradeCreator() == viewer) {
                 navigationPane.addItem(new GuiItem(cancel, event -> {
-                    tradeManager.cancelTradeSession(tradeSession.getTradeCreator(), tradeSession.getTradeReceiver());
+                    tradeManager.cancelTradeSession(tradeSession);
                     player.sendMessage("Peruit vaihtokaupan.");
                 }), 0, 0);
             } else if (tradeSession.getTradeReceiver() == viewer) {
                 navigationPane.addItem(new GuiItem(cancel, event -> {
-                    tradeManager.cancelTradeSession(tradeSession.getTradeCreator(), tradeSession.getTradeReceiver());
+                    tradeManager.cancelTradeSession(tradeSession);
                     viewer.sendMessage("Peruit vaihtokaupan.");
-                }), 5, 0);
+                }), 8, 0);
             }
         }
 
@@ -147,7 +173,7 @@ public class TradeMenu {
                 navigationPane.addItem(new GuiItem(confirm, event -> {
                     tradeManager.acceptTradeSessionReceiver(player);
                     player.sendMessage("Hyväksyit vaihtokaupan.");
-                }), 8, 0);
+                }), 5, 0);
             }
         }
         gui.addPane(navigationPane);
