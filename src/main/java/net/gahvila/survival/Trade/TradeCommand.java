@@ -130,8 +130,7 @@ public class TradeCommand {
                         latestTrader.remove(tradeReceiver);
 
                         // Open trade GUI for the sender and receiver
-                        tradeMenu.openTradeGui(tradeSender);
-                        tradeMenu.openTradeGui(tradeReceiver);
+                        tradeMenu.openTradeGui(tradeSender, tradeReceiver);
                     } else {
                         tradeReceiver.sendMessage(toMM("<white>Sinulla ei ole vaihtokauppapyyntöjä pelaajalta <#85FF00>" + tradeSender.getName() + "</#85FF00>."));
                     }

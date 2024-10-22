@@ -157,8 +157,9 @@ public class TradeManager {
         tradeCreator.closeInventory();
         tradeReceiver.closeInventory();
 
-        givePlayerBundle(tradeCreator, session.getReceiverItems()); //give receiver items to creator
-        givePlayerBundle(tradeReceiver, session.getCreatorItems()); //give creator items to receiver
+        if (!session.getReceiverItems().isEmpty()) givePlayerBundle(tradeCreator, session.getReceiverItems());
+
+        if (!session.getCreatorItems().isEmpty()) givePlayerBundle(tradeReceiver, session.getCreatorItems());
 
         survival.instance.getLogger().info("Items exchanged between " + session.getTradeCreator().getName() + " and " + session.getTradeReceiver().getName());
     }
