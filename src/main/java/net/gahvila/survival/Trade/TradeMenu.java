@@ -107,7 +107,7 @@ public class TradeMenu {
                 clicker.setItemOnCursor(null);
 
                 if (item.getType() != Material.AIR) {
-                    tradeManager.addItemToTradeSession(tradeSession, item);
+                    tradeManager.addItemToTradeSession(clicker, tradeSession, item);
                     tradeBundleCreatorMeta.addItem(item);
                     tradeBundleCreator.setItemMeta(tradeBundleCreatorMeta);
 
@@ -133,7 +133,7 @@ public class TradeMenu {
             clicker.setItemOnCursor(null);
 
             if (item.getType() != Material.AIR) {
-                tradeManager.addItemToTradeSession(tradeSession, item);
+                tradeManager.addItemToTradeSession(clicker, tradeSession, item);
                 tradeBundleReceiverMeta.addItem(item);
                 tradeBundleReceiver.setItemMeta(tradeBundleReceiverMeta);
             }

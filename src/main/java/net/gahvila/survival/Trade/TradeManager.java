@@ -50,7 +50,7 @@ public class TradeManager {
         }
     }
 
-    public void addItemToTradeSession(TradeSession tradeSession, ItemStack itemStack) {
+    public void addItemToTradeSession(Player player, TradeSession tradeSession, ItemStack itemStack) {
         if (tradeSession == null) {
             survival.instance.getLogger().warning("Attempted to add item to invalid TradeSession, investigate please.");
             return;
@@ -62,13 +62,17 @@ public class TradeManager {
                 return;
             }
 
-            tradeSession.getCreatorItems().add(itemStack);
+            if (player == tradeSession.getTradeCreator()){
+                tradeSession.getCreatorItems().add(itemStack);
+            } else if (player == tradeSession.getTradeReceiver()){
+                tradeSession.getReceiverItems().add(itemStack);
+            }
         } else {
             survival.instance.getLogger().info("Attempted to add an item to an accepted TradeSession without it being canceled automatically, what the fuck?");
         }
     }
 
-    public void removeItemFromTradeSession(TradeSession tradeSession, ItemStack itemStack) {
+    public void removeItemFromTradeSession(Player player, TradeSession tradeSession, ItemStack itemStack) {
         if (tradeSession == null) {
             survival.instance.getLogger().warning("Attempted to remove an item from invalid TradeSession, investigate please.");
             return;
@@ -76,7 +80,11 @@ public class TradeManager {
 
         if (!tradeSession.isCreatorAccepted() && !tradeSession.isReceiverAccepted()) {
             if (tradeSession.getCreatorItems().remove(itemStack) || tradeSession.getReceiverItems().remove(itemStack)) {
-                tradeSession.getCreatorItems().remove(itemStack);
+                if (player == tradeSession.getTradeCreator()){
+                    tradeSession.getCreatorItems().remove(itemStack);
+                } else if (player == tradeSession.getTradeReceiver()){
+                    tradeSession.getReceiverItems().remove(itemStack);
+                }
             } else {
                 survival.instance.getLogger().warning("Tried to remove nonexistent item from TradeSession, investigate please.");
             }
