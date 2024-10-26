@@ -19,6 +19,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BundleMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
@@ -93,12 +94,18 @@ public class TradeMenu {
 
         StaticPane creatorTradePane = new StaticPane(1, 1, 2, 1);
 
+        ItemStack creatorSkull = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta creatorSkullMeta = (SkullMeta) creatorSkull.getItemMeta();
+        creatorSkullMeta.setOwningPlayer(tradeSession.getTradeCreator());
+        creatorSkull.setItemMeta(creatorSkullMeta);
+
         ItemStack tradeBundleCreator = new ItemStack(Material.BUNDLE);
         BundleMeta tradeBundleCreatorMeta = (BundleMeta) tradeBundleCreator.getItemMeta();
         tradeBundleCreatorMeta.displayName(toUndecoratedMM(tradeSession.getTradeCreator().getName() + ":n tavarat"));
         for (ItemStack item : tradeSession.getCreatorItems()) tradeBundleCreatorMeta.addItem(item);
         tradeBundleCreator.setItemMeta(tradeBundleCreatorMeta);
 
+        creatorTradePane.addItem(new GuiItem(creatorSkull), 1, 0);
 
         creatorTradePane.addItem(new GuiItem(tradeBundleCreator, event -> {
             Player clicker = (Player) event.getWhoClicked();
@@ -121,24 +128,33 @@ public class TradeMenu {
 
         StaticPane receiverTradePane = new StaticPane(6, 1, 2, 1);
 
+        ItemStack receiverSkull = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta receiverSkullMeta = (SkullMeta) receiverSkull.getItemMeta();
+        receiverSkullMeta.setOwningPlayer(tradeSession.getTradeReceiver());
+        receiverSkull.setItemMeta(receiverSkullMeta);
+
         ItemStack tradeBundleReceiver = new ItemStack(Material.BUNDLE);
         BundleMeta tradeBundleReceiverMeta = (BundleMeta) tradeBundleReceiver.getItemMeta();
         tradeBundleReceiverMeta.displayName(toUndecoratedMM(tradeSession.getTradeReceiver().getName() + ":n tavarat"));
         for (ItemStack item : tradeSession.getReceiverItems()) tradeBundleReceiverMeta.addItem(item);
         tradeBundleReceiver.setItemMeta(tradeBundleReceiverMeta);
 
+        receiverTradePane.addItem(new GuiItem(receiverSkull), 0, 0);
+
         receiverTradePane.addItem(new GuiItem(tradeBundleReceiver, event -> {
             Player clicker = (Player) event.getWhoClicked();
-            ItemStack item = clicker.getItemOnCursor();
-            clicker.setItemOnCursor(null);
+            if (clicker == tradeSession.getTradeReceiver()) {
+                ItemStack item = clicker.getItemOnCursor();
+                clicker.setItemOnCursor(null);
 
-            if (item.getType() != Material.AIR) {
-                tradeManager.addItemToTradeSession(clicker, tradeSession, item);
-                tradeBundleReceiverMeta.addItem(item);
-                tradeBundleReceiver.setItemMeta(tradeBundleReceiverMeta);
+                if (item.getType() != Material.AIR) {
+                    tradeManager.addItemToTradeSession(clicker, tradeSession, item);
+                    tradeBundleReceiverMeta.addItem(item);
+                    tradeBundleReceiver.setItemMeta(tradeBundleReceiverMeta);
+                }
+
+                gui.update();
             }
-
-            gui.update();
         }), 1, 0);
 
         gui.addPane(receiverTradePane);
