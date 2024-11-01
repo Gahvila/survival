@@ -19,15 +19,15 @@ dependencies {
     compileOnly ("net.luckperms:api:5.4")
     compileOnly("de.hexaoxi:carbonchat-api:3.0.0-beta.27")
     compileOnly ("com.github.koca2000:NoteBlockAPI:1.6.2")
-    compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
-    implementation ("com.github.stefvanschie.inventoryframework:IF:0.10.17")
+    compileOnly("io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT")
+    implementation ("com.github.stefvanschie.inventoryframework:IF:0.10.18-SNAPSHOT")
     implementation("com.github.simplix-softworks:simplixstorage:3.2.7")
     compileOnly ("com.github.DaJokni:CrashClaim:-SNAPSHOT")
 
     //commandapi
-    implementation("dev.jorel:commandapi-bukkit-shade-mojang-mapped:9.5.3")
-    compileOnly("dev.jorel:commandapi-annotations:9.5.3")
-    annotationProcessor("dev.jorel:commandapi-annotations:9.5.3")
+    implementation("dev.jorel:commandapi-bukkit-shade-mojang-mapped:9.6.1")
+    compileOnly("dev.jorel:commandapi-annotations:9.6.1")
+    annotationProcessor("dev.jorel:commandapi-annotations:9.6.1")
 }
 
 group = "net.gahvila"
@@ -54,12 +54,7 @@ tasks {
     }
     shadowJar {
         archiveFileName.set("${rootProject.name}-${version}.jar")
-        dependencies {
-            include(dependency("dev.jorel:commandapi-bukkit-shade-mojang-mapped:9.5.3"))
-            include(dependency("com.github.simplix-softworks:simplixstorage:3.2.7"))
-            include(dependency("com.github.stefvanschie.inventoryframework:IF:0.10.17"))
 
-        }
         relocate("dev.jorel.commandapi", "net.gahvila.survival.shaded.commandapi")
         relocate("de.leonhard.storage", "net.gahvila.survival.shaded.storage")
         relocate ("com.github.stefvanschie.inventoryframework", "net.gahvila.survival.shaded.inventoryframework")
