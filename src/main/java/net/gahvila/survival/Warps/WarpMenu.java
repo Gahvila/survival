@@ -489,10 +489,11 @@ public class WarpMenu {
         PaginatedPane pages = new PaginatedPane(1, 1, 7, 3);
         ArrayList<ItemStack> items = new ArrayList<>();
         World world = warp.getLocation().getWorld();
+
         for (Material material : Material.values()) {
-            if (material.isLegacy() || material == Material.AIR) {
-                continue;
-            }
+            if (material.isLegacy() || material == Material.AIR ||
+                    !material.isItem() || !world.isEnabled(material.asItemType())) continue;
+
             ItemStack item = new ItemStack(material);
             ItemMeta meta = item.getItemMeta();
             meta.displayName(toUndecoratedMM("<#85FF00><lang:" + material.getItemTranslationKey() + "></#85FF00>"));
@@ -500,6 +501,7 @@ public class WarpMenu {
             item.setItemMeta(meta);
             items.add(item);
         }
+
         pages.populateWithItemStacks(items);
         gui.addPane(pages);
 

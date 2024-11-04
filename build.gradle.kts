@@ -1,7 +1,7 @@
 plugins {
     java
     `maven-publish`
-    id("io.github.goooler.shadow") version "8.1.7"
+    id("com.gradleup.shadow") version "8.3.5"
 }
 
 repositories {
@@ -20,7 +20,7 @@ dependencies {
     compileOnly("de.hexaoxi:carbonchat-api:3.0.0-beta.27")
     compileOnly ("com.github.koca2000:NoteBlockAPI:1.6.2")
     compileOnly("io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT")
-    implementation ("com.github.stefvanschie.inventoryframework:IF:0.10.18-SNAPSHOT")
+    implementation ("com.github.stefvanschie.inventoryframework:IF:0.10.18")
     implementation("com.github.simplix-softworks:simplixstorage:3.2.7")
     compileOnly ("com.github.DaJokni:CrashClaim:-SNAPSHOT")
 
