@@ -4,9 +4,11 @@ import de.leonhard.storage.Json;
 import net.gahvila.survival.survival;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BundleMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +22,7 @@ public class TradeManager {
     public static HashMap<Player, TradeSession> activeTradeSessions = new HashMap<>();
     public static HashMap<Player, Player> tradeRequest = new HashMap<>(); //receiver, sender
     public static HashMap<Player, Player> latestTrader = new HashMap<>(); //receiver, sender
+    public static NamespacedKey key = new NamespacedKey(instance, "tradeBundle");
 
 
     public void createTradeSession(Player tradeSender, Player tradeReceiver) {
@@ -57,11 +60,6 @@ public class TradeManager {
         }
 
         if (!tradeSession.isCreatorAccepted() && !tradeSession.isReceiverAccepted()) {
-            if (tradeSession.getCreatorItems().contains(itemStack) || tradeSession.getReceiverItems().contains(itemStack)) {
-                survival.instance.getLogger().warning("Attempted to add an already existing item to the TradeSession, investigate please.");
-                return;
-            }
-
             if (player == tradeSession.getTradeCreator()){
                 tradeSession.getCreatorItems().add(itemStack);
             } else if (player == tradeSession.getTradeReceiver()){
@@ -178,6 +176,7 @@ public class TradeManager {
 
         for (ItemStack item : items) bundleMeta.addItem(item);
 
+        bundleMeta.getPersistentDataContainer().set(key, PersistentDataType.BOOLEAN, true);
         bundle.setItemMeta(bundleMeta);
         player.getInventory().addItem(bundle);
     }
