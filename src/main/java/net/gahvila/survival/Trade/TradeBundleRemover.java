@@ -7,8 +7,10 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.BundleMeta;
@@ -21,7 +23,7 @@ import static org.yaml.snakeyaml.tokens.Token.ID.Tag;
 public class TradeBundleRemover implements Listener {
 
     @EventHandler
-    public void onItemUse(InventoryClickEvent event) {
+    public void onInventoryClick(InventoryClickEvent event) {
         ItemStack item = event.getCurrentItem();
         Bukkit.broadcastMessage(String.valueOf(item.getType()));
         Bukkit.broadcastMessage(event.getAction().toString());
@@ -35,6 +37,31 @@ public class TradeBundleRemover implements Listener {
             return;
         }
         if (event.getAction() != InventoryAction.PICKUP_HALF) {
+            return;
+        }
+
+        Bukkit.getScheduler().runTaskLater(instance, () -> {
+            if (bundleMeta.getItems().isEmpty()) {
+                item.setAmount(0);
+            }
+        }, 1L);
+    }
+
+    @EventHandler
+    public void onInteract(PlayerInteractEvent event) {
+        ItemStack item = event.getItem();
+        Bukkit.broadcastMessage(String.valueOf(item.getType()));
+        Bukkit.broadcastMessage(event.getAction().toString());
+
+        ItemMeta meta = item.getItemMeta();
+        if (!(meta instanceof BundleMeta bundleMeta)) {
+            return;
+        }
+
+        if (!Boolean.TRUE.equals(bundleMeta.getPersistentDataContainer().get(TradeManager.key, PersistentDataType.BOOLEAN))) {
+            return;
+        }
+        if (event.getAction() != Action.RIGHT_CLICK_AIR || event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
 
