@@ -52,8 +52,7 @@ public class PlayerDeath implements Listener {
                     BackListener.back.put(p, p.getLocation());
                 }
             }
-            Location loc = teleportManager.getTeleport("spawn");
-            p.teleport(loc);
+            p.teleport(teleportManager.getTeleport("spawn"));
 
         }
     }

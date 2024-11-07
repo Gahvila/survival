@@ -11,9 +11,6 @@ dependencies:
     JakesRTP:
       load: AFTER
       required: true
-    Vault:
-      load: BEFORE
-      required: true
     #needed for sethome
     NoteBlockAPI:
       required: false
