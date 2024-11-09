@@ -1,8 +1,8 @@
 name: survival
-version: '1.20'
+version: '1.21'
 main: net.gahvila.survival.survival
 description: Lisäosa Gahvilan survival palvelimelle.
-api-version: '1.20'
+api-version: '1.21'
 dependencies:
   server:
     GahvilaCore:

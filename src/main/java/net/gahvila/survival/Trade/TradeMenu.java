@@ -75,10 +75,18 @@ public class TradeMenu {
         redGlassMeta.setHideTooltip(true);
         redGlass.setItemMeta(redGlassMeta);
 
+        ItemStack limeGlass = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
+        ItemMeta limeGlassMeta = limeGlass.getItemMeta();
+        limeGlassMeta.displayName(toUndecoratedMM(""));
+        limeGlassMeta.setHideTooltip(true);
+        limeGlass.setItemMeta(limeGlassMeta);
+
         PatternPane creatorBorder = new PatternPane(0, 0, 4, 3, Pane.Priority.LOWEST, unAcceptedPattern);
         creatorBorder.bindItem('R', new GuiItem(redGlass));
+        creatorBorder.bindItem('G', new GuiItem(limeGlass));
         PatternPane receiverBorder = new PatternPane(5, 0, 4, 3, Pane.Priority.LOWEST, unAcceptedPattern);
         receiverBorder.bindItem('R', new GuiItem(redGlass));
+        receiverBorder.bindItem('G', new GuiItem(limeGlass));
 
         gui.addPane(creatorBorder);
         gui.addPane(receiverBorder);
@@ -186,8 +194,10 @@ public class TradeMenu {
             Player clicker = (Player) event.getWhoClicked();
 
             if (tradeSession.getTradeCreator() == clicker) {
+                creatorBorder.setPattern(acceptedPattern);
                 tradeManager.acceptTradeSessionCreator(clicker);
             } else if (tradeSession.getTradeReceiver() == clicker) {
+                receiverBorder.setPattern(acceptedPattern);
                 tradeManager.acceptTradeSessionReceiver(clicker);
             }
             clicker.sendMessage("Hyväksyit vaihtokaupan.");

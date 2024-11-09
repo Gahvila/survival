@@ -10,7 +10,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.BundleMeta;
@@ -25,33 +27,42 @@ public class TradeBundleRemover implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         ItemStack item = event.getCurrentItem();
-        Bukkit.broadcastMessage(String.valueOf(item.getType()));
-        Bukkit.broadcastMessage(event.getAction().toString());
+        if (item == null) return;
+
+        Bukkit.broadcastMessage("§c" + item.getType());
+        Bukkit.broadcastMessage("§e" + event.getAction());
 
         ItemMeta meta = item.getItemMeta();
         if (!(meta instanceof BundleMeta bundleMeta)) {
+            Bukkit.broadcastMessage("testi4");
             return;
         }
 
         if (!Boolean.TRUE.equals(bundleMeta.getPersistentDataContainer().get(TradeManager.key, PersistentDataType.BOOLEAN))) {
-            return;
-        }
-        if (event.getAction() != InventoryAction.PICKUP_HALF) {
+            Bukkit.broadcastMessage("testi3");
             return;
         }
 
-        Bukkit.getScheduler().runTaskLater(instance, () -> {
-            if (bundleMeta.getItems().isEmpty()) {
-                item.setAmount(0);
-            }
-        }, 1L);
+        if (event.getAction() == InventoryAction.SWAP_WITH_CURSOR) {
+            event.getWhoClicked().sendMessage("Et voi tehdä tuota vaihtokaupasta saadulla pussilla.");
+            event.setCancelled(true);
+        }
+
+        if (event.getAction() == InventoryAction.PICKUP_HALF) {
+            Bukkit.getScheduler().runTaskLater(instance, () -> {
+                Bukkit.broadcastMessage("§7" + bundleMeta.getItems().size());
+                if (bundleMeta.getItems().isEmpty()) {
+                    Bukkit.broadcastMessage("§9" + bundleMeta.getItems().size());
+                    item.setAmount(0);
+                }
+            }, 5L);
+        }
     }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         ItemStack item = event.getItem();
-        Bukkit.broadcastMessage(String.valueOf(item.getType()));
-        Bukkit.broadcastMessage(event.getAction().toString());
+        if (item == null) return;
 
         ItemMeta meta = item.getItemMeta();
         if (!(meta instanceof BundleMeta bundleMeta)) {
@@ -61,14 +72,9 @@ public class TradeBundleRemover implements Listener {
         if (!Boolean.TRUE.equals(bundleMeta.getPersistentDataContainer().get(TradeManager.key, PersistentDataType.BOOLEAN))) {
             return;
         }
-        if (event.getAction() != Action.RIGHT_CLICK_AIR || event.getAction() != Action.RIGHT_CLICK_BLOCK) {
-            return;
+        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            event.getPlayer().sendMessage("Et voi tehdä tuota vaihtokaupasta saadulla pussilla.");
+            event.setCancelled(true);
         }
-
-        Bukkit.getScheduler().runTaskLater(instance, () -> {
-            if (bundleMeta.getItems().isEmpty()) {
-                item.setAmount(0);
-            }
-        }, 1L);
     }
 }

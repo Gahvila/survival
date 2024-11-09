@@ -22,7 +22,7 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT")
     implementation ("com.github.stefvanschie.inventoryframework:IF:0.10.18")
     implementation("com.github.simplix-softworks:simplixstorage:3.2.7")
-    compileOnly ("com.github.DaJokni:CrashClaim:-SNAPSHOT")
+    compileOnly ("net.crashcraft:CrashClaim:1.0.42")
 
     //commandapi
     implementation("dev.jorel:commandapi-bukkit-shade-mojang-mapped:9.6.1")
