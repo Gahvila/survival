@@ -1,6 +1,5 @@
 package net.gahvila.survival.Back;
 
-import net.gahvila.survival.survival;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 

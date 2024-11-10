@@ -3,31 +3,19 @@ package net.gahvila.survival.Trade;
 import com.github.stefvanschie.inventoryframework.adventuresupport.ComponentHolder;
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
-import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.PatternPane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import com.github.stefvanschie.inventoryframework.pane.util.Pattern;
-import net.gahvila.survival.survival;
-import net.kyori.adventure.text.Component;
-import org.bukkit.*;
-import org.bukkit.entity.HumanEntity;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BundleMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.persistence.PersistentDataType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import static java.lang.Float.MAX_VALUE;
-import static net.gahvila.gahvilacore.Utils.MiniMessageUtils.toMM;
 import static net.gahvila.gahvilacore.Utils.MiniMessageUtils.toUndecoratedMM;
 
 public class TradeMenu {

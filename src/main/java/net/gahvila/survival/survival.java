@@ -6,17 +6,17 @@ import net.crashcraft.crashclaim.CrashClaim;
 import net.gahvila.gahvilacore.GahvilaCore;
 import net.gahvila.gahvilacore.Profiles.Playtime.PlaytimeManager;
 import net.gahvila.gahvilacore.Teleport.TeleportManager;
-import net.gahvila.survival.Events.JoinEvent;
-import net.gahvila.survival.Events.PlayerDeath;
-import net.gahvila.survival.Events.QuitEvent;
 import net.gahvila.survival.Back.BackCommand;
 import net.gahvila.survival.Back.BackListener;
 import net.gahvila.survival.Back.BackManager;
-import net.gahvila.survival.Pets.Pets;
+import net.gahvila.survival.Events.JoinEvent;
+import net.gahvila.survival.Events.PlayerDeath;
+import net.gahvila.survival.Events.QuitEvent;
 import net.gahvila.survival.Homes.HomeCommands;
 import net.gahvila.survival.Homes.HomeEvents;
 import net.gahvila.survival.Homes.HomeManager;
 import net.gahvila.survival.Homes.HomeMenu;
+import net.gahvila.survival.Pets.Pets;
 import net.gahvila.survival.Spawn.SpawnCMD;
 import net.gahvila.survival.Trade.TradeBundleRemover;
 import net.gahvila.survival.Trade.TradeCommand;
@@ -27,11 +27,12 @@ import net.gahvila.survival.Warps.WarpCommands;
 import net.gahvila.survival.Warps.WarpEvents;
 import net.gahvila.survival.Warps.WarpManager;
 import net.gahvila.survival.Warps.WarpMenu;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Difficulty;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class survival extends JavaPlugin implements Listener {
@@ -106,26 +107,6 @@ public class survival extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         homeManager.homes.clear();
-        //unregister homes
-        CommandAPI.unregister("buyhome");
-        CommandAPI.unregister("delhome");
-        CommandAPI.unregister("renamehome");
-        CommandAPI.unregister("home");
-        CommandAPI.unregister("sethome");
-        //unregister warps
-        CommandAPI.unregister("buywarp");
-        CommandAPI.unregister("delwarp");
-        CommandAPI.unregister("editwarp");
-        CommandAPI.unregister("setwarp");
-        CommandAPI.unregister("warp");
-        //unregister back
-        CommandAPI.unregister("back");
-        CommandAPI.unregister("fback");
-        //unregister misc.
-        CommandAPI.unregister("selviytymishärpäke");
-        CommandAPI.unregister("resurssinether");
-        CommandAPI.unregister("spawn");
-        CommandAPI.unregister("addon");
     }
 
     //main class helpers

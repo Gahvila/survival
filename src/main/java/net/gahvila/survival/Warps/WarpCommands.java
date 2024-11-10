@@ -1,9 +1,12 @@
 package net.gahvila.survival.Warps;
 
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.arguments.*;
+import dev.jorel.commandapi.arguments.Argument;
+import dev.jorel.commandapi.arguments.ArgumentSuggestions;
+import dev.jorel.commandapi.arguments.CustomArgument;
+import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import net.gahvila.gahvilacore.Profiles.Prefix.Backend.Enum.PrefixType.Single;
-import net.gahvila.survival.survival;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -71,8 +74,8 @@ public class WarpCommands {
                                 if (name.matches("[\\p{L}\\p{N}]+") && name.length() <= 16) {
                                     warpManager.setWarp(p, name, p.getLocation(), Single.VALKOINEN, Material.LODESTONE);
                                     p.sendMessage(toMM("Asetit warpin nimellä <#85FF00>" + name + "</#85FF00>. Voit muokata warpin nimeä, väriä ja materiaalia komennolla <#85FF00>/editwarp " + name + "</#85FF00>.")
-                                            .hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(toMM("Klikkaa muokataksesi")))
-                                            .clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand("/editwarp " + name)));
+                                            .hoverEvent(HoverEvent.showText(toMM("Klikkaa muokataksesi")))
+                                            .clickEvent(ClickEvent.runCommand("/editwarp " + name)));
                                 } else {
                                     p.sendMessage("Nimi voi sisältää vain aakkosia ja numeroita, ja se voi olla maks. 16 kirjainta pitkä.");
                                 }

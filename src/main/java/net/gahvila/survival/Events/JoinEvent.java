@@ -1,7 +1,6 @@
 package net.gahvila.survival.Events;
 
 import net.gahvila.gahvilacore.Teleport.TeleportManager;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

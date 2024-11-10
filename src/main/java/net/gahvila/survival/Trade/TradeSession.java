@@ -1,13 +1,10 @@
 package net.gahvila.survival.Trade;
 
 import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
-import net.gahvila.gahvilacore.Profiles.Prefix.Backend.Enum.PrefixType.Single;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
-import java.util.UUID;
 
 public class TradeSession {
 

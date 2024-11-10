@@ -12,7 +12,8 @@ import org.bukkit.entity.Player;
 
 import static net.gahvila.gahvilacore.GahvilaCore.instance;
 import static net.gahvila.gahvilacore.Utils.MiniMessageUtils.toMM;
-import static net.gahvila.survival.Trade.TradeManager.*;
+import static net.gahvila.survival.Trade.TradeManager.latestTrader;
+import static net.gahvila.survival.Trade.TradeManager.tradeRequest;
 
 public class TradeCommand {
 
