@@ -24,12 +24,12 @@ public class PlayerDeath implements Listener {
     @EventHandler
     public void onRespawn(PlayerRespawnEvent e){
         Player p = e.getPlayer();
-        if (p.getBedSpawnLocation() != null){
+        if (p.getRespawnLocation() != null){
             if (!BackListener.died.contains(p.getUniqueId())){
                 BackListener.back.put(p, p.getLocation());
             }
-            p.teleportAsync(p.getBedSpawnLocation());
-            e.setRespawnLocation(p.getBedSpawnLocation());
+            p.teleportAsync(p.getRespawnLocation());
+            e.setRespawnLocation(p.getRespawnLocation());
             p.sendMessage("");
             p.sendMessage("");
             if (e.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.END_PORTAL)){
@@ -45,7 +45,7 @@ public class PlayerDeath implements Listener {
             }else {
                 p.sendMessage(toMM("Sinä kuolit eikä sinulla ole sänkyä asetettuna. Sinut teleportattiin spawnille. Voit teleportata kuolinpaikallesi komennolla <#85FF00>/back</#85FF00>."));
             }
-            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, MAX_VALUE, 1F);
+            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, MAX_VALUE, 1F); //TODO: vaiha tää parempaan
             e.setRespawnLocation(new Location(Bukkit.getWorld("spawn"), 20.5, 81, -40.5, 180.0f, 0.0f));
             if (!BackListener.died.contains(p.getUniqueId())){
                 if (!e.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.END_PORTAL)){

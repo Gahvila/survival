@@ -37,9 +37,7 @@ public class BackListener implements Listener {
     @EventHandler
     public void onTeleport(PlayerTeleportEvent e) {
         Player p = e.getPlayer();
-        if (!e.getFrom().getWorld().equals(Bukkit.getWorld("spawn"))) {
-            backManager.setBack(p, e.getFrom());
-        }
+        backManager.setBack(p, e.getFrom());
     }
 
     @EventHandler

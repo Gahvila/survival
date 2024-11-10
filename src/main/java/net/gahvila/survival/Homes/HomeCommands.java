@@ -137,7 +137,7 @@ public class HomeCommands {
                                 p.sendMessage("Et voi käyttää tuota nimeä.");
                                 return;
                             }
-                            if (!p.getWorld().getName().equals("spawn") || (!p.getWorld().getName().equals("resurssinether"))) {
+                            if (!p.getWorld().getName().equals("world_the_end")) {
                                 homeManager.saveHome(uuid, nimi, p.getLocation());
                                 p.sendMessage(toMM("<white>Koti nimellä</white> <#85FF00>" + nimi + "</#85FF00> <white>asetettu.</white>"));
                             } else {

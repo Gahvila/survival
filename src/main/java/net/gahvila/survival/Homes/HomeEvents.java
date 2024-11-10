@@ -21,6 +21,7 @@ public class HomeEvents implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
+        HomeCommands.gambling.remove(event.getPlayer());
         homeManager.homes.remove(event.getPlayer().getUniqueId());
     }
 }

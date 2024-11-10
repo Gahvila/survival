@@ -13,6 +13,5 @@ public class QuitEvent implements Listener {
         Player p = e.getPlayer();
         e.quitMessage(null);
         p.setInvulnerable(false);
-        HomeCommands.gambling.remove(p);
     }
 }
