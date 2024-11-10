@@ -31,9 +31,11 @@ public class JoinEvent implements Listener {
             e.joinMessage(toMM("<#85FF00>" + p.getName() + "</#85FF00> liittyi Survivaliin ensimmäistä kertaa, tervetuloa!"));
 
             //join kit
-
-            p.getInventory().addItem(new ItemStack(Material.APPLE, 4));
-            p.getInventory().addItem(new ItemStack(Material.GOLDEN_AXE, 1));
+            p.sendMessage(toMM("Sait aloituspakkauksen:<br>" +
+                    "<gray>- <#85FF00>3kpl paistettua perunaa<br>" +
+                    "<gray>- <#85FF00>1kpl nahkakypärä"));
+            p.getInventory().addItem(new ItemStack(Material.BAKED_POTATO, 3));
+            p.getInventory().setHelmet(new ItemStack(Material.LEATHER_HELMET, 1));
         }else{
             e.joinMessage(null);
         }
