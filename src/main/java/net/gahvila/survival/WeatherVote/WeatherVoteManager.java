@@ -5,11 +5,13 @@ import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import static net.gahvila.gahvilacore.Utils.MiniMessageUtils.toMM;
+import static net.gahvila.survival.survival.instance;
 
 public class WeatherVoteManager {
 
@@ -22,13 +24,18 @@ public class WeatherVoteManager {
     public ArrayList<Player> stormVoters = new ArrayList<>();
     public ArrayList<Player> clearVoters = new ArrayList<>();
 
-
     public void startWeatherVote(Player player) {
-        if (areWeVoting || getCooldown() != 0) {
-            player.sendMessage("Sään äänestystä ei voi aloittaa.");
+        if (areWeVoting) {
+            player.sendMessage("Sään äänestystä ei voi aloittaa koska on jo äänestys.");
             return;
         }
 
+        if (getCooldown() != 0) {
+            player.sendMessage("cooldown " + getCooldown() + " sekuntia");
+            return;
+        }
+
+        areWeVoting = true;
         startCooldown();
 
         Bukkit.broadcast(toMM("<väri>" + player.getName() + " aloitti sään äänestyksen.<br>" +
@@ -40,6 +47,47 @@ public class WeatherVoteManager {
         );
 
         allVoters.addAll(Bukkit.getOnlinePlayers());
+
+        new BukkitRunnable() {
+            int countdown = 15;
+
+            @Override
+            public void run() {
+                if (countdown <= 0) {
+                    concludeVote();
+                    areWeVoting = false;
+                    this.cancel();
+                } else {
+                    for (Player voter : allVoters) {
+                        voter.sendActionBar(toMM("Äänestys päättyy " + countdown + " sekunnin kuluttua."));
+                    }
+                    countdown--;
+                }
+            }
+        }.runTaskTimer(instance, 0, 20);
+    }
+
+    public void concludeVote() {
+        int stormVotes = stormVoters.size();
+        int clearVotes = clearVoters.size();
+
+        String resultMessage;
+        if (stormVotes > clearVotes) {
+            resultMessage = "Äänestys päättyi: Myrsky voitti " + stormVotes + " - " + clearVotes;
+            Bukkit.getWorld("world").setStorm(true);
+        } else if (clearVotes > stormVotes) {
+            resultMessage = "Äänestys päättyi: Selkeä voitti " + clearVotes + " - " + stormVotes;
+            Bukkit.getWorld("world").setStorm(false);
+        } else {
+            resultMessage = "Äänestys päättyi tasan! Sää pysyy ennallaan.";
+        }
+
+        Bukkit.broadcast(toMM(resultMessage));
+
+        // Reset lists for the next vote
+        allVoters.clear();
+        stormVoters.clear();
+        clearVoters.clear();
     }
 
     public void voteWeather(Player player, boolean isStorm) {
@@ -80,7 +128,7 @@ public class WeatherVoteManager {
     public final long DEFAULT_COOLDOWN = 120; // seconds
 
     private void startCooldown() {
-        latestCooldown = TimeUnit.SECONDS.toMillis(System.currentTimeMillis());
+        latestCooldown = System.currentTimeMillis();
     }
 
     public Long getCooldown() {
@@ -88,7 +136,7 @@ public class WeatherVoteManager {
         long timePassed = currentTime - latestCooldown;
 
         if (timePassed < TimeUnit.SECONDS.toMillis(DEFAULT_COOLDOWN)) {
-            return (TimeUnit.MILLISECONDS.toSeconds(TimeUnit.SECONDS.toMillis(DEFAULT_COOLDOWN) - timePassed));
+            return TimeUnit.MILLISECONDS.toSeconds(TimeUnit.SECONDS.toMillis(DEFAULT_COOLDOWN) - timePassed);
         } else {
             return 0L;
         }

@@ -27,6 +27,9 @@ import net.gahvila.survival.Warps.WarpCommands;
 import net.gahvila.survival.Warps.WarpEvents;
 import net.gahvila.survival.Warps.WarpManager;
 import net.gahvila.survival.Warps.WarpMenu;
+import net.gahvila.survival.WeatherVote.WeatherVoteCommand;
+import net.gahvila.survival.WeatherVote.WeatherVoteListener;
+import net.gahvila.survival.WeatherVote.WeatherVoteManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.World;
@@ -91,6 +94,12 @@ public class survival extends JavaPlugin implements Listener {
         TradeCommand tradeCommand = new TradeCommand(tradeManager, tradeMenu);
         tradeCommand.registerCommands();
         registerListeners(new TradeBundleRemover());
+
+        //weathervote
+        WeatherVoteManager weatherVoteManager = new WeatherVoteManager();
+        WeatherVoteCommand weatherVoteCommand = new WeatherVoteCommand(weatherVoteManager);
+        weatherVoteCommand.registerCommands();
+        registerListeners(new WeatherVoteListener());
 
 
         //register events
