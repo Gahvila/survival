@@ -31,25 +31,25 @@ public class WeatherVoteManager {
         }
 
         if (getCooldown() != 0) {
-            player.sendMessage("cooldown " + getCooldown() + " sekuntia");
+            player.sendMessage("Voit aloittaa uuden äänestyksen <#85FF00>" + getCooldown() + "s</#85FF00> kuluttua.");
             return;
         }
 
         areWeVoting = true;
-        startCooldown();
 
-        Bukkit.broadcast(toMM("<väri>" + player.getName() + " aloitti sään äänestyksen.<br>" +
-                "Klikkaa viestiä äänestääksesi sään vaihdossa.<br>" +
-                "Äänestys kestää 15 sekuntia.<br>" +
-                "Voit myös äänestää komennolla /sää.")
-                .hoverEvent(HoverEvent.showText(toMM("Klikkaa äänestääksesi")))
-                .clickEvent(ClickEvent.runCommand("/weathervote"))
-        );
+        Bukkit.broadcast(toMM("""
+            <#85FF00>{playername}</#85FF00> aloitti sään äänestyksen:
+            <hover:show_text:'Klikkaa suorittaaksesi /weathervote clear'><click:run_command:'/weathervote clear'><yellow>Klikkaa äänestääksesi selkeää</yellow></click></hover>
+            
+            <hover:show_text:'Klikkaa suorittaaksesi /weathervote storm'><click:run_command:'/weathervote storm'><blue>Klikkaa äänestääksesi myrskyä</blue></click></hover>
+            
+            <white>Äänestys kestää <#85FF00>15 sekuntia</#85FF00>."""
+                .replace("{playername}", player.getName())));
 
         allVoters.addAll(Bukkit.getOnlinePlayers());
 
         new BukkitRunnable() {
-            int countdown = 15;
+            int countdown = 15; //seconds
 
             @Override
             public void run() {
@@ -59,7 +59,7 @@ public class WeatherVoteManager {
                     this.cancel();
                 } else {
                     for (Player voter : allVoters) {
-                        voter.sendActionBar(toMM("Äänestys päättyy " + countdown + " sekunnin kuluttua."));
+                        voter.sendActionBar(toMM("Äänestys päättyy <#85FF00>" + countdown + "s</#85FF00> kuluttua."));
                     }
                     countdown--;
                 }
@@ -84,6 +84,8 @@ public class WeatherVoteManager {
 
         Bukkit.broadcast(toMM(resultMessage));
 
+        startCooldown();
+
         // Reset lists for the next vote
         allVoters.clear();
         stormVoters.clear();
@@ -92,7 +94,7 @@ public class WeatherVoteManager {
 
     public void voteWeather(Player player, boolean isStorm) {
         if (!allVoters.contains(player)) {
-            player.sendMessage("Et voi äänestää koska liityit palvelimelle liian myöhään.");
+            player.sendMessage("Et voi äänestää tässä äänestyksessä.");
             return;
         }
 
