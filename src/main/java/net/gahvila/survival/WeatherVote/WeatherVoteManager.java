@@ -73,17 +73,19 @@ public class WeatherVoteManager {
 
         String resultMessage;
         if (stormVotes > clearVotes) {
-            resultMessage = "Äänestys päättyi: Myrsky voitti " + stormVotes + " - " + clearVotes;
+            resultMessage = "Äänestys päättyi: Myrsky voitti <#85FF00>" + stormVotes + "</#85FF00> - <#ff0000>" + clearVotes + "</#ff0000>";
             Bukkit.getWorld("world").setStorm(true);
         } else if (clearVotes > stormVotes) {
-            resultMessage = "Äänestys päättyi: Selkeä voitti " + clearVotes + " - " + stormVotes;
+            resultMessage = "Äänestys päättyi: Selkeä voitti <#85FF00>" + clearVotes + "</#85FF00> - <#ff0000>" + stormVotes + "</#ff0000>";
             Bukkit.getWorld("world").setStorm(false);
         } else {
             resultMessage = "Äänestys päättyi tasan! Sää pysyy ennallaan.";
         }
 
         Bukkit.broadcast(toMM(resultMessage));
-
+        for (Player voter : allVoters) {
+            voter.sendActionBar(toMM(resultMessage));
+        }
         startCooldown();
 
         // Reset lists for the next vote
