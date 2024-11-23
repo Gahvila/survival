@@ -46,7 +46,7 @@ public class PlayerDeath implements Listener {
                 p.sendMessage(toMM("Sinä kuolit eikä sinulla ole sänkyä asetettuna. Sinut teleportattiin spawnille. Voit teleportata kuolinpaikallesi komennolla <#85FF00>/back</#85FF00>."));
             }
             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, MAX_VALUE, 1F); //TODO: vaiha tää parempaan
-            e.setRespawnLocation(new Location(Bukkit.getWorld("spawn"), 20.5, 81, -40.5, 180.0f, 0.0f));
+            e.setRespawnLocation(teleportManager.getTeleport("spawn"));
             if (!BackListener.died.contains(p.getUniqueId())){
                 if (!e.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.END_PORTAL)){
                     BackListener.back.put(p, p.getLocation());

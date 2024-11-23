@@ -21,17 +21,12 @@ public class TradeBundleRemover implements Listener {
         ItemStack item = event.getCurrentItem();
         if (item == null) return;
 
-        Bukkit.broadcastMessage("§c" + item.getType());
-        Bukkit.broadcastMessage("§e" + event.getAction());
-
         ItemMeta meta = item.getItemMeta();
         if (!(meta instanceof BundleMeta bundleMeta)) {
-            Bukkit.broadcastMessage("testi4");
             return;
         }
 
         if (!Boolean.TRUE.equals(bundleMeta.getPersistentDataContainer().get(TradeManager.key, PersistentDataType.BOOLEAN))) {
-            Bukkit.broadcastMessage("testi3");
             return;
         }
 
@@ -42,9 +37,7 @@ public class TradeBundleRemover implements Listener {
 
         if (event.getAction() == InventoryAction.PICKUP_HALF) {
             Bukkit.getScheduler().runTaskLater(instance, () -> {
-                Bukkit.broadcastMessage("§7" + bundleMeta.getItems().size());
                 if (bundleMeta.getItems().isEmpty()) {
-                    Bukkit.broadcastMessage("§9" + bundleMeta.getItems().size());
                     item.setAmount(0);
                 }
             }, 5L);
