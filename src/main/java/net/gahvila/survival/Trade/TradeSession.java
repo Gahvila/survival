@@ -8,69 +8,107 @@ import java.util.List;
 
 public class TradeSession {
 
-    private Player tradeCreator;
-    private Player tradeReceiver;
-    private Gui creatorTradeGui;
-    private Gui receiverTradeGui;
-    private List<ItemStack> creatorItems;
-    private List<ItemStack> receiverItems;
-    private boolean creatorAccepted = false;
-    private boolean receiverAccepted = false;
+    private long tradeId;
+    private long creationTime;
+    private Player trader1;
+    private Player trader2;
+    private Gui trader1Gui;
+    private Gui trader2Gui;
+    private List<ItemStack> trader1Items;
+    private List<ItemStack> trader2Items;
+    private boolean trader1Accepted;
+    private boolean trader2Accepted;
 
-    public TradeSession(Player tradeCreator, Player tradeReceiver, List<ItemStack> creatorItems, List<ItemStack> receiverItems, boolean creatorAccepted, boolean receiverAccepted) {
-        this.tradeCreator = tradeCreator;
-        this.tradeReceiver = tradeReceiver;
-        this.creatorItems = creatorItems;
-        this.receiverItems = receiverItems;
-        this.creatorAccepted = creatorAccepted;
-        this.receiverAccepted = receiverAccepted;
+    public TradeSession(long tradeId, long creationTime, Player trader1, Player trader2, Gui trader1Gui, Gui trader2Gui, List<ItemStack> trader1Items, List<ItemStack> trader2Items, boolean trader1Accepted, boolean trader2Accepted) {
+        this.tradeId = tradeId;
+        this.creationTime = creationTime;
+        this.trader1 = trader1;
+        this.trader2 = trader2;
+        this.trader1Gui = trader1Gui;
+        this.trader2Gui = trader2Gui;
+        this.trader1Items = trader1Items;
+        this.trader2Items = trader2Items;
+        this.trader1Accepted = trader1Accepted;
+        this.trader2Accepted = trader2Accepted;
     }
 
-    public Player getTradeCreator() {
-        return tradeCreator;
+    public long getTradeId() {
+        return tradeId;
     }
 
-    public void setTradeCreator(Player tradeCreator) {
-        this.tradeCreator = tradeCreator;
+    public void setTradeId(long tradeId) {
+        this.tradeId = tradeId;
     }
 
-    public Player getTradeReceiver() {
-        return tradeReceiver;
+    public long getCreationTime() {
+        return creationTime;
     }
 
-    public void setTradeReceiver(Player tradeReceiver) {
-        this.tradeReceiver = tradeReceiver;
+    public void setCreationTime(long creationTime) {
+        this.creationTime = creationTime;
     }
 
-    public List<ItemStack> getCreatorItems() {
-        return creatorItems;
+    public Player getTrader1() {
+        return trader1;
     }
 
-    public void setCreatorItems(List<ItemStack> creatorItems) {
-        this.creatorItems = creatorItems;
+    public void setTrader1(Player trader1) {
+        this.trader1 = trader1;
     }
 
-    public List<ItemStack> getReceiverItems() {
-        return receiverItems;
+    public Player getTrader2() {
+        return trader2;
     }
 
-    public void setReceiverItems(List<ItemStack> receiverItems) {
-        this.receiverItems = receiverItems;
+    public void setTrader2(Player trader2) {
+        this.trader2 = trader2;
     }
 
-    public boolean isCreatorAccepted() {
-        return creatorAccepted;
+    public Gui getTrader1Gui() {
+        return trader1Gui;
     }
 
-    public void setCreatorAccepted(boolean creatorAccepted) {
-        this.creatorAccepted = creatorAccepted;
+    public void setTrader1Gui(Gui trader1Gui) {
+        this.trader1Gui = trader1Gui;
     }
 
-    public boolean isReceiverAccepted() {
-        return receiverAccepted;
+    public Gui getTrader2Gui() {
+        return trader2Gui;
     }
 
-    public void setReceiverAccepted(boolean receiverAccepted) {
-        this.receiverAccepted = receiverAccepted;
+    public void setTrader2Gui(Gui trader2Gui) {
+        this.trader2Gui = trader2Gui;
+    }
+
+    public List<ItemStack> getTrader1Items() {
+        return trader1Items;
+    }
+
+    public void setTrader1Items(List<ItemStack> trader1Items) {
+        this.trader1Items = trader1Items;
+    }
+
+    public List<ItemStack> getTrader2Items() {
+        return trader2Items;
+    }
+
+    public void setTrader2Items(List<ItemStack> trader2Items) {
+        this.trader2Items = trader2Items;
+    }
+
+    public boolean isTrader1Accepted() {
+        return trader1Accepted;
+    }
+
+    public void setTrader1Accepted(boolean trader1Accepted) {
+        this.trader1Accepted = trader1Accepted;
+    }
+
+    public boolean isTrader2Accepted() {
+        return trader2Accepted;
+    }
+
+    public void setTrader2Accepted(boolean trader2Accepted) {
+        this.trader2Accepted = trader2Accepted;
     }
 }

@@ -3,6 +3,8 @@ package net.gahvila.survival.Trade;
 import com.github.stefvanschie.inventoryframework.adventuresupport.ComponentHolder;
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
+import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
+import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.PatternPane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
@@ -16,19 +18,34 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.List;
 
+import static net.gahvila.gahvilacore.Utils.MiniMessageUtils.toMM;
 import static net.gahvila.gahvilacore.Utils.MiniMessageUtils.toUndecoratedMM;
 
 public class TradeMenu {
     private final TradeManager tradeManager;
+    private TradeSessionManager tradeSessionManager;
 
-    public TradeMenu(TradeManager tradeManager) {
+    public TradeMenu(TradeManager tradeManager, TradeSessionManager tradeSessionManager) {
         this.tradeManager = tradeManager;
+        this.tradeSessionManager = tradeSessionManager;
     }
 
-    public void openTradeGui(Player creator, Player receiver) {
-        ChestGui gui = new ChestGui(3, ComponentHolder.of(toUndecoratedMM("<dark_purple><b>Vaihtokauppa")));
-        gui.show(creator);
-        gui.show(receiver);
+    public void setTradeSessionManager(TradeSessionManager tradeSessionManager) {
+        this.tradeSessionManager = tradeSessionManager;
+    }
+
+    private final Pattern pattern = new Pattern(
+            "1111P1111",
+            "AAAA1AAAA",
+            "AAAA1AAAA",
+            "AAAA1AAAA",
+            "AAAA1AAAA",
+            "AAAA1AAAA"
+    );
+
+    public void openTradeGui(Player player, TradeSession tradeSession) {
+        ChestGui gui = new ChestGui(6, ComponentHolder.of(toUndecoratedMM(" Omat tavarat <||> Heidän tavarat")));
+        gui.show(player);
 
         gui.setOnGlobalClick(event -> {
             if (event.getClickedInventory().getHolder() instanceof ChestGui) {
@@ -36,163 +53,73 @@ public class TradeMenu {
             }
         });
 
-        TradeSession tradeSession = TradeManager.activeTradeSessions.get(creator);
+        //add gui to tradesession
+        if (player == tradeSession.getTrader1()) {
+            tradeSession.setTrader1Gui(gui);
+        } else if (player == tradeSession.getTrader2()) {
+            tradeSession.setTrader2Gui(gui);
+        }
 
-        Pattern borderPattern = new Pattern(
-                "AAAABAAAA",
-                "AAAABAAAA",
-                "AAAABAAAA"
-        );
-        PatternPane border = new PatternPane(0, 0, 9, 3, Pane.Priority.LOWEST, borderPattern);
-
-        Pattern unAcceptedPattern = new Pattern(
-                "RRRR",
-                "RAAR",
-                "RRRR"
-        );
-
-        Pattern acceptedPattern = new Pattern(
-                "GGGG",
-                "GAAG",
-                "GGGG"
-        );
-
-        ItemStack redGlass = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-        ItemMeta redGlassMeta = redGlass.getItemMeta();
-        redGlassMeta.displayName(toUndecoratedMM(""));
-        redGlassMeta.setHideTooltip(true);
-        redGlass.setItemMeta(redGlassMeta);
-
-        ItemStack limeGlass = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
-        ItemMeta limeGlassMeta = limeGlass.getItemMeta();
-        limeGlassMeta.displayName(toUndecoratedMM(""));
-        limeGlassMeta.setHideTooltip(true);
-        limeGlass.setItemMeta(limeGlassMeta);
-
-        PatternPane creatorBorder = new PatternPane(0, 0, 4, 3, Pane.Priority.LOWEST, unAcceptedPattern);
-        creatorBorder.bindItem('R', new GuiItem(redGlass));
-        creatorBorder.bindItem('G', new GuiItem(limeGlass));
-        PatternPane receiverBorder = new PatternPane(5, 0, 4, 3, Pane.Priority.LOWEST, unAcceptedPattern);
-        receiverBorder.bindItem('R', new GuiItem(redGlass));
-        receiverBorder.bindItem('G', new GuiItem(limeGlass));
-
-        gui.addPane(creatorBorder);
-        gui.addPane(receiverBorder);
+        PatternPane border = new PatternPane(0, 0, 9, 6, Pane.Priority.LOWEST, pattern);
 
         ItemStack background = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta backgroundMeta = background.getItemMeta();
-        backgroundMeta.displayName(toUndecoratedMM(""));
         backgroundMeta.setHideTooltip(true);
         background.setItemMeta(backgroundMeta);
+        border.bindItem('1', new GuiItem(background));
 
-        border.bindItem('B', new GuiItem(background));
+        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+        if (player != tradeSession.getTrader1()) {
+            skullMeta.setOwningPlayer(tradeSession.getTrader1());
+            skullMeta.displayName(toUndecoratedMM("<white>Teet vaihtokauppaa <yellow>" + tradeSession.getTrader1() + ":n</yellow> <white>kanssa."));
+        } else if (player != tradeSession.getTrader2()) {
+            skullMeta.setOwningPlayer(tradeSession.getTrader2());
+            skullMeta.displayName(toUndecoratedMM("<white>Teet vaihtokauppaa <yellow>" + tradeSession.getTrader2() + ":n</yellow> <white>kanssa."));
+        }
+        skull.setItemMeta(skullMeta);
+        border.bindItem('P', new GuiItem(skull));
+
         gui.addPane(border);
 
-        StaticPane creatorTradePane = new StaticPane(1, 1, 2, 1);
 
-        ItemStack creatorSkull = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta creatorSkullMeta = (SkullMeta) creatorSkull.getItemMeta();
-        creatorSkullMeta.setOwningPlayer(tradeSession.getTradeCreator());
-        creatorSkull.setItemMeta(creatorSkullMeta);
-
-        ItemStack tradeBundleCreator = new ItemStack(Material.BUNDLE);
-        BundleMeta tradeBundleCreatorMeta = (BundleMeta) tradeBundleCreator.getItemMeta();
-        tradeBundleCreatorMeta.displayName(toUndecoratedMM(tradeSession.getTradeCreator().getName() + ":n tavarat"));
-        for (ItemStack item : tradeSession.getCreatorItems()) tradeBundleCreatorMeta.addItem(item);
-        tradeBundleCreator.setItemMeta(tradeBundleCreatorMeta);
-
-        creatorTradePane.addItem(new GuiItem(creatorSkull), 1, 0);
-
-        creatorTradePane.addItem(new GuiItem(tradeBundleCreator, event -> {
-            Player clicker = (Player) event.getWhoClicked();
-            if (tradeSession.getTradeCreator() == clicker) {
-                ItemStack item = clicker.getItemOnCursor();
-                clicker.setItemOnCursor(null);
-
-                if (item.getType() != Material.AIR) {
-                    tradeManager.addItemToTradeSession(clicker, tradeSession, item);
-                    tradeBundleCreatorMeta.addItem(item);
-                    tradeBundleCreator.setItemMeta(tradeBundleCreatorMeta);
-
-                    gui.update();
-                }
-                gui.update();
+        OutlinePane ownItems = new OutlinePane(0, 1, 4, 5);
+        //WHEN PLAYER IS PLAYER1
+        if (player == tradeSession.getTrader1()) {
+            for (ItemStack item : tradeSession.getTrader1Items()) {
+                ownItems.addItem(new GuiItem(item));
             }
-        }), 0, 0);
-
-        gui.addPane(creatorTradePane);
-
-        StaticPane receiverTradePane = new StaticPane(6, 1, 2, 1);
-
-        ItemStack receiverSkull = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta receiverSkullMeta = (SkullMeta) receiverSkull.getItemMeta();
-        receiverSkullMeta.setOwningPlayer(tradeSession.getTradeReceiver());
-        receiverSkull.setItemMeta(receiverSkullMeta);
-
-        ItemStack tradeBundleReceiver = new ItemStack(Material.BUNDLE);
-        BundleMeta tradeBundleReceiverMeta = (BundleMeta) tradeBundleReceiver.getItemMeta();
-        tradeBundleReceiverMeta.displayName(toUndecoratedMM(tradeSession.getTradeReceiver().getName() + ":n tavarat"));
-        for (ItemStack item : tradeSession.getReceiverItems()) tradeBundleReceiverMeta.addItem(item);
-        tradeBundleReceiver.setItemMeta(tradeBundleReceiverMeta);
-
-        receiverTradePane.addItem(new GuiItem(receiverSkull), 0, 0);
-
-        receiverTradePane.addItem(new GuiItem(tradeBundleReceiver, event -> {
-            Player clicker = (Player) event.getWhoClicked();
-            if (clicker == tradeSession.getTradeReceiver()) {
-                ItemStack item = clicker.getItemOnCursor();
-                clicker.setItemOnCursor(null);
-
-                if (item.getType() != Material.AIR) {
-                    tradeManager.addItemToTradeSession(clicker, tradeSession, item);
-                    tradeBundleReceiverMeta.addItem(item);
-                    tradeBundleReceiver.setItemMeta(tradeBundleReceiverMeta);
-                }
-
-                gui.update();
+        //WHEN PLAYER IS PLAYER2
+        } else if (player == tradeSession.getTrader2()) {
+            for (ItemStack item : tradeSession.getTrader2Items()) {
+                ownItems.addItem(new GuiItem(item));
             }
-        }), 1, 0);
+        }
 
-        gui.addPane(receiverTradePane);
-
-        StaticPane navigationPane = new StaticPane(4, 0, 1, 3);
-
-        // Cancel button
-        ItemStack cancel = new ItemStack(Material.BARRIER);
-        ItemMeta cancelMeta = cancel.getItemMeta();
-        cancelMeta.displayName(toUndecoratedMM("<#ff0000><b>Peru vaihtokauppa"));
-        cancel.setItemMeta(cancelMeta);
-        navigationPane.addItem(new GuiItem(cancel, event -> {
-            tradeManager.cancelTradeSession(tradeSession);
-        }), 0, 2);
-
-        // Confirm button
-
-        ItemStack confirm = new ItemStack(Material.EMERALD_BLOCK);
-        ItemMeta confirmMeta = confirm.getItemMeta();
-        confirmMeta.displayName(toUndecoratedMM("<green><b>Hyväksy vaihtokauppa"));
-        confirmMeta.lore(List.of(
-                toUndecoratedMM("<white>Kun hyväksyt vaihtokaupan, vaihtokauppa lukitaan sinulta.</white>"),
-                toUndecoratedMM("<white>Jos vaihtokaupan toinen osapuoli vaihtaa tavaroita, hyväksyminen poistuu."),
-                toUndecoratedMM("<white>Hyväksy vaihtokauppa jatkaaksesi.")
-        ));
-        confirm.setItemMeta(confirmMeta);
-
-        navigationPane.addItem(new GuiItem(confirm, event -> {
-            Player clicker = (Player) event.getWhoClicked();
-
-            if (tradeSession.getTradeCreator() == clicker) {
-                creatorBorder.setPattern(acceptedPattern);
-                tradeManager.acceptTradeSessionCreator(clicker);
-            } else if (tradeSession.getTradeReceiver() == clicker) {
-                receiverBorder.setPattern(acceptedPattern);
-                tradeManager.acceptTradeSessionReceiver(clicker);
+        ownItems.setOnClick(event -> {
+            if (player.getItemOnCursor().getType() != Material.AIR) {
+                tradeSessionManager.addItemToTrade(tradeSession, player, player.getItemOnCursor());
+                player.setItemOnCursor(new ItemStack(Material.AIR));
+                ownItems.addItem(new GuiItem(player.getItemOnCursor()));
+            } else if (event.getCurrentItem() != null) {
+                tradeSessionManager.removeItemFromTrade(tradeSession, player, event.getCurrentItem());
+                ownItems.removeItem(new GuiItem(event.getCurrentItem()));
             }
-            clicker.sendMessage("Hyväksyit vaihtokaupan.");
-            gui.update();
-        }), 0, 0);
+        });
 
-        gui.addPane(navigationPane);
+        OutlinePane partnerItems = new OutlinePane(5, 1, 4, 5);
+        //WHEN PLAYER IS PLAYER1
+        if (player == tradeSession.getTrader1()) {
+            for (ItemStack item : tradeSession.getTrader2Items()) {
+                partnerItems.addItem(new GuiItem(item));
+            }
+            //WHEN PLAYER IS PLAYER2
+        } else if (player == tradeSession.getTrader2()) {
+            for (ItemStack item : tradeSession.getTrader1Items()) {
+                partnerItems.addItem(new GuiItem(item));
+            }
+        }
+
         gui.update();
     }
 }

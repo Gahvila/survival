@@ -18,10 +18,11 @@ import static net.gahvila.survival.Trade.TradeManager.tradeRequest;
 public class TradeCommand {
 
     private final TradeManager tradeManager;
-    private final TradeMenu tradeMenu;
-    public TradeCommand(TradeManager tradeManager, TradeMenu tradeMenu) {
+    private final TradeSessionManager tradeSessionManager;
+
+    public TradeCommand(TradeManager tradeManager, TradeSessionManager tradeSessionManager) {
         this.tradeManager = tradeManager;
-        this.tradeMenu = tradeMenu;
+        this.tradeSessionManager = tradeSessionManager;
     }
 
     public void registerCommands() {
@@ -122,16 +123,13 @@ public class TradeCommand {
 
                     if (tradeRequest.containsKey(tradeSender) && tradeRequest.get(tradeSender).equals(tradeReceiver)) {
                         // Accept the trade and create the trade session
-                        tradeManager.createTradeSession(tradeSender, tradeReceiver);
+                        tradeSessionManager.createTradeSession(tradeSender, tradeReceiver);
                         tradeSender.sendMessage(tradeReceiver.getName() + " hyväksyi vaihtokaupan.");
                         tradeReceiver.sendMessage("Hyväksyit vaihtokaupan " + tradeSender.getName() + " kanssa.");
 
                         // Remove trade requests after acceptance
                         tradeRequest.remove(tradeSender);
                         latestTrader.remove(tradeReceiver);
-
-                        // Open trade GUI for the sender and receiver
-                        tradeMenu.openTradeGui(tradeSender, tradeReceiver);
                     } else {
                         tradeReceiver.sendMessage(toMM("<white>Sinulla ei ole vaihtokauppapyyntöjä pelaajalta <#85FF00>" + tradeSender.getName() + "</#85FF00>."));
                     }
