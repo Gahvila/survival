@@ -25,7 +25,8 @@ public class TradeSessionManager {
         }
 
         TradeSession tradeSession = new TradeSession(tradeManager.getNextTradeId(), System.currentTimeMillis(), trader1, trader2,
-                null, null, new ArrayList<>(), new ArrayList<>(), false, false);
+                null, null, null, null, null, null,
+                new ArrayList<>(), new ArrayList<>(), false, false);
         activeTradeSessions.put(trader1, tradeSession);
         activeTradeSessions.put(trader2, tradeSession);
 

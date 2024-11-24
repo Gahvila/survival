@@ -9,6 +9,7 @@ import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.PatternPane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import com.github.stefvanschie.inventoryframework.pane.util.Pattern;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -44,9 +45,8 @@ public class TradeMenu {
     );
 
     public void openTradeGui(Player player, TradeSession tradeSession) {
-        ChestGui gui = new ChestGui(6, ComponentHolder.of(toUndecoratedMM(" Omat tavarat <||> Heidän tavarat")));
+        ChestGui gui = new ChestGui(6, ComponentHolder.of(toUndecoratedMM("Omat tavarat <| |> Heidän tavarat")));
         gui.show(player);
-
         gui.setOnGlobalClick(event -> {
             if (event.getClickedInventory().getHolder() instanceof ChestGui) {
                 event.setCancelled(true);
@@ -72,54 +72,70 @@ public class TradeMenu {
         SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
         if (player != tradeSession.getTrader1()) {
             skullMeta.setOwningPlayer(tradeSession.getTrader1());
-            skullMeta.displayName(toUndecoratedMM("<white>Teet vaihtokauppaa <yellow>" + tradeSession.getTrader1() + ":n</yellow> <white>kanssa."));
+            skullMeta.displayName(toUndecoratedMM("<white>Teet vaihtokauppaa <yellow>" + tradeSession.getTrader1().getName() + ":n</yellow> <white>kanssa."));
         } else if (player != tradeSession.getTrader2()) {
             skullMeta.setOwningPlayer(tradeSession.getTrader2());
-            skullMeta.displayName(toUndecoratedMM("<white>Teet vaihtokauppaa <yellow>" + tradeSession.getTrader2() + ":n</yellow> <white>kanssa."));
+            skullMeta.displayName(toUndecoratedMM("<white>Teet vaihtokauppaa <yellow>" + tradeSession.getTrader2().getName() + ":n</yellow> <white>kanssa."));
         }
         skull.setItemMeta(skullMeta);
         border.bindItem('P', new GuiItem(skull));
 
         gui.addPane(border);
 
-
         OutlinePane ownItems = new OutlinePane(0, 1, 4, 5);
-        //WHEN PLAYER IS PLAYER1
-        if (player == tradeSession.getTrader1()) {
-            for (ItemStack item : tradeSession.getTrader1Items()) {
-                ownItems.addItem(new GuiItem(item));
-            }
-        //WHEN PLAYER IS PLAYER2
-        } else if (player == tradeSession.getTrader2()) {
-            for (ItemStack item : tradeSession.getTrader2Items()) {
-                ownItems.addItem(new GuiItem(item));
-            }
-        }
+        OutlinePane partnerItems = new OutlinePane(5, 1, 4, 5);
 
         ownItems.setOnClick(event -> {
             if (player.getItemOnCursor().getType() != Material.AIR) {
                 tradeSessionManager.addItemToTrade(tradeSession, player, player.getItemOnCursor());
                 player.setItemOnCursor(new ItemStack(Material.AIR));
-                ownItems.addItem(new GuiItem(player.getItemOnCursor()));
-            } else if (event.getCurrentItem() != null) {
-                tradeSessionManager.removeItemFromTrade(tradeSession, player, event.getCurrentItem());
-                ownItems.removeItem(new GuiItem(event.getCurrentItem()));
+            }else if (event.getCurrentItem() != null) {
+                ItemStack item = event.getCurrentItem();
+                tradeSessionManager.removeItemFromTrade(tradeSession, player, item);
+                player.setItemOnCursor(item);
             }
+            updateBothGuis(tradeSession);
         });
 
-        OutlinePane partnerItems = new OutlinePane(5, 1, 4, 5);
-        //WHEN PLAYER IS PLAYER1
         if (player == tradeSession.getTrader1()) {
-            for (ItemStack item : tradeSession.getTrader2Items()) {
-                partnerItems.addItem(new GuiItem(item));
-            }
-            //WHEN PLAYER IS PLAYER2
+            tradeSession.setTrader1OwnPane(ownItems);
+            tradeSession.setTrader1PartnerPane(partnerItems);
         } else if (player == tradeSession.getTrader2()) {
-            for (ItemStack item : tradeSession.getTrader1Items()) {
-                partnerItems.addItem(new GuiItem(item));
-            }
+            tradeSession.setTrader2OwnPane(ownItems);
+            tradeSession.setTrader2PartnerPane(partnerItems);
         }
 
+        gui.addPane(ownItems);
+        gui.addPane(partnerItems);
+
         gui.update();
+    }
+
+    private void updateBothGuis(TradeSession tradeSession) {
+        // Trader 1
+        OutlinePane trader1OwnPane = tradeSession.getTrader1OwnPane();
+        OutlinePane trader1PartnerPane = tradeSession.getTrader1PartnerPane();
+        trader1OwnPane.clear();
+        trader1PartnerPane.clear();
+        for (ItemStack item : tradeSession.getTrader1Items()) {
+            trader1OwnPane.addItem(new GuiItem(item));
+        }
+        for (ItemStack item : tradeSession.getTrader2Items()) {
+            trader1PartnerPane.addItem(new GuiItem(item));
+        }
+        tradeSession.getTrader1Gui().update();
+
+        // Trader 2
+        OutlinePane trader2OwnPane = tradeSession.getTrader2OwnPane();
+        OutlinePane trader2PartnerPane = tradeSession.getTrader2PartnerPane();
+        trader2OwnPane.clear();
+        trader2PartnerPane.clear();
+        for (ItemStack item : tradeSession.getTrader2Items()) {
+            trader2OwnPane.addItem(new GuiItem(item));
+        }
+        for (ItemStack item : tradeSession.getTrader1Items()) {
+            trader2PartnerPane.addItem(new GuiItem(item));
+        }
+        tradeSession.getTrader2Gui().update();
     }
 }
