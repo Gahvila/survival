@@ -1,4 +1,4 @@
-package net.gahvila.survival.VehicleBuffs;
+package net.gahvila.survival.Movement;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
