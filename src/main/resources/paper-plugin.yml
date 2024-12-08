@@ -1,5 +1,5 @@
 name: survival
-version: '1.21'
+version: '${version}'
 main: net.gahvila.survival.survival
 description: Lisäosa Gahvilan survival palvelimelle.
 api-version: '1.21'
