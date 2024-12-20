@@ -16,7 +16,7 @@ public class HomeEvents implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        homeManager.putHomeIntoRam(event.getPlayer().getUniqueId());
+        homeManager.putHomeIntoCache(event.getPlayer().getUniqueId());
     }
 
     @EventHandler

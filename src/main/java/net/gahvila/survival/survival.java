@@ -9,6 +9,7 @@ import net.gahvila.gahvilacore.Teleport.TeleportManager;
 import net.gahvila.survival.Back.BackCommand;
 import net.gahvila.survival.Back.BackListener;
 import net.gahvila.survival.Back.BackManager;
+import net.gahvila.survival.ElytraDisabler.ElytraReplacer;
 import net.gahvila.survival.Events.JoinEvent;
 import net.gahvila.survival.Events.PlayerDeath;
 import net.gahvila.survival.Events.QuitEvent;
@@ -16,7 +17,7 @@ import net.gahvila.survival.Homes.HomeCommands;
 import net.gahvila.survival.Homes.HomeEvents;
 import net.gahvila.survival.Homes.HomeManager;
 import net.gahvila.survival.Homes.HomeMenu;
-import net.gahvila.survival.Movement.ElytraDebuff;
+import net.gahvila.survival.ElytraDisabler.ElytraDebuff;
 import net.gahvila.survival.Pets.Pets;
 import net.gahvila.survival.Spawn.SpawnCMD;
 import net.gahvila.survival.Trade.*;
@@ -104,11 +105,11 @@ public class survival extends JavaPlugin implements Listener {
 
         //register events
         registerListeners(new PlayerDeath(teleportManager), new JoinEvent(teleportManager), new QuitEvent(), new BackListener(backManager),
-                new WarpEvents(warpManager), new Pets(), new HomeEvents(homeManager), new ElytraDebuff());
+                new WarpEvents(warpManager), new Pets(), new HomeEvents(homeManager), new ElytraDebuff(), new ElytraReplacer());
 
         //fix reload argh
         for (Player player : Bukkit.getOnlinePlayers()) {
-            homeManager.putHomeIntoRam(player.getUniqueId());
+            homeManager.putHomeIntoCache(player.getUniqueId());
         }
         warpManager.loadWarps();
     }

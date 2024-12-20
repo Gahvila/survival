@@ -20,9 +20,8 @@ public class WeatherVoteListener implements Listener {
         }
 
         World world = Bukkit.getWorld("world");
-        long time = world.getTime();
 
-        if (time <= 12300 && world.isThundering()) {
+        if (world.getTime() <= 12300 && world.isThundering()) {
             event.getPlayer().sendMessage(toMM("Et voi ohittaa ukkosta nukkumalla. Jos haluat ohittaa ukkosen, käytä <#85FF00>/sää</#85FF00>."));
             event.setCancelled(true);
         }

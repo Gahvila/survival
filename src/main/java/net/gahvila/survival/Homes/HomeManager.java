@@ -38,7 +38,7 @@ public class HomeManager {
         homes.put(uuid, data);
     }
 
-    public void putHomeIntoRam(UUID uuid) {
+    public void putHomeIntoCache(UUID uuid) {
         HashMap<String, Location> data = homes.getOrDefault(uuid, new HashMap<>());
         List<String> homesFromStorage = getHomesFromStorage(uuid);
         if (homesFromStorage == null) return;

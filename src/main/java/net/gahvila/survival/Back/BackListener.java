@@ -24,12 +24,9 @@ public class BackListener implements Listener {
     }
 
     public static HashMap<Player, Location> back = new HashMap<>();
-    public static ArrayList<UUID> died = new ArrayList<UUID>();
     @EventHandler
     public void onDeath(PlayerDeathEvent e) {
         Player p = e.getEntity().getPlayer();
-        died.add(p.getUniqueId());
-
         backManager.setBack(p, p.getLocation());
 
     }
@@ -37,12 +34,5 @@ public class BackListener implements Listener {
     public void onTeleport(PlayerTeleportEvent e) {
         Player p = e.getPlayer();
         backManager.setBack(p, e.getFrom());
-    }
-
-    @EventHandler
-    public void onRespawn(PlayerRespawnEvent e) {
-        Player p = e.getPlayer();
-        Bukkit.getScheduler().runTaskLater(survival.instance, () -> died.remove(p.getUniqueId()), 100);
-
     }
 }

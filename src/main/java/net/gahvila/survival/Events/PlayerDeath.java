@@ -25,9 +25,7 @@ public class PlayerDeath implements Listener {
     public void onRespawn(PlayerRespawnEvent e){
         Player p = e.getPlayer();
         if (p.getRespawnLocation() != null){
-            if (!BackListener.died.contains(p.getUniqueId())){
-                BackListener.back.put(p, p.getLocation());
-            }
+            BackListener.back.put(p, p.getLocation());
             p.teleportAsync(p.getRespawnLocation());
             e.setRespawnLocation(p.getRespawnLocation());
             p.sendMessage("");
@@ -47,10 +45,8 @@ public class PlayerDeath implements Listener {
             }
             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, MAX_VALUE, 1F); //TODO: vaiha tää parempaan
             e.setRespawnLocation(teleportManager.getTeleport("spawn"));
-            if (!BackListener.died.contains(p.getUniqueId())){
-                if (!e.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.END_PORTAL)){
-                    BackListener.back.put(p, p.getLocation());
-                }
+            if (!e.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.END_PORTAL)){
+                BackListener.back.put(p, p.getLocation());
             }
             p.teleport(teleportManager.getTeleport("spawn"));
 

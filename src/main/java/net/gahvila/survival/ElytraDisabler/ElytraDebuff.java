@@ -1,4 +1,4 @@
-package net.gahvila.survival.Movement;
+package net.gahvila.survival.ElytraDisabler;
 
 import com.destroystokyo.paper.event.player.PlayerElytraBoostEvent;
 import org.bukkit.entity.Player;
