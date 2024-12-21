@@ -88,6 +88,7 @@ public class survival extends JavaPlugin implements Listener {
         warpCommands.registerCommands();
 
         //trade
+        /* trade tulee joskus myöhemmin DLCnä
         TradeManager tradeManager = new TradeManager();
         TradeMenu tradeMenu = new TradeMenu(tradeManager, null);
         TradeSessionManager tradeSessionManager = new TradeSessionManager(tradeManager, tradeMenu);
@@ -95,6 +96,7 @@ public class survival extends JavaPlugin implements Listener {
         TradeCommand tradeCommand = new TradeCommand(tradeManager, tradeSessionManager);
         tradeCommand.registerCommands();
         registerListeners(new TradeBundleRemover());
+         */
 
         //weathervote
         WeatherVoteManager weatherVoteManager = new WeatherVoteManager();
