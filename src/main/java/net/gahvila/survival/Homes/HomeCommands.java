@@ -72,10 +72,18 @@ public class HomeCommands {
                     }
                 })
                 .register();
+        new CommandAPICommand("homes")
+                .executesPlayer((p, args) -> {
+                    homeMenu.showGUI(p);
+                })
+                .register();
         new CommandAPICommand("home")
                 .withAliases("h")
-                .withSubcommand(new CommandAPICommand("sänky")
-                        .executesPlayer((p, args) -> {
+                .withOptionalArguments(customHomeArgument("koti"))
+                .executesPlayer((p, args) -> {
+                    UUID uuid = p.getUniqueId();
+                    if (args.getRaw("koti") == null) {
+                        if (homeManager.getHomes(uuid) != null) {
                             if (p.getBedSpawnLocation() != null){
                                 p.teleportAsync(p.getBedSpawnLocation());
                                 p.setWalkSpeed(0.2F);
@@ -83,13 +91,6 @@ public class HomeCommands {
                             }else{
                                 p.sendMessage("Sinulla ei ole sänkyä asetettuna.");
                             }
-                        }))
-                .withOptionalArguments(customHomeArgument("koti"))
-                .executesPlayer((p, args) -> {
-                    UUID uuid = p.getUniqueId();
-                    if (args.getRaw("koti") == null) {
-                        if (homeManager.getHomes(uuid) != null) {
-                            homeMenu.showGUI(p);
                         }else{
                             p.sendMessage(toMM("<white>Sinulla ei ole kotia. Voit asettaa kodin komennolla</white> <#85FF00>/sethome</#85FF00><white>.</white>"));
                         }
