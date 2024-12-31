@@ -60,7 +60,7 @@ public class WarpMenu {
         PaginatedPane pages = new PaginatedPane(1, 1, 7, 3);
         List<ItemStack> items = new ArrayList<>();
         NamespacedKey key = new NamespacedKey(survival.instance, "gahvilasurvival");
-        for (Warp warp : warpManager.getWarps()) {
+        for (Warp warp : warpManager.getWarps(Optional.of(player))) {
             Date currentTime = new Date(warp.getCreationDate());
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String dateString = formatter.format(currentTime);
@@ -128,12 +128,13 @@ public class WarpMenu {
         }), 3, 0);
         ItemStack sorting = new ItemStack(Material.NETHER_STAR);
         ItemMeta sortingMeta = sorting.getItemMeta();
-        sortingMeta.displayName(toUndecoratedMM("<white><b>Järjestys"));
-        sortingMeta.lore(List.of(toUndecoratedMM("<white>Järjestäminen on tulossa pian.")));
+        sortingMeta.displayName(toUndecoratedMM("<white><b>Järjestys: " + warpManager.getSorting(player.getUniqueId()).getDisplayName()));
         sorting.setItemMeta(sortingMeta);
         navigationPane.addItem(new GuiItem(sorting, event -> {
-            player.sendMessage("Tulossa pian.");
-            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
+            warpManager.changeSorting(player);
+            player.playSound(player.getLocation(), Sound.UI_LOOM_SELECT_PATTERN, 0.8F, 1F);
+            player.closeInventory();
+            showGUI(player);
         }), 4, 0);
         ItemStack next = new ItemStack(Material.WARPED_BUTTON);
         ItemMeta nextMeta = next.getItemMeta();
@@ -229,12 +230,13 @@ public class WarpMenu {
         }), 3, 0);
         ItemStack sorting = new ItemStack(Material.NETHER_STAR);
         ItemMeta sortingMeta = sorting.getItemMeta();
-        sortingMeta.displayName(toUndecoratedMM("<white><b>Järjestys"));
-        sortingMeta.lore(List.of(toUndecoratedMM("<white>Järjestäminen on tulossa pian.")));
+        sortingMeta.displayName(toUndecoratedMM("<white><b>Järjestys: " + warpManager.getSorting(player.getUniqueId()).getDisplayName()));
         sorting.setItemMeta(sortingMeta);
         navigationPane.addItem(new GuiItem(sorting, event -> {
-            player.sendMessage("Tulossa pian.");
-            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
+            warpManager.changeSorting(player);
+            player.playSound(player.getLocation(), Sound.UI_LOOM_SELECT_PATTERN, 0.8F, 1F);
+            player.closeInventory();
+            showGUI(player);
         }), 4, 0);
         ItemStack next = new ItemStack(Material.WARPED_BUTTON);
         ItemMeta nextMeta = next.getItemMeta();

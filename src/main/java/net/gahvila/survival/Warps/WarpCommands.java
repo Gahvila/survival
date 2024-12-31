@@ -100,7 +100,7 @@ public class WarpCommands {
                 .executesPlayer((p, args) -> {
                     String nimi = args.getRaw("warp");
                     if (args.getRaw("warp") == null) {
-                        if (warpManager.getWarps() != null) {
+                        if (warpManager.getWarps(Optional.of(p)) != null) {
                             warpMenu.showGUI(p);
                             return;
                         }

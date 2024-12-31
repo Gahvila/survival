@@ -13,9 +13,8 @@ public class RidableBuff {
     public void ridableBuffScheduler() {
         Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(instance, () -> {
             for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                if (player.getVehicle() != null && player.getVehicle() instanceof LivingEntity
+                if (player.getVehicle() != null && player.getVehicle() instanceof LivingEntity livingEntity
                         && !(player.getVehicle() instanceof Player)) {
-                    LivingEntity livingEntity = (LivingEntity) player.getVehicle();
 
                     if (isInLiquid(livingEntity)) {
                         if (hasLand(livingEntity)) {

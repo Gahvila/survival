@@ -9,10 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static net.gahvila.survival.survival.instance;
 
@@ -61,36 +58,23 @@ public class WarpManager {
     }
 
     //
-
-    //0 eli default: uusimmat warpit ensin
-    //1 vanhimmat warpit ensin
-    //2 aakkosjärjestys
-
     public void changeSorting(Player player) {
         Json warpData = new Json("playerdata.json", instance.getDataFolder() + "/data/");
         UUID uuid = player.getUniqueId();
 
-        WarpSorting currentSorting = getSorting(player);
+        WarpSorting currentSorting = getSorting(uuid);
 
         WarpSorting[] values = WarpSorting.values();
 
         int nextOrdinal = (currentSorting.ordinal() + 1) % values.length;
         WarpSorting nextSorting = values[nextOrdinal];
 
-        warpData.set(uuid + ".sorting", nextSorting);
+        warpData.set(uuid + ".sorting", nextSorting.name());
     }
 
-    public WarpSorting getSorting(Player player) {
+    public WarpSorting getSorting(UUID uuid) {
         Json warpData = new Json("playerdata.json", instance.getDataFolder() + "/data/");
-        UUID uuid = player.getUniqueId();
-
-        WarpSorting sorting = warpData.getEnum(uuid + ".sorting", WarpSorting.class);
-
-        if (sorting == null) {
-            return WarpSorting.ALPHABETICAL;
-        }
-
-        return sorting;
+        return WarpSorting.valueOf(warpData.getOrDefault(uuid + ".sorting", WarpSorting.ALPHABETICAL.name()));
     }
 
     //
@@ -220,12 +204,33 @@ public class WarpManager {
     public List<String> getWarpNames() {
         return warps.stream().map(Warp::getName).toList();
     }
-    public List<Warp> getWarps() {
-        return warps.stream().toList();
+
+    public List<Warp> getWarps(Optional<Player> optionalPlayer) {
+        return optionalPlayer.map(player -> {
+            WarpSorting sorting = getSorting(player.getUniqueId());
+            return warps.stream()
+                    .sorted(switch (sorting) {
+                        case ALPHABETICAL -> Comparator.comparing(Warp::getName, String.CASE_INSENSITIVE_ORDER);
+                        case REVERSE_ALPHABETICAL -> Comparator.comparing(Warp::getName, String.CASE_INSENSITIVE_ORDER).reversed();
+                        case NEWEST_WARP -> Comparator.comparing(Warp::getCreationDate).reversed();
+                        case OLDEST_WARP -> Comparator.comparing(Warp::getCreationDate);
+                    })
+                    .toList();
+        }).orElseGet(() -> warps.stream().toList());
     }
 
-    public List<Warp> getOwnedWarps(UUID uuid){
-        return warps.stream().filter(warp -> warp.getOwner().equals(uuid)).toList();
+    public List<Warp> getOwnedWarps(UUID uuid) {
+        WarpSorting sorting = getSorting(uuid);
+
+        return warps.stream()
+                .filter(warp -> warp.getOwner().equals(uuid))
+                .sorted(switch (sorting) {
+                    case ALPHABETICAL -> Comparator.comparing(Warp::getName, String.CASE_INSENSITIVE_ORDER);
+                    case REVERSE_ALPHABETICAL -> Comparator.comparing(Warp::getName, String.CASE_INSENSITIVE_ORDER).reversed();
+                    case NEWEST_WARP -> Comparator.comparing(Warp::getCreationDate).reversed();
+                    case OLDEST_WARP -> Comparator.comparing(Warp::getCreationDate);
+                })
+                .toList();
     }
 
     public List<String> getOwnedWarpNames(UUID uuid){
