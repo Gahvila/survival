@@ -1,9 +1,5 @@
 package net.gahvila.survival.Homes;
 
-import com.xxmicloxx.NoteBlockAPI.model.Song;
-import com.xxmicloxx.NoteBlockAPI.model.playmode.MonoStereoMode;
-import com.xxmicloxx.NoteBlockAPI.songplayer.RadioSongPlayer;
-import com.xxmicloxx.NoteBlockAPI.utils.NBSDecoder;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -204,6 +200,7 @@ public class HomeCommands {
         if (gambling.containsKey(player)){
             return;
         }
+        /* TODO: REPLACE NOTEBLOCKAPI
         Song song = NBSDecoder.parse(new File(instance.getDataFolder() + "/music/gamba.nbs"));
         RadioSongPlayer rsp = new RadioSongPlayer(song);
         rsp.setChannelMode(new MonoStereoMode());
@@ -212,6 +209,7 @@ public class HomeCommands {
         rsp.setAutoDestroy(true);
 
         rsp.setPlaying(true);
+        */
 
         taskID = Bukkit.getScheduler().runTaskTimer(instance, () -> {
             int currentGamblingValue = gambling.getOrDefault(player, 0);

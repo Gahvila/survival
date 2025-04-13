@@ -10,25 +10,26 @@ repositories {
     maven { url = uri("https://jitpack.io") }
     maven { url = uri("https://repo.codemc.org/repository/maven-public/") }
     maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
+    maven { url = uri("https://repo.gahvila.net/snapshots/") }
     maven { url = uri("https://repo.extendedclip.com/content/repositories/placeholderapi/") }
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
 
-    compileOnly("net.gahvila:GahvilaCore:2.0")
+    compileOnly("net.gahvila:gahvilacore:2.2-SNAPSHOT")
     compileOnly ("me.clip:placeholderapi:2.11.6")
     compileOnly ("net.luckperms:api:5.4")
     compileOnly("de.hexaoxi:carbonchat-api:3.0.0-beta.27")
-    compileOnly ("com.github.koca2000:NoteBlockAPI:1.6.2")
-    implementation ("com.github.stefvanschie.inventoryframework:IF-Paper:0.11.1-SNAPSHOT")
+    implementation("net.gahvila:inventoryframework:0.11.2-SNAPSHOT")
     implementation("com.github.simplix-softworks:simplixstorage:3.2.7")
-    compileOnly ("net.crashcraft:CrashClaim:1.0.42")
+    implementation("net.crashcraft:crashclaim:1.0.42")
+    compileOnly("net.gahvila:rtp:0.17.1-SNAPSHOT")
 
     //commandapi
-    implementation("dev.jorel:commandapi-bukkit-shade-mojang-mapped:9.7.0")
-    compileOnly("dev.jorel:commandapi-annotations:9.7.0")
-    annotationProcessor("dev.jorel:commandapi-annotations:9.7.0")
+    implementation("dev.jorel:commandapi-bukkit-shade-mojang-mapped:10.0.0")
+    compileOnly("dev.jorel:commandapi-annotations:10.0.0")
+    annotationProcessor("dev.jorel:commandapi-annotations:10.0.0")
 }
 
 group = "net.gahvila"

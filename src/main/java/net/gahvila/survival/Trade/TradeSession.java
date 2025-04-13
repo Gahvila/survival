@@ -1,7 +1,7 @@
 package net.gahvila.survival.Trade;
 
-import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
-import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
+import net.gahvila.inventoryframework.gui.type.util.Gui;
+import net.gahvila.inventoryframework.pane.OutlinePane;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 

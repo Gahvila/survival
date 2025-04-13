@@ -2,6 +2,7 @@ package net.gahvila.survival;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import net.gahvila.gahvilacore.Teleport.TeleportManager;
+import net.gahvila.rtp.RTP;
 
 import static net.gahvila.survival.survival.instance;
 
@@ -23,7 +24,7 @@ public class MainCommand {
                         }))
                 .withSubcommand(new CommandAPICommand("setspawn")
                         .executesPlayer((player, args) -> {
-                            teleportManager.saveTeleport("spawn", player.getLocation());
+                            teleportManager.saveTeleport(instance, "spawn", player.getLocation());
                             player.sendMessage("Asetit spawnin uuden sijainnin.");
                         }))
                 .register();

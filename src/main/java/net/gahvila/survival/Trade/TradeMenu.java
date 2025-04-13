@@ -1,14 +1,12 @@
 package net.gahvila.survival.Trade;
 
-import com.github.stefvanschie.inventoryframework.adventuresupport.ComponentHolder;
-import com.github.stefvanschie.inventoryframework.gui.GuiItem;
-import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
-import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
-import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
-import com.github.stefvanschie.inventoryframework.pane.Pane;
-import com.github.stefvanschie.inventoryframework.pane.PatternPane;
-import com.github.stefvanschie.inventoryframework.pane.StaticPane;
-import com.github.stefvanschie.inventoryframework.pane.util.Pattern;
+import net.gahvila.inventoryframework.adventuresupport.ComponentHolder;
+import net.gahvila.inventoryframework.gui.GuiItem;
+import net.gahvila.inventoryframework.gui.type.ChestGui;
+import net.gahvila.inventoryframework.pane.OutlinePane;
+import net.gahvila.inventoryframework.pane.Pane;
+import net.gahvila.inventoryframework.pane.PatternPane;
+import net.gahvila.inventoryframework.pane.util.Pattern;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

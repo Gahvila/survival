@@ -1,6 +1,5 @@
 package net.gahvila.survival.Trade;
 
-import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
 import de.leonhard.storage.Json;
 import net.gahvila.survival.survival;
 import org.bukkit.Material;
