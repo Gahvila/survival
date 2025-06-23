@@ -2,6 +2,7 @@ package net.gahvila.survival.Spawn;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import net.gahvila.gahvilacore.Teleport.TeleportManager;
+import net.gahvila.survival.survival;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 
@@ -18,7 +19,7 @@ public class SpawnCMD {
     public void registerCommands() {
         new CommandAPICommand("spawn")
                 .executesPlayer((p, args) -> {
-                    Location loc = teleportManager.getTeleport("spawn");
+                    Location loc = teleportManager.getTeleport(survival.instance, "spawn");
                     p.teleport(loc);
                     p.sendMessage("Teleporttasit spawnille.");
                     p.playSound(loc, Sound.ENTITY_PLAYER_TELEPORT, MAX_VALUE, 1F);

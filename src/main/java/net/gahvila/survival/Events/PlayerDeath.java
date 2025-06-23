@@ -2,6 +2,7 @@ package net.gahvila.survival.Events;
 
 import net.gahvila.gahvilacore.Teleport.TeleportManager;
 import net.gahvila.survival.Back.BackListener;
+import net.gahvila.survival.survival;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -44,11 +45,11 @@ public class PlayerDeath implements Listener {
                 p.sendMessage(toMM("Sinä kuolit eikä sinulla ole sänkyä asetettuna. Sinut teleportattiin spawnille. Voit teleportata kuolinpaikallesi komennolla <#85FF00>/back</#85FF00>."));
             }
             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, MAX_VALUE, 1F); //TODO: vaiha tää parempaan
-            e.setRespawnLocation(teleportManager.getTeleport("spawn"));
+            e.setRespawnLocation(teleportManager.getTeleport(survival.instance, "spawn"));
             if (!e.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.END_PORTAL)){
                 BackListener.back.put(p, p.getLocation());
             }
-            p.teleport(teleportManager.getTeleport("spawn"));
+            p.teleport(teleportManager.getTeleport(survival.instance, "spawn"));
 
         }
     }

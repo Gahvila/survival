@@ -20,7 +20,6 @@ import net.gahvila.survival.Homes.HomeMenu;
 import net.gahvila.survival.ElytraDisabler.ElytraDebuff;
 import net.gahvila.survival.Pets.Pets;
 import net.gahvila.survival.Spawn.SpawnCMD;
-import net.gahvila.survival.Trade.*;
 import net.gahvila.survival.Movement.RidableBuff;
 import net.gahvila.survival.Warps.WarpCommands;
 import net.gahvila.survival.Warps.WarpEvents;
@@ -86,17 +85,6 @@ public class survival extends JavaPlugin implements Listener {
 
         WarpCommands warpCommands = new WarpCommands(warpManager, warpMenu);
         warpCommands.registerCommands();
-
-        //trade
-        /* trade tulee joskus myöhemmin DLCnä
-        TradeManager tradeManager = new TradeManager();
-        TradeMenu tradeMenu = new TradeMenu(tradeManager, null);
-        TradeSessionManager tradeSessionManager = new TradeSessionManager(tradeManager, tradeMenu);
-        tradeMenu.setTradeSessionManager(tradeSessionManager);
-        TradeCommand tradeCommand = new TradeCommand(tradeManager, tradeSessionManager);
-        tradeCommand.registerCommands();
-        registerListeners(new TradeBundleRemover());
-         */
 
         //weathervote
         WeatherVoteManager weatherVoteManager = new WeatherVoteManager();
