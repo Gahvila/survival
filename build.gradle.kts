@@ -34,7 +34,7 @@ dependencies {
 }
 
 group = "net.gahvila"
-version = "1.21.4"
+version = "2.0-SNAPSHOT"
 description = "survival"
 java.sourceCompatibility = JavaVersion.VERSION_21
 

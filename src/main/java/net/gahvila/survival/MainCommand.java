@@ -2,7 +2,7 @@ package net.gahvila.survival;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import net.gahvila.gahvilacore.Teleport.TeleportManager;
-import net.gahvila.rtp.RTP;
+
 
 import static net.gahvila.survival.survival.instance;
 

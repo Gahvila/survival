@@ -8,9 +8,6 @@ dependencies:
     GahvilaCore:
       required: true
       load: BEFORE
-    RTP:
-      load: AFTER
-      required: true
     #needed for sethome
     NoteBlockAPI:
       required: false
@@ -18,5 +15,5 @@ dependencies:
       required: false
       join-classpath: true
     CrashClaim:
-      required: true
+      required: false
       join-classpath: true
