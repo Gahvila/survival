@@ -8,12 +8,6 @@ dependencies:
     GahvilaCore:
       required: true
       load: BEFORE
-    #needed for sethome
-    NoteBlockAPI:
-      required: false
-    CarbonChat:
-      required: false
-      join-classpath: true
     CrashClaim:
       required: false
       join-classpath: true

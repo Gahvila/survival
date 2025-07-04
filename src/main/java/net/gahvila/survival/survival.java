@@ -2,7 +2,6 @@ package net.gahvila.survival;
 
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
-import net.crashcraft.crashclaim.CrashClaim;
 import net.gahvila.gahvilacore.GahvilaCore;
 import net.gahvila.gahvilacore.Profiles.Playtime.PlaytimeManager;
 import net.gahvila.gahvilacore.Teleport.TeleportManager;
@@ -19,7 +18,6 @@ import net.gahvila.survival.Homes.HomeManager;
 import net.gahvila.survival.Homes.HomeMenu;
 import net.gahvila.survival.ElytraDisabler.ElytraDebuff;
 import net.gahvila.survival.Pets.Pets;
-import net.gahvila.survival.Movement.RidableBuff;
 import net.gahvila.survival.Warps.WarpCommands;
 import net.gahvila.survival.Warps.WarpEvents;
 import net.gahvila.survival.Warps.WarpManager;
@@ -40,7 +38,6 @@ public class survival extends JavaPlugin implements Listener {
     private PluginManager pluginManager;
     private survival plugin;
     private HomeManager homeManager;
-    private CrashClaim crashClaim;
 
 
     @Override
@@ -52,7 +49,6 @@ public class survival extends JavaPlugin implements Listener {
         instance = this;
 
         pluginManager = Bukkit.getPluginManager();
-        crashClaim = CrashClaim.getPlugin();
         PlaytimeManager playtimeManager = GahvilaCore.instance.getPlaytimeManager();
         homeManager = new HomeManager(playtimeManager);
         TeleportManager teleportManager = new TeleportManager();
@@ -60,9 +56,6 @@ public class survival extends JavaPlugin implements Listener {
         WarpManager warpManager = new WarpManager(playtimeManager);
         WarpMenu warpMenu = new WarpMenu(warpManager);
         HomeMenu homeMenu = new HomeMenu(homeManager);
-
-        RidableBuff ridableBuff = new RidableBuff();
-        ridableBuff.ridableBuffScheduler();
 
         // Commands
         CommandAPI.onLoad(new CommandAPIBukkitConfig(this).verboseOutput(false).silentLogs(true));

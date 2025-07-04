@@ -17,20 +17,18 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.6-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.7-R0.1-SNAPSHOT")
 
     compileOnly("net.gahvila:gahvilacore:2.3-SNAPSHOT")
     compileOnly ("me.clip:placeholderapi:2.11.6")
     compileOnly ("net.luckperms:api:5.4")
-    compileOnly("de.hexaoxi:carbonchat-api:3.0.0-beta.27")
     implementation("net.gahvila:inventoryframework:0.11.2-SNAPSHOT")
     implementation("com.github.simplix-softworks:simplixstorage:3.2.7")
-    implementation("net.crashcraft:crashclaim:1.0.43")
 
     //commandapi
-    implementation("dev.jorel:commandapi-bukkit-shade-mojang-mapped:10.1.0")
-    compileOnly("dev.jorel:commandapi-annotations:10.1.0")
-    annotationProcessor("dev.jorel:commandapi-annotations:10.1.0")
+    implementation("dev.jorel:commandapi-bukkit-shade-mojang-mapped:10.1.1")
+    compileOnly("dev.jorel:commandapi-annotations:10.1.1")
+    annotationProcessor("dev.jorel:commandapi-annotations:10.1.1")
 }
 
 group = "net.gahvila"

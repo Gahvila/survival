@@ -24,18 +24,27 @@ public class HomeManager {
 
     public HashMap<UUID, HashMap<String, Location>> homes = new HashMap<>();
     public void saveHome(UUID uuid, String home, Location location) {
-        Bukkit.getScheduler().runTaskAsynchronously(survival.instance, () -> {
+        World world = location.getWorld();
+        if (world == null) return;
+
+        String worldName = world.getName();
+        double x = location.getX();
+        double y = location.getY();
+        double z = location.getZ();
+        float yaw = location.getYaw();
+        float pitch = location.getPitch();
+
+        Thread.startVirtualThread(() -> {
             Json homeData = new Json("homedata.json", instance.getDataFolder() + "/data/");
-            homeData.getFileData().insert(uuid + "." + home + ".world", location.getWorld().getName());
-            homeData.getFileData().insert(uuid + "." + home + ".x", location.getX());
-            homeData.getFileData().insert(uuid + "." + home + ".y", location.getY());
-            homeData.getFileData().insert(uuid + "." + home + ".z", location.getZ());
-            homeData.getFileData().insert(uuid + "." + home + ".yaw", location.getYaw());
-            homeData.set(uuid + "." + home + ".pitch", location.getPitch());
+            homeData.getFileData().insert(uuid + "." + home + ".world", worldName);
+            homeData.getFileData().insert(uuid + "." + home + ".x", x);
+            homeData.getFileData().insert(uuid + "." + home + ".y", y);
+            homeData.getFileData().insert(uuid + "." + home + ".z", z);
+            homeData.getFileData().insert(uuid + "." + home + ".yaw", yaw);
+            homeData.set(uuid + "." + home + ".pitch", pitch);
         });
-        HashMap<String, Location> data = homes.getOrDefault(uuid, new HashMap<>());
-        data.put(home, location);
-        homes.put(uuid, data);
+
+        homes.computeIfAbsent(uuid, k -> new HashMap<>()).put(home, location);
     }
 
     public void putHomeIntoCache(UUID uuid) {
@@ -50,7 +59,7 @@ public class HomeManager {
 
     //
     public void deleteHome(UUID uuid, String home) {
-        Bukkit.getScheduler().runTaskAsynchronously(survival.instance, () -> {
+        Thread.startVirtualThread(() -> {
             Json homeData = new Json("homedata.json", instance.getDataFolder() + "/data/");
             if (homeData.contains(uuid + "." + home)) {
                 homeData.set(uuid + "." + home, null);

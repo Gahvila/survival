@@ -79,6 +79,7 @@ public class Pets implements Listener {
     }
 
     //pet teleport
+    //TODO: MAKE IT WORK
     @EventHandler
     public void onTeleport(PlayerTeleportEvent e) {
         Chunk teleportedFrom = e.getFrom().getChunk();
