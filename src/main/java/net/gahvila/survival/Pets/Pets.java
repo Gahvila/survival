@@ -6,9 +6,7 @@ import net.gahvila.survival.survival;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Sound;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Tameable;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -18,7 +16,9 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import static net.gahvila.gahvilacore.Utils.MiniMessageUtils.toMM;
@@ -84,8 +84,20 @@ public class Pets implements Listener {
     public void onTeleport(PlayerTeleportEvent e) {
         Chunk teleportedFrom = e.getFrom().getChunk();
         if (teleportedFrom.isForceLoaded()) return;
-
+        List<Tameable> pets = new ArrayList<>();
+        for (Entity entity : teleportedFrom.getEntities()) {
+            if (entity instanceof Tameable tameable
+                    && tameable.isTamed()
+                    && tameable.getOwner() != null
+                    && entity instanceof Sittable sittable
+                    && sittable.isSitting()) {
+                pets.add(tameable);
+            }
+        }
         teleportedFrom.addPluginChunkTicket(survival.instance);
+        for (Tameable pet : pets) {
+            pet.teleport(e.getTo());
+        }
         Bukkit.getServer().getScheduler().runTaskLater(survival.instance, new Runnable() {
             @Override
             public void run() {
@@ -99,8 +111,7 @@ public class Pets implements Listener {
     public void onDamage(EntityDamageByEntityEvent e) {
         if (!(e.getDamager() instanceof Player damager)) return;
         if (!(e.getEntity() instanceof Tameable pet)) return;
-        if (e.getEntityType() == EntityType.TRADER_LLAMA) return;
-
+        if (!(pet.getOwner() instanceof Player)) return;
         UUID currentOwnerUUID = pet.getOwnerUniqueId();
         UUID damagerUUID = damager.getUniqueId();
 

@@ -31,7 +31,7 @@ public class WeatherVoteManager {
         }
 
         if (getCooldown() != 0) {
-            player.sendMessage("Voit aloittaa uuden äänestyksen <#85FF00>" + getCooldown() + "s</#85FF00> kuluttua.");
+            player.sendRichMessage("Voit aloittaa uuden äänestyksen <#85FF00>" + getCooldown() + "s</#85FF00> kuluttua.");
             return;
         }
 
