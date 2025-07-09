@@ -1,8 +1,33 @@
+import java.util.Properties
+import kotlin.apply
+import kotlin.toString
+
 plugins {
     java
     `maven-publish`
     id("com.gradleup.shadow") version "8.3.5"
 }
+
+val propsFile = file("gradle.properties")
+val props = Properties().apply {
+    load(propsFile.inputStream())
+}
+
+val versionPrefix = props["version"].toString()
+val currentBuildNumber = props["buildNumber"].toString().toInt()
+val newBuildNumber = currentBuildNumber + 1
+
+val generatedVersion = "$versionPrefix+b$newBuildNumber"
+
+version = generatedVersion
+
+extra["generatedVersion"] = generatedVersion
+
+
+group = "net.gahvila"
+version = generatedVersion
+description = "survival"
+java.sourceCompatibility = JavaVersion.VERSION_21
 
 repositories {
     mavenLocal()
@@ -31,11 +56,6 @@ dependencies {
     annotationProcessor("dev.jorel:commandapi-annotations:10.1.1")
 }
 
-group = "net.gahvila"
-version = "2.0-SNAPSHOT"
-description = "survival"
-java.sourceCompatibility = JavaVersion.VERSION_21
-
 publishing {
     publications.create<MavenPublication>("maven") {
         from(components["java"])
@@ -48,6 +68,7 @@ tasks {
     }
 
     assemble {
+        dependsOn("updateBuildNumber")
         dependsOn(shadowJar)
     }
 
@@ -58,13 +79,30 @@ tasks {
         relocate ("com.github.stefvanschie.inventoryframework", "net.gahvila.survival.shaded.inventoryframework")
     }
 
-    processResources {
-        expand(project.properties)
-    }
-
     java {
         toolchain {
             languageVersion.set(JavaLanguageVersion.of(21))
         }
     }
+
+
+    register("updateBuildNumber") {
+        doLast {
+            props["buildNumber"] = newBuildNumber.toString()
+            props.store(propsFile.outputStream(), null)
+            println("Updated build number to $newBuildNumber")
+        }
+    }
+    processResources {
+        inputs.property("generatedVersion", generatedVersion) // make it cache-safe
+        filesMatching("**/*.yml") { // or "**/*.properties", or all files if needed
+            expand(
+                mapOf(
+                    "version" to generatedVersion,
+                    "generatedVersion" to generatedVersion
+                )
+            )
+        }
+    }
+
 }
