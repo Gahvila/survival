@@ -1,4 +1,4 @@
-package net.gahvila.survival.ElytraDisabler;
+package net.gahvila.survival.Features.ElytraDisabler;
 
 import org.bukkit.Material;
 import org.bukkit.World;

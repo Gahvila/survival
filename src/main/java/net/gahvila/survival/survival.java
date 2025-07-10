@@ -8,15 +8,16 @@ import net.gahvila.gahvilacore.Teleport.TeleportManager;
 import net.gahvila.survival.Back.BackCommand;
 import net.gahvila.survival.Back.BackListener;
 import net.gahvila.survival.Back.BackManager;
-import net.gahvila.survival.ElytraDisabler.ElytraReplacer;
+import net.gahvila.survival.Features.ElytraDisabler.ElytraReplacer;
 import net.gahvila.survival.Events.JoinEvent;
 import net.gahvila.survival.Events.PlayerDeath;
 import net.gahvila.survival.Events.QuitEvent;
+import net.gahvila.survival.Features.NoPunchDamage;
 import net.gahvila.survival.Homes.HomeCommands;
 import net.gahvila.survival.Homes.HomeEvents;
 import net.gahvila.survival.Homes.HomeManager;
 import net.gahvila.survival.Homes.HomeMenu;
-import net.gahvila.survival.ElytraDisabler.ElytraDebuff;
+import net.gahvila.survival.Features.ElytraDisabler.ElytraDebuff;
 import net.gahvila.survival.Pets.Pets;
 import net.gahvila.survival.Warps.WarpCommands;
 import net.gahvila.survival.Warps.WarpEvents;
@@ -84,7 +85,7 @@ public class survival extends JavaPlugin implements Listener {
 
         //register events
         registerListeners(new PlayerDeath(teleportManager), new JoinEvent(), new QuitEvent(), new BackListener(backManager),
-                new WarpEvents(warpManager), new Pets(), new HomeEvents(homeManager), new ElytraDebuff(), new ElytraReplacer());
+                new WarpEvents(warpManager), new Pets(), new HomeEvents(homeManager), new ElytraDebuff(), new ElytraReplacer(), new NoPunchDamage());
 
         //fix reload argh
         for (Player player : Bukkit.getOnlinePlayers()) {
