@@ -1,5 +1,12 @@
 package net.gahvila.survival.Warps;
 
+import io.papermc.paper.dialog.Dialog;
+import io.papermc.paper.registry.data.dialog.ActionButton;
+import io.papermc.paper.registry.data.dialog.DialogBase;
+import io.papermc.paper.registry.data.dialog.action.DialogAction;
+import io.papermc.paper.registry.data.dialog.body.DialogBody;
+import io.papermc.paper.registry.data.dialog.input.DialogInput;
+import io.papermc.paper.registry.data.dialog.type.DialogType;
 import net.gahvila.gahvilacore.Profiles.Prefix.Backend.Enum.PrefixType.Single;
 import net.gahvila.inventoryframework.adventuresupport.ComponentHolder;
 import net.gahvila.inventoryframework.gui.GuiItem;
@@ -12,6 +19,7 @@ import net.gahvila.inventoryframework.pane.StaticPane;
 import net.gahvila.inventoryframework.pane.util.Pattern;
 import net.gahvila.survival.survival;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickCallback;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -19,10 +27,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static java.lang.Float.MAX_VALUE;
 import static net.gahvila.gahvilacore.GahvilaCore.instance;
@@ -286,7 +291,7 @@ public class WarpMenu {
 
         settingPane.addItem(new GuiItem(nameEdit, event -> {
             player.playSound(player.getLocation(), Sound.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 1.0F, 0.8F);
-            showNameChangeMenu(player, warp);
+            player.showDialog(createNameChangeDialog(player, warp));
         }), 0, 0);
 
         ItemStack colorEdit = new ItemStack(Material.LIME_WOOL);
@@ -345,44 +350,44 @@ public class WarpMenu {
         gui.update();
     }
 
-    public void showNameChangeMenu(Player player, Warp warp) {
-        AnvilGui gui = new AnvilGui(ComponentHolder.of(toUndecoratedMM("<dark_green><b>Syötä nimi...")));
-        gui.show(player);
+    private Dialog createNameChangeDialog(Player player, Warp warp) {
+        return Dialog.create(builder -> builder.empty()
+                .base(DialogBase.builder(toMM("<b>Syötä nimi...</b>"))
+                        .body(Arrays.asList(
+                                DialogBody.plainMessage(toMM("Olet muokkaamassa warpin nimeä.")),
+                                DialogBody.plainMessage(toMM("<white>Nimi voi sisältää vain aakkosia ja numeroita, ja se voi olla maks. 16 kirjainta pitkä."))
+                        ))
+                        .inputs(Arrays.asList(
+                                DialogInput.text("warpName", Component.text("Warpin uusi nimi"))
+                                        .initial(warp.getName())
+                                        .maxLength(16)
+                                        .build()
+                        ))
+                        .build())
+                .type(DialogType.confirmation(
+                        ActionButton.builder(Component.text("Muokkaa warpin nimi"))
+                                .action(DialogAction.customClick((response, audience) -> {
+                                            String newName = response.getText("warpName");
+                                            if (newName.matches("[\\p{L}\\p{N}]+") && newName.length() <= 16) {
+                                                player.sendMessage("Vaihdettu nimi: " + newName);
+                                                warpManager.editWarpName(warp, newName);
+                                                showWarpEditMenu(player, warp);
+                                            } else {
+                                                player.sendMessage("Nimi voi sisältää vain aakkosia ja numeroita, ja se voi olla maks. 16 kirjainta pitkä.");
+                                            }
+                                        },
+                                        ClickCallback.Options.builder().build()))
+                                .width(150)
+                                .build(),
+                        ActionButton.builder(Component.text("Peruuta"))
+                                .action(DialogAction.customClick((response, audience) -> {
+                                            showWarpEditMenu(player, warp);
+                                        },
+                                        ClickCallback.Options.builder().build()))
+                                .width(150)
+                                .build()
 
-        gui.setOnGlobalClick(event -> event.setCancelled(true));
-
-        //
-        ItemStack itemStack1 = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-        ItemMeta itemMeta1 = itemStack1.getItemMeta();
-        itemMeta1.displayName(Component.text(warp.getName()));
-        itemStack1.setItemMeta(itemMeta1);
-
-        GuiItem item1 = new GuiItem(itemStack1, event -> event.setCancelled(true));
-        StaticPane pane = new StaticPane(0, 0, 1, 1);
-        pane.addItem(item1, 0, 0);
-        gui.getFirstItemComponent().addPane(pane);
-
-        ItemStack done = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
-        ItemMeta doneMeta = done.getItemMeta();
-        doneMeta.displayName(toUndecoratedMM("<green>Valmis"));
-        done.setItemMeta(doneMeta);
-
-        GuiItem doneItem = new GuiItem(done, event -> {
-            if (gui.getRenameText().matches("[\\p{L}\\p{N}]+") && gui.getRenameText().length() <= 16) {
-                player.sendMessage("Vaihdettu nimi: " + gui.getRenameText());
-                warpManager.editWarpName(warp, gui.getRenameText());
-                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, MAX_VALUE, 1F);
-                showWarpEditMenu(player, warp);
-            } else {
-                player.sendMessage("Nimi voi sisältää vain aakkosia ja numeroita, ja se voi olla maks. 16 kirjainta pitkä.");
-            }
-        });
-
-        StaticPane pane3 = new StaticPane(0, 0, 1, 1);
-        pane3.addItem(doneItem, 0, 0);
-        gui.getResultComponent().addPane(pane3);
-
-        gui.update();
+                )));
     }
 
     public void showColorChangeMenu(Player player, Warp warp) {
