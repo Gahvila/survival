@@ -6,6 +6,8 @@ import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.CustomArgument;
 import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import net.gahvila.gahvilacore.Profiles.Prefix.Backend.Enum.PrefixType.Single;
+import net.gahvila.survival.Features.TeleportBlocker;
+import net.gahvila.survival.Messages.Message;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Material;
@@ -110,8 +112,12 @@ public class WarpCommands {
                     Optional<Warp> warp = warpManager.getWarp(nimi);
                     if (warp.isPresent()) {
                         if (warpManager.isLocationSafe(warp.get().getLocation())){
-                            p.teleportAsync(warp.get().getLocation());
-                            p.setWalkSpeed(0.2F);
+                            if (TeleportBlocker.canTeleport(p)) {
+                                p.teleportAsync(warp.get().getLocation());
+                                p.setWalkSpeed(0.2F);
+                            } else {
+                                p.sendRichMessage(Message.TELEPORT_NOT_POSSIBLE.getText());
+                            }
                         }else{
                             p.sendMessage("Warpin sijainti ei ole turvallinen. Teleportti peruttu.");
                         }

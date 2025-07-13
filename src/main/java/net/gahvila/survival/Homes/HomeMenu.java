@@ -7,6 +7,8 @@ import io.papermc.paper.registry.data.dialog.action.DialogAction;
 import io.papermc.paper.registry.data.dialog.body.DialogBody;
 import io.papermc.paper.registry.data.dialog.input.DialogInput;
 import io.papermc.paper.registry.data.dialog.type.DialogType;
+import net.gahvila.survival.Features.TeleportBlocker;
+import net.gahvila.survival.Messages.Message;
 import net.gahvila.survival.survival;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickCallback;
@@ -103,14 +105,18 @@ public class HomeMenu {
                                     .action(DialogAction.customClick((response, audience) -> {
                                                 Location homeLocation = homeManager.getHome(player.getUniqueId(), home);
                                                 if (homeLocation != null) {
-                                                    player.teleportAsync(homeLocation);
-                                                    player.sendMessage(toMM("<white>Sinut teleportattiin kotiin</white> <#85FF00>" + homeName + "</#85FF00>."));
-                                                    Bukkit.getServer().getScheduler().runTaskLater(survival.instance, new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 0.5F, 1F);
-                                                        }
-                                                    }, 5);
+                                                    if (TeleportBlocker.canTeleport(player)) {
+                                                        player.teleportAsync(homeLocation);
+                                                        player.sendMessage(toMM("<white>Sinut teleportattiin kotiin</white> <#85FF00>" + homeName + "</#85FF00>."));
+                                                        Bukkit.getServer().getScheduler().runTaskLater(survival.instance, new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 0.5F, 1F);
+                                                            }
+                                                        }, 5);
+                                                    } else {
+                                                        player.sendRichMessage(Message.TELEPORT_NOT_POSSIBLE.getText());
+                                                    }
                                                 } else {
                                                     player.closeInventory();
                                                     player.sendMessage("Tuota kotia ei ole olemassa. Mitä duunaat?");

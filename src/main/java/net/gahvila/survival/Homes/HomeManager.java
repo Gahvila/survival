@@ -8,10 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static net.gahvila.survival.survival.instance;
 
@@ -134,11 +131,19 @@ public class HomeManager {
         }
     }
 
-    public Integer getAllowedHomes(Player player) {
-        long playtime = playtimeManager.getPlaytime(player).join();
-        long timePerHome = 180000L; //50 hours
-        int allowedHomes = (int) (playtime / timePerHome) + 1;
+    private static final List<Map.Entry<String, Integer>> GROUPS = List.of(
+            Map.entry("group.pro", 4),
+            Map.entry("group.espresso", 3),
+            Map.entry("group.mocha", 2),
+            Map.entry("group.default", 1)
+    );
 
-        return Math.max(allowedHomes, 1);
+    public int getAllowedHomes(Player player) {
+        for (Map.Entry<String, Integer> entry : GROUPS) {
+            if (player.hasPermission(entry.getKey())) {
+                return entry.getValue();
+            }
+        }
+        return 1;
     }
 }

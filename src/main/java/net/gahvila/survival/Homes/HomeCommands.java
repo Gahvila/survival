@@ -2,6 +2,8 @@ package net.gahvila.survival.Homes;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
+import net.gahvila.survival.Features.TeleportBlocker;
+import net.gahvila.survival.Messages.Message;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.title.Title;
@@ -88,9 +90,13 @@ public class HomeCommands {
 
                     if (homeManager.getHomes(uuid) != null) {
                         if (homeManager.getHomes(uuid).contains(nimi)) {
-                            p.teleportAsync(homeManager.getHome(uuid, nimi));
-                            p.setWalkSpeed(0.2F);
-                            p.sendMessage(toMM("<white>Sinut teleportattiin kotiin</white> <#85FF00>" + nimi + "</#85FF00>."));
+                            if (TeleportBlocker.canTeleport(p)) {
+                                p.teleportAsync(homeManager.getHome(uuid, nimi));
+                                p.setWalkSpeed(0.2F);
+                                p.sendMessage(toMM("<white>Sinut teleportattiin kotiin</white> <#85FF00>" + nimi + "</#85FF00>."));
+                            } else {
+                                p.sendRichMessage(Message.TELEPORT_NOT_POSSIBLE.getText());
+                            }
 
                         } else {
                             p.sendMessage(toMM("<white>Sinulla ei ole kotia nimellä</white> <#85FF00>" + nimi + "</#85FF00><white>!</white>"));
