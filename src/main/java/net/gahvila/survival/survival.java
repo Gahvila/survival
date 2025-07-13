@@ -19,6 +19,8 @@ import net.gahvila.survival.Homes.HomeManager;
 import net.gahvila.survival.Homes.HomeMenu;
 import net.gahvila.survival.Features.ElytraDisabler.ElytraDebuff;
 import net.gahvila.survival.Pets.Pets;
+import net.gahvila.survival.Warps.WarpApplications.WarpApplication;
+import net.gahvila.survival.Warps.WarpApplications.WarpApplicationManager;
 import net.gahvila.survival.Warps.WarpCommands;
 import net.gahvila.survival.Warps.WarpEvents;
 import net.gahvila.survival.Warps.WarpManager;
@@ -43,6 +45,7 @@ public class survival extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        this.saveDefaultConfig();
         //load worlds
         setupWorlds();
 
@@ -55,6 +58,8 @@ public class survival extends JavaPlugin implements Listener {
         TeleportManager teleportManager = new TeleportManager();
         BackManager backManager = new BackManager();
         WarpManager warpManager = new WarpManager(playtimeManager);
+        WarpApplicationManager warpApplicationManager = new WarpApplicationManager(warpManager);
+        WarpApplication warpApplication = new WarpApplication(warpApplicationManager);
         WarpMenu warpMenu = new WarpMenu(warpManager);
         HomeMenu homeMenu = new HomeMenu(homeManager);
 
@@ -73,7 +78,7 @@ public class survival extends JavaPlugin implements Listener {
         HomeCommands homeCommands = new HomeCommands(homeManager, homeMenu);
         homeCommands.registerCommands();
 
-        WarpCommands warpCommands = new WarpCommands(warpManager, warpMenu);
+        WarpCommands warpCommands = new WarpCommands(warpManager, warpMenu, warpApplication, warpApplicationManager);
         warpCommands.registerCommands();
 
         //weathervote

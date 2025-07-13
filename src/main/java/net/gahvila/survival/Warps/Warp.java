@@ -12,33 +12,37 @@ public class Warp {
     private UUID owner;
     private String ownerName;
     private Integer uses;
+    private Boolean notified;
     private Long creationDate;
     private Location location;
     private Single color;
 
     private Material customItem;
 
-    public Warp(String name, UUID owner, String ownerName, Integer uses, Long creationDate, Location location, Single color) {
+    public Warp(String name, UUID owner, String ownerName, Integer uses, Boolean notified, Long creationDate, Location location, Single color) {
         this.name = name;
         this.owner = owner;
         this.ownerName = ownerName;
         this.uses = uses;
+        this.notified = notified;
         this.creationDate = creationDate;
         this.location = location;
         this.color = color;
         this.customItem = Material.DIRT;
     }
 
-    public Warp(String name, UUID owner, String ownerName, Integer uses, Long creationDate, Location location, Single color, Material customItem) {
+    public Warp(String name, UUID owner, String ownerName, Integer uses, Boolean notified, Long creationDate, Location location, Single color, Material customItem) {
         this.name = name;
         this.owner = owner;
         this.ownerName = ownerName;
         this.uses = uses;
+        this.notified = notified;
         this.creationDate = creationDate;
         this.location = location;
         this.color = color;
         this.customItem = customItem;
     }
+
     public String getName() {
         return name;
     }
@@ -69,6 +73,14 @@ public class Warp {
 
     public void setUses(Integer uses) {
         this.uses = uses;
+    }
+
+    public Boolean getNotified() {
+        return notified;
+    }
+
+    public void setNotified(Boolean notified) {
+        this.notified = notified;
     }
 
     public Long getCreationDate() {
