@@ -150,26 +150,27 @@ public class HomeMenu {
                         ClickCallback.Options.builder().build()
                 ))
                 .build());
+        if (!homeManager.getHomes(player.getUniqueId()).isEmpty()) {
+            buttons.add(ActionButton.builder(toMM("Poista koti"))
+                    .width(120)
+                    .tooltip(toMM("Avaa listan, josta voit valita kodin minkä poistaa"))
+                    .action(DialogAction.customClick((response, audience) -> {
+                                showHomesEditList(player, true, openedFromHomesMenu);
+                            },
+                            ClickCallback.Options.builder().build()
+                    ))
+                    .build());
 
-        buttons.add(ActionButton.builder(toMM("Poista koti"))
-                .width(120)
-                .tooltip(toMM("Avaa listan, josta voit valita kodin minkä poistaa"))
-                .action(DialogAction.customClick((response, audience) -> {
-                            showHomesEditList(player, true, openedFromHomesMenu);
-                        },
-                        ClickCallback.Options.builder().build()
-                ))
-                .build());
-
-        buttons.add(ActionButton.builder(toMM("Uudelleennimeä koti"))
-                .width(120)
-                .tooltip(toMM("Nimeä koti uudelleen"))
-                .action(DialogAction.customClick((response, audience) -> {
-                            showHomesEditList(player, false, openedFromHomesMenu);
-                        },
-                        ClickCallback.Options.builder().build()
-                ))
-                .build());
+            buttons.add(ActionButton.builder(toMM("Uudelleennimeä koti"))
+                    .width(120)
+                    .tooltip(toMM("Nimeä koti uudelleen"))
+                    .action(DialogAction.customClick((response, audience) -> {
+                                showHomesEditList(player, false, openedFromHomesMenu);
+                            },
+                            ClickCallback.Options.builder().build()
+                    ))
+                    .build());
+        }
 
         return Dialog.create(builder -> builder.empty()
                 .base(DialogBase.builder(toMM("<b>Kodit | Muokkaa</b>"))
