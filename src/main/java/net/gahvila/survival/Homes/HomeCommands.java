@@ -1,7 +1,13 @@
 package net.gahvila.survival.Homes;
 
+import cz.koca2000.nbs4j.Song;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
+import net.gahvila.gahvilacore.nbsminecraft.NBSAPI;
+import net.gahvila.gahvilacore.nbsminecraft.platform.bukkit.player.BukkitSongPlayer;
+import net.gahvila.gahvilacore.nbsminecraft.player.SongPlayer;
+import net.gahvila.gahvilacore.nbsminecraft.player.emitter.GlobalSoundEmitter;
+import net.gahvila.gahvilacore.nbsminecraft.utils.AudioListener;
 import net.gahvila.survival.Features.TeleportBlocker;
 import net.gahvila.survival.Messages.Message;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -193,16 +199,17 @@ public class HomeCommands {
         if (gambling.containsKey(player)){
             return;
         }
-        /* TODO: REPLACE NOTEBLOCKAPI
-        Song song = NBSDecoder.parse(new File(instance.getDataFolder() + "/music/gamba.nbs"));
-        RadioSongPlayer rsp = new RadioSongPlayer(song);
-        rsp.setChannelMode(new MonoStereoMode());
-        rsp.setVolume((byte) 25);
-        rsp.addPlayer(player);
-        rsp.setAutoDestroy(true);
+        Song song = NBSAPI.INSTANCE.readSongFile(new File(instance.getDataFolder() + "/music/gamba.nbs"));
+        SongPlayer songPlayer = new BukkitSongPlayer.Builder()
+                .soundEmitter(new GlobalSoundEmitter())
+                .volume(25)
+                .transposeNotes(false)
+                .build();
+        songPlayer.playSong(song);
+        songPlayer.loopQueue(false);
+        songPlayer.addListener(new AudioListener(player.getEntityId(), player.getUniqueId()));
+        songPlayer.play();
 
-        rsp.setPlaying(true);
-        */
 
         taskID = Bukkit.getScheduler().runTaskTimer(instance, () -> {
             int currentGamblingValue = gambling.getOrDefault(player, 0);
