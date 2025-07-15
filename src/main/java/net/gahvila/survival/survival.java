@@ -5,9 +5,6 @@ import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import net.gahvila.gahvilacore.GahvilaCore;
 import net.gahvila.gahvilacore.Profiles.Playtime.PlaytimeManager;
 import net.gahvila.gahvilacore.Teleport.TeleportManager;
-import net.gahvila.survival.Back.BackCommand;
-import net.gahvila.survival.Back.BackListener;
-import net.gahvila.survival.Back.BackManager;
 import net.gahvila.survival.Features.ElytraDisabler.ElytraReplacer;
 import net.gahvila.survival.Events.JoinEvent;
 import net.gahvila.survival.Events.PlayerDeath;
@@ -56,7 +53,6 @@ public class survival extends JavaPlugin implements Listener {
         PlaytimeManager playtimeManager = GahvilaCore.instance.getPlaytimeManager();
         homeManager = new HomeManager(playtimeManager);
         TeleportManager teleportManager = new TeleportManager();
-        BackManager backManager = new BackManager();
         WarpManager warpManager = new WarpManager(playtimeManager);
         WarpApplicationManager warpApplicationManager = new WarpApplicationManager(warpManager);
         WarpApplication warpApplication = new WarpApplication(warpApplicationManager);
@@ -65,9 +61,6 @@ public class survival extends JavaPlugin implements Listener {
 
         // Commands
         CommandAPI.onLoad(new CommandAPIBukkitConfig(this).verboseOutput(false).silentLogs(true));
-
-        BackCommand backCommand = new BackCommand(backManager);
-        backCommand.registerCommands();
 
         MainCommand mainCommand = new MainCommand(teleportManager);
         mainCommand.registerCommands();
@@ -89,7 +82,7 @@ public class survival extends JavaPlugin implements Listener {
 
 
         //register events
-        registerListeners(new PlayerDeath(teleportManager), new JoinEvent(), new QuitEvent(), new BackListener(backManager),
+        registerListeners(new PlayerDeath(teleportManager), new JoinEvent(), new QuitEvent(),
                 new WarpEvents(warpManager), new Pets(), new HomeEvents(homeManager), new ElytraDebuff(), new ElytraReplacer(), new NoPunchDamage());
 
         //fix reload argh

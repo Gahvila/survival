@@ -10,6 +10,7 @@ import net.gahvila.survival.Warps.WarpApplications.WarpApplicationManager;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -112,13 +113,26 @@ public class WarpCommands {
                             UUID application = UUID.fromString(args.getRaw("application"));
                             boolean accepted = Boolean.parseBoolean(args.getRaw("accepted"));
                             if (args.getRaw("accepted") == null) {
-                                //TODO: implement
+                                sender.sendRichMessage("Vaihtoehtoja:");
+                                if (sender instanceof Player) {
+                                    Location location = warpApplicationManager.getApplicationLocation(application);
+                                    String teleportCommand = "/tp " + sender.getName() + " " + location.getX() + " " + location.getY() + " " + location.getZ() + " " + location.getYaw() + " " + location.getPitch();
+                                    sender.sendRichMessage("<click:run_command:'" + teleportCommand + "'><white><u>Teleporttaa warpin sijaintiin");
+                                    sender.sendRichMessage("");
+                                }
+                                String acceptCommand = "/adminwarp review " + application + " true";
+                                String denyCommand = "/adminwarp review " + application + " false";
+                                sender.sendRichMessage("<click:run_command:'" + acceptCommand + "'><white><u>Hyväksy hakemus (lisää komennon perään true)");
+                                sender.sendRichMessage("");
+                                sender.sendRichMessage("<click:run_command:'" + denyCommand + "'><white><u>Hylkää hakemus (lisää komennon perään false)");
                                 return;
                             }
 
                             if (accepted) {
+                                sender.sendMessage("Hyväksyit hakemuksen " + application);
                                warpApplicationManager.acceptApplication(application);
                             } else {
+                                sender.sendMessage("Hylkäsit hkaemuksen " + application);
                                 warpApplicationManager.denyApplication(application);
                             }
                         }))

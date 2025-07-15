@@ -2,10 +2,6 @@ package net.gahvila.survival.Events;
 
 import net.gahvila.gahvilacore.GahvilaCore;
 import net.gahvila.gahvilacore.Teleport.TeleportManager;
-import net.gahvila.survival.Back.BackListener;
-import net.gahvila.survival.survival;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,7 +23,6 @@ public class PlayerDeath implements Listener {
     public void onRespawn(PlayerRespawnEvent e){
         Player p = e.getPlayer();
         if (p.getRespawnLocation() != null){
-            BackListener.back.put(p, p.getLocation());
             p.teleportAsync(p.getRespawnLocation());
             e.setRespawnLocation(p.getRespawnLocation());
             p.sendMessage("");
@@ -35,23 +30,20 @@ public class PlayerDeath implements Listener {
             if (e.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.END_PORTAL)){
                 p.sendMessage("Sinut teleportattiin sängyllesi.");
             }else{
-                p.sendMessage(toMM("Sinä kuolit. Sinut teleportattiin sängyllesi. Voit teleportata kuolinpaikallesi komennolla <#85FF00>/back</#85FF00>."));
+                p.sendMessage(toMM("Sinä kuolit. Sinut teleportattiin sängyllesi."));
             }
+            p.playSound(p.getRespawnLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_CURE, 0.4F, 1F);
         }else{
+            e.setRespawnLocation(teleportManager.getTeleport(GahvilaCore.instance, "spawn"));
+            p.teleport(teleportManager.getTeleport(GahvilaCore.instance, "spawn"));
             p.sendMessage("");
             p.sendMessage("");
             if (e.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.END_PORTAL)){
                 p.sendMessage("Sinut teleportattiin spawnille.");
             }else {
-                p.sendMessage(toMM("Sinä kuolit eikä sinulla ole sänkyä asetettuna. Sinut teleportattiin spawnille. Voit teleportata kuolinpaikallesi komennolla <#85FF00>/back</#85FF00>."));
+                p.sendMessage(toMM("Sinä kuolit eikä sinulla ole sänkyä asetettuna. Sinut teleportattiin spawnille."));
             }
-            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, MAX_VALUE, 1F); //TODO: vaiha tää parempaan
-            e.setRespawnLocation(teleportManager.getTeleport(GahvilaCore.instance, "spawn"));
-            if (!e.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.END_PORTAL)){
-                BackListener.back.put(p, p.getLocation());
-            }
-            p.teleport(teleportManager.getTeleport(GahvilaCore.instance, "spawn"));
-
+            p.playSound(p.getRespawnLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_CURE, 0.4F, 1F);
         }
     }
 }
