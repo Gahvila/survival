@@ -13,6 +13,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static net.gahvila.survival.survival.instance;
@@ -69,6 +70,18 @@ public class WarpApplicationManager {
 
 
     //data retrieval
+    public ArrayList<UUID> getApplications() {
+        Json warpData = new Json("warpapplications.json", instance.getDataFolder() + "/data/");
+        ArrayList<UUID> applicationUUIDs = new ArrayList<>();
+
+        for (String key : warpData.getFileData().singleLayerKeySet()) {
+            applicationUUIDs.add(UUID.fromString(key));
+        }
+
+        return applicationUUIDs;
+    }
+
+
     public String getApplicationWarpName(UUID applicationUUID) {
         Json warpData = new Json("warpapplications.json", instance.getDataFolder() + "/data/");
         String uuid = applicationUUID.toString();
@@ -123,6 +136,13 @@ public class WarpApplicationManager {
         return null;
     }
 
+    public void deleteApplication(UUID applicationUUID) {
+        Json warpData = new Json("warpapplications.json", instance.getDataFolder() + "/data/");
+        if (warpData.contains(applicationUUID.toString())) {
+            warpData.set(applicationUUID.toString(), null);
+        }
+    }
+
     // application controls
     public void acceptApplication(UUID applicationUUID) {
         UUID playerUUID = getApplicationPlayerUUID(applicationUUID);
@@ -130,13 +150,12 @@ public class WarpApplicationManager {
         String warpName = getApplicationWarpName(applicationUUID);
         Location location = getApplicationLocation(applicationUUID);
         warpManager.setWarp(playerUUID, playerName, warpName, location, Single.VALKOINEN, Material.LODESTONE);
+
+        deleteApplication(applicationUUID);
         //TODO: send webhook about new warp here
     }
 
     public void denyApplication(UUID applicationUUID) {
-        Json warpData = new Json("warpapplications.json", instance.getDataFolder() + "/data/");
-        if (warpData.contains(applicationUUID.toString())) {
-            warpData.set(applicationUUID.toString(), null);
-        }
+        deleteApplication(applicationUUID);
     }
 }

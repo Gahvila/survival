@@ -111,6 +111,10 @@ public class WarpCommands {
                         .withOptionalArguments(new BooleanArgument("accepted"))
                         .executes((sender, args) -> {
                             UUID application = UUID.fromString(args.getRaw("application"));
+                            if (!warpApplicationManager.getApplications().contains(application)) {
+                                sender.sendMessage("Tuota hakemusta ei löytynyt. Onko se jo käsitelty?");
+                                return;
+                            }
                             boolean accepted = Boolean.parseBoolean(args.getRaw("accepted"));
                             if (args.getRaw("accepted") == null) {
                                 sender.sendRichMessage("Vaihtoehtoja:");
@@ -132,7 +136,7 @@ public class WarpCommands {
                                 sender.sendMessage("Hyväksyit hakemuksen " + application);
                                warpApplicationManager.acceptApplication(application);
                             } else {
-                                sender.sendMessage("Hylkäsit hkaemuksen " + application);
+                                sender.sendMessage("Hylkäsit hakemuksen " + application);
                                 warpApplicationManager.denyApplication(application);
                             }
                         }))
