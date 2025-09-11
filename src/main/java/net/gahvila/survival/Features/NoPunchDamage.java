@@ -1,5 +1,6 @@
 package net.gahvila.survival.Features;
 
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,6 +13,7 @@ public class NoPunchDamage implements Listener {
     public void onPlayerPunch(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Player)) return;
         if (!(event.getEntity() instanceof Player)) return;
+        if (event.getDamager().getLocation().getWorld().getEnvironment() == World.Environment.THE_END) return;
         if (event.getCause() == EntityDamageEvent.DamageCause.THORNS) event.setCancelled(true);
         event.setDamage(0.0);
     }

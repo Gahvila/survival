@@ -46,10 +46,6 @@ public class WarpApplication {
                         .inputs(Arrays.asList(
                                 DialogInput.text("warpName", Component.text("Warpin nimi"))
                                         .maxLength(30)
-                                        .build(),
-                                DialogInput.text("extra", Component.text("Lisätietoa warpista. Tähän voit myös kertoa jos sinulla on toiveita."))
-                                        .multiline(TextDialogInput.MultilineOptions.create(10, 100))
-                                        .maxLength(500)
                                         .build()
                         ))
                         .build())
@@ -57,9 +53,8 @@ public class WarpApplication {
                         ActionButton.builder(Component.text("Lähetä hakemus"))
                                 .action(DialogAction.customClick((response, audience) -> {
                                             String warpName = response.getText("warpName");
-                                            String extra = response.getText("extra");
                                             try {
-                                                warpApplicationManager.sendWarpApplication(player, warpName, extra, location);
+                                                warpApplicationManager.sendWarpApplication(player, warpName, location);
                                             } catch (IOException e) {
                                                 throw new RuntimeException(e);
                                             }

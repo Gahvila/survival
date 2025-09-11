@@ -27,21 +27,51 @@ public class WarpApplicationManager {
     }
 
     //application creation
-    public void sendWarpApplication(Player player, String warpName, String extra, Location location) throws IOException {
-        //TODO: implement data validity checking, if warp with name exists already etc
+    public void sendWarpApplication(Player player, String warpName, Location location) throws IOException {
+        if (warpName == null || warpName.trim().isEmpty()) {
+            player.sendRichMessage("<red>Warpin nimi ei voi olla tyhjä.");
+            return;
+        }
+
+        if (warpName.length() > 32) {
+            player.sendRichMessage("<red>Warpin nimi on liian pitkä (max 32 merkkiä).");
+            return;
+        }
+
+        if (!warpName.matches("^[a-zA-Z0-9_]+$")) {
+            player.sendRichMessage("<red>Warpin nimessä saa olla vain kirjaimia, numeroita ja alaviivoja.");
+            return;
+        }
+
+        if (warpManager.warpExists(warpName)) {
+            player.sendRichMessage("<red>Warp nimellä '" + warpName + "' on jo olemassa.");
+            return;
+        }
+
+        Json warpData = new Json("warpapplications.json", instance.getDataFolder() + "/data/");
+        for (String key : warpData.getFileData().singleLayerKeySet()) {
+            String existingWarpName = warpData.getString(key + ".warpName");
+            String existingPlayerUUID = warpData.getString(key + ".playerUUID");
+            if (existingWarpName != null && existingPlayerUUID != null &&
+                    existingWarpName.equalsIgnoreCase(warpName) &&
+                    existingPlayerUUID.equals(player.getUniqueId().toString())) {
+                player.sendRichMessage("Sinulla on jo avoin warp-hakemus nimellä '" + warpName + "'.");
+                return;
+            }
+        }
 
         UUID randomUUID = UUID.randomUUID();
-        saveApplication(randomUUID, player.getUniqueId(), player.getName(), warpName, extra, location);
+        saveApplication(randomUUID, player.getUniqueId(), player.getName(), warpName, location);
+        sendApplicationWebhook(randomUUID, player.getUniqueId(), player.getName(), warpName, location);
 
-        sendApplicationWebhook(randomUUID, player.getUniqueId(), player.getName(), warpName, extra, location);
-
+        player.sendRichMessage("Warp-hakemus '<yellow>" + warpName + "</yellow>' on lähetetty tarkistettavaksi.");
     }
 
-    private void saveApplication(UUID applicationUUID, UUID playerUUID, String currentPlayerName, String warpName, String extra, Location location) {
+
+    private void saveApplication(UUID applicationUUID, UUID playerUUID, String currentPlayerName, String warpName, Location location) {
         Json warpData = new Json("warpapplications.json", instance.getDataFolder() + "/data/");
         String uuid = applicationUUID.toString();
         warpData.getFileData().insert(uuid + ".warpName", warpName);
-        warpData.getFileData().insert(uuid + ".extra", extra);
         warpData.getFileData().insert(uuid + ".playerUUID", playerUUID);
         warpData.getFileData().insert(uuid + ".currentPlayerName", currentPlayerName);
         warpData.getFileData().insert(uuid + ".applicationdate", System.currentTimeMillis());
@@ -53,7 +83,7 @@ public class WarpApplicationManager {
         warpData.set(uuid + ".pitch", location.getPitch());
     }
 
-    private void sendApplicationWebhook(UUID applicationUUID, UUID playerUUID, String currentPlayerName, String warpName, String extra, Location location) throws IOException {
+    private void sendApplicationWebhook(UUID applicationUUID, UUID playerUUID, String currentPlayerName, String warpName, Location location) throws IOException {
         DiscordWebhook webhook = new DiscordWebhook(ConfigManager.getWarpApplicationWebhookUrl());
         webhook.setContent("Uusi warp hakemus!");
         webhook.setUsername("warp hakemus");
@@ -61,7 +91,6 @@ public class WarpApplicationManager {
                 .addField("Pelaajan nimi", currentPlayerName, true)
                 .addField("Pelaajan UUID", playerUUID.toString(), true)
                 .addField("Warpin nimi", warpName, true)
-                .addField("Lisätietoa", extra, true)
                 .addField("Sijainti", location.toString(), false));
         webhook.addEmbed(new DiscordWebhook.EmbedObject()
                 .setDescription("/adminwarp review " + applicationUUID.toString()));
@@ -87,15 +116,6 @@ public class WarpApplicationManager {
         String uuid = applicationUUID.toString();
         if (warpData.getFileData().containsKey(uuid)) {
             return warpData.getString(uuid + ".warpName");
-        }
-        return null;
-    }
-
-    public String getApplicationExtra(UUID applicationUUID) {
-        Json warpData = new Json("warpapplications.json", instance.getDataFolder() + "/data/");
-        String uuid = applicationUUID.toString();
-        if (warpData.getFileData().containsKey(uuid)) {
-            return warpData.getString(uuid + ".extra");
         }
         return null;
     }

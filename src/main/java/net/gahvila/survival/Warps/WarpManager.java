@@ -251,4 +251,15 @@ public class WarpManager {
 
         return 1 + (int) ((playtime - initialWarpTime) / timePerWarp);
     }
+
+    public boolean warpExists(String warpName) {
+        if (warpName == null || warpName.isBlank()) return false;
+
+        boolean inCache = warps.stream()
+                .anyMatch(warp -> warp.getName().equalsIgnoreCase(warpName));
+        if (inCache) return true;
+
+        Json warpData = new Json("warpdata.json", instance.getDataFolder() + "/data/");
+        return warpData.contains(warpName);
+    }
 }

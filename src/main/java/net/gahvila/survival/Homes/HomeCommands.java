@@ -90,6 +90,7 @@ public class HomeCommands {
                     UUID uuid = p.getUniqueId();
                     if (args.getRaw("koti") == null) {
                         homeMenu.show(p);
+                        return;
                     }
 
                     String nimi = args.getRaw("koti");
