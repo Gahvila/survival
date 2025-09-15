@@ -74,9 +74,13 @@ public class WarpMenu {
             ItemMeta meta = item.getItemMeta();
             meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, warp.getName());
             meta.displayName(toUndecoratedMM("<" + warp.getColor().getColor() + ">" + warp.getName()));
-            meta.lore(List.of(toUndecoratedMM("<white>Omistaja: <yellow>" + warp.getOwnerName()),
-                    toUndecoratedMM("<white>Käyttökerrat: <yellow>" + warp.getUses()),
-                    toUndecoratedMM("<gray><i>" + dateString)));
+            if (warp.getOwnerName().equals("#AdminWarp")) {
+                meta.lore(List.of(toUndecoratedMM("<red>Admin warp")));
+            } else {
+                meta.lore(List.of(toUndecoratedMM("<white>Omistaja: <yellow>" + warp.getOwnerName()),
+                        toUndecoratedMM("<white>Käyttökerrat: <yellow>" + warp.getUses()),
+                        toUndecoratedMM("<gray><i>" + dateString)));
+            }
             item.setItemMeta(meta);
             items.add(item);
         }

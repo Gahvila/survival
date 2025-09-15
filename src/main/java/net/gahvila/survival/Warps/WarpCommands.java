@@ -14,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -106,6 +107,52 @@ public class WarpCommands {
                 .register();
         new CommandAPICommand("adminwarp")
                 .withPermission("survival.warp.admin")
+                .withSubcommand(new CommandAPICommand("editwarp")
+                        .withArguments(customWarpArgument("warp"))
+                        .executesPlayer((player, args) -> {
+                            String name = args.getRaw("warp");
+                            Optional<Warp> warp = warpManager.getWarp(name);
+                            if (warp.isPresent()) {
+                                warpMenu.showWarpEditMenu(player, warp.get());
+                            } else {
+                                player.sendMessage("Tapahtui virhe.");
+                            }
+                        }))
+                .withSubcommand(new CommandAPICommand("delete")
+                        .withArguments(customWarpArgument("warp"))
+                        .executesPlayer((player, args) -> {
+                            String name = args.getRaw("warp");
+                            Optional<Warp> warp = warpManager.getWarp(name);
+                            if (warp.isPresent()) {
+                                warpManager.deleteWarp(warp.get());
+                                player.sendMessage("warp nimellä '" + name + "' poistettu");
+
+                            } else {
+                                player.sendMessage("Tapahtui virhe.");
+                            }
+                        }))
+                .withSubcommand(new CommandAPICommand("create")
+                        .withArguments(new TextArgument("name"))
+                        .withArguments(new LocationArgument("location"))
+                        .withArguments(new FloatArgument("yaw"))
+                        .withArguments(new FloatArgument("pitch"))
+
+                        .executesPlayer((player, args) -> {
+                            String name = (String) args.get("name");
+                            Location location;
+                            if (args.get("location") == null) {
+                                location = player.getLocation();
+                            } else if (args.getRaw("location") != null) {
+                                location = (Location) args.get("location");
+                                location.setYaw((Float) args.get("yaw"));
+                                location.setPitch((Float) args.get("pitch"));
+                            } else {
+                                return;
+                            }
+                            UUID adminWarpUUID = UUID.nameUUIDFromBytes("OfflinePlayer:#AdminWarp".getBytes(StandardCharsets.UTF_8));
+                            warpManager.setWarp(adminWarpUUID, "#AdminWarp", name, location, Single.VALKOINEN, Material.LODESTONE);
+                            player.sendMessage("warp nimellä '" + name + "' asetettu");
+                        }))
                 .withSubcommand(new CommandAPICommand("review")
                         .withArguments(new UUIDArgument("application"))
                         .withOptionalArguments(new BooleanArgument("accepted"))
