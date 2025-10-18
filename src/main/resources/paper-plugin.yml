@@ -10,4 +10,5 @@ dependencies:
       load: BEFORE
     CrashClaim:
       required: false
+      load: BEFORE
       join-classpath: true

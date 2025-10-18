@@ -1,10 +1,14 @@
 package net.gahvila.survival;
 
 import dev.jorel.commandapi.CommandAPI;
-import dev.jorel.commandapi.CommandAPIBukkitConfig;
+import dev.jorel.commandapi.CommandAPIPaperConfig;
+import net.crashcraft.crashclaim.CrashClaim;
 import net.gahvila.gahvilacore.GahvilaCore;
 import net.gahvila.gahvilacore.Profiles.Playtime.PlaytimeManager;
 import net.gahvila.gahvilacore.Teleport.TeleportManager;
+import net.gahvila.survival.DailyRTP.DrtpCommand;
+import net.gahvila.survival.DailyRTP.DrtpManager;
+import net.gahvila.survival.DailyRTP.integration.ClaimBlockListener;
 import net.gahvila.survival.Features.ElytraDisabler.ElytraReplacer;
 import net.gahvila.survival.Events.JoinEvent;
 import net.gahvila.survival.Events.PlayerDeath;
@@ -38,6 +42,8 @@ public class survival extends JavaPlugin implements Listener {
     private PluginManager pluginManager;
     private survival plugin;
     private HomeManager homeManager;
+    private DrtpManager drtpManager;
+    private CrashClaim crashClaim;
 
 
     @Override
@@ -60,7 +66,7 @@ public class survival extends JavaPlugin implements Listener {
         HomeMenu homeMenu = new HomeMenu(homeManager);
 
         // Commands
-        CommandAPI.onLoad(new CommandAPIBukkitConfig(this).verboseOutput(false).silentLogs(true));
+        CommandAPI.onLoad(new CommandAPIPaperConfig(this).verboseOutput(false).silentLogs(true));
 
         MainCommand mainCommand = new MainCommand(teleportManager);
         mainCommand.registerCommands();
@@ -90,10 +96,20 @@ public class survival extends JavaPlugin implements Listener {
             homeManager.putHomeIntoCache(player.getUniqueId());
         }
         warpManager.loadWarps();
+
+        //daily rtp
+        crashClaim = CrashClaim.getPlugin();
+        drtpManager = new DrtpManager();
+        DrtpCommand drtpCommand = new DrtpCommand(drtpManager);
+        drtpCommand.register(this);
+        getServer().getPluginManager().registerEvents(new ClaimBlockListener(drtpManager), this);
     }
 
     @Override
     public void onDisable() {
+        if (drtpManager != null) {
+            drtpManager.saveData();
+        }
         homeManager.homes.clear();
     }
 
@@ -107,6 +123,10 @@ public class survival extends JavaPlugin implements Listener {
     //getters
     public survival getPlugin() {
         return plugin;
+    }
+
+    public CrashClaim getCrashClaim() {
+        return crashClaim;
     }
 
     public void setupWorlds() {

@@ -1,7 +1,7 @@
 package net.gahvila.survival.Pets;
 
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.arguments.PlayerArgument;
+import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import net.gahvila.survival.survival;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -27,7 +27,7 @@ public class Pets implements Listener {
     public static HashMap<Player, Player> transferingPet = new HashMap<>();
     public void registerCommands() {
         new CommandAPICommand("givepet")
-                .withArguments(new PlayerArgument("nimi"))
+                .withArguments(new EntitySelectorArgument.OnePlayer("nimi"))
                 .executesPlayer((p, args) -> {
                     if (transferingPet.containsKey(p)) {
                         p.sendMessage("Peruttu lemmikin antaminen.");
