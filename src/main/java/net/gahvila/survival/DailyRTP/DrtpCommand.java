@@ -5,6 +5,8 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import net.gahvila.survival.Features.TeleportBlocker;
+import net.gahvila.survival.Messages.Message;
 import net.gahvila.survival.survival;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -55,6 +57,11 @@ public class DrtpCommand {
             return 1;
         }
 
+        if (!TeleportBlocker.canTeleport(player)) {
+            player.sendRichMessage(Message.TELEPORT_NOT_POSSIBLE.getText());
+            return 1;
+        }
+
         int cooldownTime = 60; // seconds
 
         // Cooldown Check
@@ -75,7 +82,7 @@ public class DrtpCommand {
 
         player.teleportAsync(dailyLocation).thenAccept(success -> {
             if (success) {
-                player.sendRichMessage("<green>Siirretään sinut päivän paikkaan.");
+                player.sendRichMessage("<white>Siirretään sinut päivän paikkaan.");
                 cooldowns.put(player.getUniqueId(), System.currentTimeMillis());
             } else {
                 player.sendRichMessage("<red>Teleportti epäonnistui! Jokin taitaa olla tiellä.");
@@ -88,11 +95,11 @@ public class DrtpCommand {
     private int executeReroll(CommandSourceStack source) {
         CommandSender sender = source.getSender();
 
-        sender.sendRichMessage("<yellow>Etsitään uutta päivän paikkaa...</yellow>");
+        sender.sendRichMessage("<yellow>Etsitään uutta satunnaista päivän paikkaa...</yellow>");
 
         try {
             drtpManager.findNewTeleportLocation();
-            sender.sendRichMessage("<green>Uuden paikan haku on nyt käynnissä.</green>");
+            sender.sendRichMessage("<white>Uuden paikan haku on nyt käynnissä.</white>");
         } catch (Exception e) {
             sender.sendRichMessage("<red>Jotain meni vituilleen, ja paikan haku epäonnistui. Ota yhteyttä ylläpitoon!</red>");
             e.printStackTrace();
