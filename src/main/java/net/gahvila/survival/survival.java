@@ -139,7 +139,7 @@ public class survival extends JavaPlugin implements Listener {
         nether.setDifficulty(Difficulty.HARD);
 
         World end = getServer().getWorld("world_the_end");
-        end.getWorldBorder().setSize(100000);
+        end.getWorldBorder().setSize(30000000);
         end.setDifficulty(Difficulty.HARD);
     }
 }

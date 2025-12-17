@@ -38,12 +38,9 @@ public class WeatherVoteManager {
         areWeVoting = true;
 
         Bukkit.broadcast(toMM("""
-            <#85FF00>{playername}</#85FF00> aloitti sään äänestyksen:
-            <hover:show_text:'Klikkaa suorittaaksesi /weathervote clear'><click:run_command:'/weathervote clear'><yellow>Klikkaa äänestääksesi selkeää</yellow></click></hover>
-            
-            <hover:show_text:'Klikkaa suorittaaksesi /weathervote storm'><click:run_command:'/weathervote storm'><blue>Klikkaa äänestääksesi myrskyä</blue></click></hover>
-            
-            <white>Äänestys kestää <#85FF00>15 sekuntia</#85FF00>."""
+                <br>
+                <#85FF00>{playername}</#85FF00> <gray>aloitti sää-äänestyksen:</gray>
+                <hover:show_text:'<yellow>Äänestä selkeää'><click:run_command:'/weathervote clear'><dark_gray>[ <yellow>☀ SELKEÄ</yellow> ]</dark_gray></click></hover> <gray>tai</gray> <hover:show_text:'<aqua>Äänestä myrskyä'><click:run_command:'/weathervote storm'><dark_gray>[ <aqua>⛈ MYRSKY</aqua> ]</dark_gray></click></hover> <gray>(15s)</gray>"""
                 .replace("{playername}", player.getName())));
 
         allVoters.addAll(Bukkit.getOnlinePlayers());

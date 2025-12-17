@@ -30,7 +30,8 @@ public class DrtpManager {
 
     private static final Set<Material> UNSAFE_BLOCKS = new HashSet<>(Arrays.asList(
             Material.LAVA, Material.FIRE, Material.CACTUS, Material.MAGMA_BLOCK,
-            Material.SWEET_BERRY_BUSH, Material.WITHER_ROSE, Material.WATER, Material.POWDER_SNOW
+            Material.SWEET_BERRY_BUSH, Material.WITHER_ROSE, Material.WATER, Material.POWDER_SNOW,
+            Material.ICE, Material.BLUE_ICE, Material.PACKED_ICE
     ));
 
     private static final Set<Tag<Material>> UNSAFE_TAGS = new HashSet<>(Arrays.asList(
