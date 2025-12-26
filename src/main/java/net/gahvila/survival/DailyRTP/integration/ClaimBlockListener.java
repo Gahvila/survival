@@ -83,7 +83,6 @@ public class ClaimBlockListener implements Listener {
         }
     }
 
-
     private boolean isNearDailyTeleport(Location location) {
         Location dailyLocation = drtpManager.getDailyTeleportLocation();
         if (dailyLocation == null || location == null) {
@@ -94,7 +93,10 @@ public class ClaimBlockListener implements Listener {
             return false;
         }
 
-        return location.distanceSquared(dailyLocation) <= (protectionRadius * protectionRadius);
+        double dx = location.getX() - dailyLocation.getX();
+        double dz = location.getZ() - dailyLocation.getZ();
+
+        return (dx * dx) + (dz * dz) <= (protectionRadius * protectionRadius);
     }
 
     private boolean doesClaimOverlap(World world, double claimMinX, double claimMinZ, double claimMaxX, double claimMaxZ) {

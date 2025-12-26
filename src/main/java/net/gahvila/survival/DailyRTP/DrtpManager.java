@@ -6,15 +6,15 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.*;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static net.gahvila.gahvilacore.Utils.MiniMessageUtils.toMM;
@@ -27,6 +27,13 @@ public class DrtpManager {
 
     private final File dataFile;
     private final FileConfiguration dataConfig;
+
+    private final Map<Long, List<Location>> chunkParticleMap = new ConcurrentHashMap<>();
+    private final Particle.DustOptions borderStyle = new Particle.DustOptions(Color.fromRGB(255, 0, 0), 1.5f);
+
+    private static final int BORDER_RADIUS = 100;
+    private static final double PARTICLE_SPACING = 1.0;
+    private static final int VIEW_RADIUS_CHUNKS = 4;
 
     private static final Set<Material> UNSAFE_BLOCKS = new HashSet<>(Arrays.asList(
             Material.LAVA, Material.FIRE, Material.CACTUS, Material.MAGMA_BLOCK,
@@ -42,56 +49,81 @@ public class DrtpManager {
         this.dataFile = new File(instance.getDataFolder(), "drtp.yml");
         if (!dataFile.exists()) {
             try {
-                boolean created = dataFile.createNewFile();
-                instance.getLogger().info("Created new drtp.yml file: " + created);
+                dataFile.createNewFile();
             } catch (IOException e) {
-                instance.getLogger().severe("Failed to create drtp.yml!");
                 e.printStackTrace();
             }
         }
 
         this.dataConfig = YamlConfiguration.loadConfiguration(dataFile);
-        instance.getLogger().info("Loading saved data...");
         loadData();
 
         if (this.dailyTeleportLocation == null) {
-            instance.getLogger().warning("No daily RTP location in drtp.yml. Generating new one...");
             findNewTeleportLocation();
         } else {
-            instance.getLogger().info("Loaded saved location: " + locationToString(this.dailyTeleportLocation));
+            cacheDrtpBorder(this.dailyTeleportLocation);
         }
 
         scheduleTasks();
+        startVisualizationTask();
     }
 
     private void scheduleTasks() {
-        instance.getLogger().info("Scheduling reroll check task...");
         new BukkitRunnable() {
             @Override
             public void run() {
                 long now = System.currentTimeMillis();
                 if (now >= nextRerollTime) {
-                    instance.getLogger().info("Reroll time! Finding new daily RTP location...");
                     findNewTeleportLocation();
                 }
             }
-        }.runTaskTimer(instance, 20L * 60, 20L * 60); // check every minute
+        }.runTaskTimer(instance, 20L * 60, 20L * 60);
+    }
+
+    private void startVisualizationTask() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (chunkParticleMap.isEmpty()) return;
+
+                Set<Long> chunksToRender = new HashSet<>();
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (!p.getWorld().getName().equals("world")) continue;
+
+                    int px = p.getLocation().getBlockX() >> 4;
+                    int pz = p.getLocation().getBlockZ() >> 4;
+
+                    for (int x = px - VIEW_RADIUS_CHUNKS; x <= px + VIEW_RADIUS_CHUNKS; x++) {
+                        for (int z = pz - VIEW_RADIUS_CHUNKS; z <= pz + VIEW_RADIUS_CHUNKS; z++) {
+                            chunksToRender.add(getChunkKey(x, z));
+                        }
+                    }
+                }
+
+                for (Long chunkKey : chunksToRender) {
+                    List<Location> points = chunkParticleMap.get(chunkKey);
+                    if (points != null) {
+                        for (Location loc : points) {
+                            loc.getWorld().spawnParticle(Particle.DUST, loc, 1, 0, 0, 0, 0, borderStyle);
+                        }
+                    }
+                }
+            }
+        }.runTaskTimerAsynchronously(instance, 0L, 10L);
     }
 
     public void findNewTeleportLocation() {
         this.dailyTeleportLocation = null;
+        this.chunkParticleMap.clear();
+
         instance.getLogger().info("Starting async search for new teleport location...");
 
         CompletableFuture.runAsync(() -> {
             try {
                 World world = Bukkit.getWorld("world");
-                if (world == null) {
-                    instance.getLogger().severe("World 'world' does not exist!");
-                    return;
-                }
+                if (world == null) return;
 
                 int searchRadius = 50000;
-                int claimCheckRadius = 100;
                 Location candidateLocation = null;
                 boolean validLocationFound = false;
                 int attempts = 0;
@@ -100,25 +132,19 @@ public class DrtpManager {
                     attempts++;
                     int x = ThreadLocalRandom.current().nextInt(-searchRadius, searchRadius + 1);
                     int z = ThreadLocalRandom.current().nextInt(-searchRadius, searchRadius + 1);
-                    if (attempts % 50 == 0) {
-                        instance.getLogger().info("Attempt " + attempts + "...");
-                    }
 
-                    Location testLocation = world.getHighestBlockAt(x, z).getLocation().add(0.5, 1, 0.5);
-
+                    Location testLocation = null;
                     try {
-                        if (isLocationSafe(testLocation)) {
-                            if (!isClaimInRadius(testLocation, claimCheckRadius)) {
-                                validLocationFound = true;
-                                candidateLocation = testLocation;
-                                instance.getLogger().info("Found safe location at " + locationToString(testLocation));
-                            } else {
-                                instance.getLogger().fine("Location " + x + "," + z + " was in claimed land.");
-                            }
+                        testLocation = CompletableFuture.supplyAsync(() ->
+                                world.getHighestBlockAt(x, z).getLocation().add(0.5, 1, 0.5), instance.getServer().getScheduler().getMainThreadExecutor(instance)
+                        ).join();
+                    } catch (Exception e) { continue; }
+
+                    if (isLocationSafe(testLocation)) {
+                        if (!isClaimInRadius(testLocation, BORDER_RADIUS)) {
+                            validLocationFound = true;
+                            candidateLocation = testLocation;
                         }
-                    } catch (Exception e) {
-                        instance.getLogger().warning("Exception during safety check at " + x + "," + z + ": " + e.getMessage());
-                        e.printStackTrace();
                     }
                 }
 
@@ -128,17 +154,54 @@ public class DrtpManager {
                         this.dailyTeleportLocation = finalLoc;
                         this.nextRerollTime = getNextMidnightMillis();
                         saveData();
+                        cacheDrtpBorder(finalLoc);
                         instance.getLogger().info("New Daily RTP location set: " + locationToString(finalLoc));
                         Bukkit.broadcast(toMM("Päivän uusi teleporttipaikka on arvottu!"));
                     });
-                } else {
-                    instance.getLogger().warning("Failed to find a safe location after 500 attempts!");
                 }
             } catch (Exception e) {
-                instance.getLogger().severe("Unexpected error while finding new teleport location!");
                 e.printStackTrace();
             }
         });
+    }
+
+    private void cacheDrtpBorder(Location center) {
+        chunkParticleMap.clear();
+        if (center == null || center.getWorld() == null) return;
+
+        World world = center.getWorld();
+        double cx = center.getX();
+        double cz = center.getZ();
+        double r = BORDER_RADIUS;
+
+        List<Point> pointsToCalculate = new ArrayList<>();
+        double increment = PARTICLE_SPACING / r;
+
+        for (double angle = 0; angle < 2 * Math.PI; angle += increment) {
+            double x = cx + (r * Math.cos(angle));
+            double z = cz + (r * Math.sin(angle));
+
+            int blockX = (int) Math.round(x - 0.5);
+            int blockZ = (int) Math.round(z - 0.5);
+
+            pointsToCalculate.add(new Point(blockX, blockZ, blockX + 0.5, blockZ + 0.5));
+        }
+
+        for (Point p : pointsToCalculate) {
+            world.getChunkAtAsync(p.blockX >> 4, p.blockZ >> 4).thenAccept(chunk -> {
+                int highestY = world.getHighestBlockAt(p.blockX, p.blockZ, HeightMap.MOTION_BLOCKING_NO_LEAVES).getY();
+                Location loc = new Location(world, p.realX, highestY + 1.5, p.realZ);
+                long key = getChunkKey(p.blockX >> 4, p.blockZ >> 4);
+                chunkParticleMap.computeIfAbsent(key, k -> new ArrayList<>()).add(loc);
+            });
+        }
+        instance.getLogger().info("Cached Border with Radius: " + r);
+    }
+
+    private record Point(int blockX, int blockZ, double realX, double realZ) {}
+
+    private long getChunkKey(int x, int z) {
+        return ((long) x & 0xFFFFFFFFL) | (((long) z & 0xFFFFFFFFL) << 32);
     }
 
     private long getNextMidnightMillis() {
@@ -148,42 +211,24 @@ public class DrtpManager {
             ZonedDateTime nextMidnight = now.toLocalDate().plusDays(1).atStartOfDay(helsinki);
             return nextMidnight.toInstant().toEpochMilli();
         } catch (Exception e) {
-            instance.getLogger().severe("Error calculating next reroll time: " + e.getMessage());
             return System.currentTimeMillis() + 86400000L;
         }
     }
 
     private boolean isLocationSafe(Location location) {
-        if (location == null || location.getWorld() == null) {
-            instance.getLogger().fine("Location or world was null");
-            return false;
-        }
-
+        if (location == null || location.getWorld() == null) return false;
         try {
             Block blockBelow = location.clone().subtract(0, 1, 0).getBlock();
-            Block feetBlock = location.getBlock();
-            Block headBlock = location.clone().add(0, 1, 0).getBlock();
-
             Biome biome = blockBelow.getBiome();
             if (biome == Biome.OCEAN || biome == Biome.DEEP_OCEAN || biome == Biome.FROZEN_OCEAN ||
-                    biome == Biome.RIVER || biome == Biome.LUSH_CAVES) {
-                return false;
-            }
+                    biome == Biome.RIVER || biome == Biome.LUSH_CAVES) return false;
 
-            if (!blockBelow.getType().isSolid() || UNSAFE_BLOCKS.contains(blockBelow.getType())) {
-                return false;
-            }
-
+            if (!blockBelow.getType().isSolid() || UNSAFE_BLOCKS.contains(blockBelow.getType())) return false;
             for (Tag<Material> tag : UNSAFE_TAGS) {
                 if (tag.isTagged(blockBelow.getType())) return false;
             }
-
-            return isSafeAirLike(feetBlock) && isSafeAirLike(headBlock);
-        } catch (Exception e) {
-            instance.getLogger().warning("Error checking location safety: " + e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
+            return isSafeAirLike(location.getBlock()) && isSafeAirLike(location.clone().add(0, 1, 0).getBlock());
+        } catch (Exception e) { return false; }
     }
 
     private boolean isSafeAirLike(Block block) {
@@ -191,22 +236,20 @@ public class DrtpManager {
     }
 
     public boolean isClaimInRadius(Location center, int radius) {
-        if (isClaimAt(center)) return true;
-
-        if (isClaimAt(center.clone().add(radius, 0, radius))) return true;
-        if (isClaimAt(center.clone().add(-radius, 0, radius))) return true;
-        if (isClaimAt(center.clone().add(radius, 0, -radius))) return true;
-        if (isClaimAt(center.clone().add(-radius, 0, -radius))) return true;
-
-        return false;
+        try {
+            if (instance.getCrashClaim() == null) return false;
+            CrashClaimAPI api = instance.getCrashClaim().getApi();
+            if (api.getClaim(center) != null) return true;
+            if (isClaimAt(center.clone().add(radius, 0, radius))) return true;
+            if (isClaimAt(center.clone().add(-radius, 0, radius))) return true;
+            if (isClaimAt(center.clone().add(radius, 0, -radius))) return true;
+            if (isClaimAt(center.clone().add(-radius, 0, -radius))) return true;
+            return false;
+        } catch (Exception e) { return true; }
     }
 
     private boolean isClaimAt(Location location) {
-        if (instance.getCrashClaim() == null) {
-            instance.getLogger().warning("CrashClaim not found! Assuming no claim.");
-            return false;
-        }
-
+        if (instance.getCrashClaim() == null) return false;
         return instance.getCrashClaim().getApi().getClaim(location) != null;
     }
 
@@ -214,12 +257,9 @@ public class DrtpManager {
         try {
             if (dataConfig.contains("location")) {
                 this.dailyTeleportLocation = dataConfig.getLocation("location");
-                instance.getLogger().info("Loaded location from drtp.yml: " + locationToString(dailyTeleportLocation));
             }
             this.nextRerollTime = dataConfig.getLong("next-reroll-time", getNextMidnightMillis());
-            instance.getLogger().info("Next reroll time: " + Instant.ofEpochMilli(nextRerollTime));
         } catch (Exception e) {
-            instance.getLogger().severe("Error loading drtp.yml!");
             e.printStackTrace();
         }
     }
@@ -229,9 +269,7 @@ public class DrtpManager {
             dataConfig.set("location", this.dailyTeleportLocation);
             dataConfig.set("next-reroll-time", this.nextRerollTime);
             dataConfig.save(dataFile);
-            instance.getLogger().info("Saved new drtp.yml successfully.");
         } catch (IOException e) {
-            instance.getLogger().severe("Could not save drtp.yml!");
             e.printStackTrace();
         }
     }

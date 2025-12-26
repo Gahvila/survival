@@ -9,16 +9,15 @@ import net.gahvila.gahvilacore.Teleport.TeleportManager;
 import net.gahvila.survival.DailyRTP.DrtpCommand;
 import net.gahvila.survival.DailyRTP.DrtpManager;
 import net.gahvila.survival.DailyRTP.integration.ClaimBlockListener;
-import net.gahvila.survival.Features.ElytraDisabler.ElytraReplacer;
 import net.gahvila.survival.Events.JoinEvent;
 import net.gahvila.survival.Events.PlayerDeath;
 import net.gahvila.survival.Events.QuitEvent;
 import net.gahvila.survival.Features.NoPunchDamage;
+import net.gahvila.survival.Features.RegionBorderVisualizer;
 import net.gahvila.survival.Homes.HomeCommands;
 import net.gahvila.survival.Homes.HomeEvents;
 import net.gahvila.survival.Homes.HomeManager;
 import net.gahvila.survival.Homes.HomeMenu;
-import net.gahvila.survival.Features.ElytraDisabler.ElytraDebuff;
 import net.gahvila.survival.Pets.Pets;
 import net.gahvila.survival.Warps.WarpApplications.WarpApplication;
 import net.gahvila.survival.Warps.WarpApplications.WarpApplicationManager;
@@ -89,7 +88,7 @@ public class survival extends JavaPlugin implements Listener {
 
         //register events
         registerListeners(new PlayerDeath(teleportManager), new JoinEvent(), new QuitEvent(),
-                new WarpEvents(warpManager), new Pets(), new HomeEvents(homeManager), new ElytraDebuff(), new ElytraReplacer(), new NoPunchDamage());
+                new WarpEvents(warpManager), new Pets(), new HomeEvents(homeManager), new NoPunchDamage());
 
         //fix reload argh
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -103,6 +102,10 @@ public class survival extends JavaPlugin implements Listener {
         DrtpCommand drtpCommand = new DrtpCommand(drtpManager);
         drtpCommand.register(this);
         getServer().getPluginManager().registerEvents(new ClaimBlockListener(drtpManager), this);
+
+        //region border
+        RegionBorderVisualizer regionBorderVisualizer = new RegionBorderVisualizer(this);
+        regionBorderVisualizer.enableVisualizer();
     }
 
     @Override

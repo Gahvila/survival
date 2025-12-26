@@ -65,12 +65,14 @@ public class DrtpCommand {
         int cooldownTime = 60; // seconds
 
         // Cooldown Check
-        if (cooldowns.containsKey(player.getUniqueId())) {
-            long secondsLeft = ((cooldowns.get(player.getUniqueId()) / 1000) + cooldownTime)
-                    - (System.currentTimeMillis() / 1000);
-            if (secondsLeft > 0) {
-                player.sendRichMessage("<red>Malta hetki! Sinun täytyy odottaa vielä " + secondsLeft + " sekuntia ennen kuin voit tehdä tuon uudelleen.");
-                return 1;
+        if (!player.hasPermission("drtp.cooldownbypass")) {
+            if (cooldowns.containsKey(player.getUniqueId())) {
+                long secondsLeft = ((cooldowns.get(player.getUniqueId()) / 1000) + cooldownTime)
+                        - (System.currentTimeMillis() / 1000);
+                if (secondsLeft > 0) {
+                    player.sendRichMessage("<red>Malta hetki! Sinun täytyy odottaa vielä " + secondsLeft + " sekuntia ennen kuin voit tehdä tuon uudelleen.");
+                    return 1;
+                }
             }
         }
 
@@ -83,6 +85,7 @@ public class DrtpCommand {
         player.teleportAsync(dailyLocation).thenAccept(success -> {
             if (success) {
                 player.sendRichMessage("<white>Siirretään sinut päivän paikkaan.");
+                player.sendRichMessage("<gray>Päivän paikan ympäristö on suojattu <aqua>100 palikan</aqua> säteellä. <red>Rakentaminen ja suojaaminen on estetty.</red></gray>");
                 cooldowns.put(player.getUniqueId(), System.currentTimeMillis());
             } else {
                 player.sendRichMessage("<red>Teleportti epäonnistui! Jokin taitaa olla tiellä.");

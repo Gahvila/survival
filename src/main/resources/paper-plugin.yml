@@ -8,6 +8,10 @@ dependencies:
     GahvilaCore:
       required: true
       load: BEFORE
+    WorldGuard:
+      required: true
+      load: BEFORE
+      join-classpath: true
     CrashClaim:
       required: false
       load: BEFORE

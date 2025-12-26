@@ -38,6 +38,7 @@ repositories {
     maven { url = uri("https://repo.gahvila.net/snapshots/") }
     maven { url = uri("https://repo.extendedclip.com/content/repositories/placeholderapi/") }
     maven("https://repo.aikar.co/content/groups/aikar/")
+    maven("https://maven.enginehub.org/repo/")
 
 }
 
@@ -48,6 +49,7 @@ dependencies {
     compileOnly ("me.clip:placeholderapi:2.11.6")
     compileOnly ("net.luckperms:api:5.4")
     compileOnly("net.crashcraft:crashclaim:1.0.44")
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.9")
     implementation("net.gahvila:inventoryframework:0.11.2-SNAPSHOT")
     implementation("com.github.simplix-softworks:simplixstorage:3.2.7")
 
