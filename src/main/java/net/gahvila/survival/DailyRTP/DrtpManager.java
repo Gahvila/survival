@@ -1,6 +1,8 @@
 package net.gahvila.survival.DailyRTP;
 
 import net.crashcraft.crashclaim.api.CrashClaimAPI;
+import net.gahvila.survival.Config.ConfigManager;
+import net.gahvila.survival.Utils.DiscordWebhook;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -157,6 +159,16 @@ public class DrtpManager {
                         cacheDrtpBorder(finalLoc);
                         instance.getLogger().info("New Daily RTP location set: " + locationToString(finalLoc));
                         Bukkit.broadcast(toMM("Päivän uusi teleporttipaikka on arvottu!"));
+                        DiscordWebhook webhook = new DiscordWebhook(ConfigManager.getAnnouncementWebhookUrl());
+                        webhook.setUsername("survival");
+                        webhook.addEmbed(new DiscordWebhook.EmbedObject()
+                                .addField("Sijainti", locationToString(finalLoc), false)
+                                .setDescription("**Päivän uusi teleporttipaikka on arvottu!**"));
+                        try {
+                            webhook.execute();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     });
                 }
             } catch (Exception e) {
@@ -280,7 +292,7 @@ public class DrtpManager {
 
     private String locationToString(Location loc) {
         if (loc == null) return "N/A";
-        return String.format("%s, X: %.1f, Y: %.1f, Z: %.1f",
-                loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ());
+        return String.format("X: %.1f, Y: %.1f, Z: %.1f",
+                loc.getX(), loc.getY(), loc.getZ());
     }
 }

@@ -88,7 +88,7 @@ public class survival extends JavaPlugin implements Listener {
 
         //register events
         registerListeners(new PlayerDeath(teleportManager), new JoinEvent(), new QuitEvent(),
-                new WarpEvents(warpManager), new Pets(), new HomeEvents(homeManager), new NoPunchDamage());
+                new WarpEvents(warpManager, warpApplicationManager), new Pets(), new HomeEvents(homeManager), new NoPunchDamage());
 
         //fix reload argh
         for (Player player : Bukkit.getOnlinePlayers()) {

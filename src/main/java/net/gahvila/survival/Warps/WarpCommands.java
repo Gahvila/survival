@@ -7,11 +7,11 @@ import net.gahvila.survival.Features.TeleportBlocker;
 import net.gahvila.survival.Messages.Message;
 import net.gahvila.survival.Warps.WarpApplications.WarpApplication;
 import net.gahvila.survival.Warps.WarpApplications.WarpApplicationManager;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
+import net.gahvila.survival.survival;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.nio.charset.StandardCharsets;
@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static java.lang.Float.MAX_VALUE;
 import static net.gahvila.gahvilacore.Utils.MiniMessageUtils.toMM;
 
 public class WarpCommands {
@@ -92,7 +93,13 @@ public class WarpCommands {
                         if (warpManager.isLocationSafe(warp.get().getLocation())){
                             if (TeleportBlocker.canTeleport(p)) {
                                 p.teleportAsync(warp.get().getLocation());
-                                p.setWalkSpeed(0.2F);
+                                p.sendMessage(toMM("Sinut teleportattiin warppiin <#85FF00>" + warp.get().getName() + "</#85FF00>."));
+                                Bukkit.getServer().getScheduler().runTaskLater(survival.instance, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, MAX_VALUE, 1F);
+                                    }
+                                }, 5);
                             } else {
                                 p.sendRichMessage(Message.TELEPORT_NOT_POSSIBLE.getText());
                             }
@@ -156,49 +163,52 @@ public class WarpCommands {
                 .withSubcommand(new CommandAPICommand("review")
                         .withArguments(new UUIDArgument("application"))
                         .withOptionalArguments(new BooleanArgument("accepted"))
+                        .withOptionalArguments(new GreedyStringArgument("reason"))
                         .executes((sender, args) -> {
                             UUID application = UUID.fromString(args.getRaw("application"));
+
                             if (!warpApplicationManager.getApplications().contains(application)) {
-                                sender.sendMessage("Tuota hakemusta ei löytynyt. Onko se jo käsitelty?");
+                                sender.sendMessage("Tuota hakemusta ei löytynyt, tai se on jo käsitelty.");
                                 return;
                             }
-                            boolean accepted = Boolean.parseBoolean(args.getRaw("accepted"));
+
                             if (args.getRaw("accepted") == null) {
                                 sender.sendRichMessage("Vaihtoehtoja:");
                                 if (sender instanceof Player) {
                                     Location location = warpApplicationManager.getApplicationLocation(application);
-                                    String teleportCommand = "/tp " + sender.getName() + " " + location.getX() + " " + location.getY() + " " + location.getZ() + " " + location.getYaw() + " " + location.getPitch();
-                                    sender.sendRichMessage("<click:run_command:'" + teleportCommand + "'><white><u>Teleporttaa warpin sijaintiin");
+                                    if(location != null) {
+                                        String teleportCommand = "/tp " + sender.getName() + " " + location.getX() + " " + location.getY() + " " + location.getZ() + " " + location.getYaw() + " " + location.getPitch();
+                                        sender.sendRichMessage("<click:run_command:'" + teleportCommand + "'><white><u>Teleporttaa warpin sijaintiin");
+                                    }
                                     sender.sendRichMessage("");
                                 }
-                                String acceptCommand = "/adminwarp review " + application + " true";
-                                String denyCommand = "/adminwarp review " + application + " false";
-                                sender.sendRichMessage("<click:run_command:'" + acceptCommand + "'><white><u>Hyväksy hakemus (lisää komennon perään true)");
+                                String acceptCommand = "/adminwarp review " + application + " true ";
+                                String denyCommand = "/adminwarp review " + application + " false ";
+                                sender.sendRichMessage("<click:suggest_command:'" + acceptCommand + "'><white><u>Hyväksy hakemus (kirjoita perään syy)");
                                 sender.sendRichMessage("");
-                                sender.sendRichMessage("<click:run_command:'" + denyCommand + "'><white><u>Hylkää hakemus (lisää komennon perään false)");
+                                sender.sendRichMessage("<click:suggest_command:'" + denyCommand + "'><white><u>Hylkää hakemus (kirjoita perään syy)");
                                 return;
                             }
 
+                            boolean accepted = Boolean.parseBoolean(args.getRaw("accepted"));
+                            String reason = (String) args.get("reason");
+
+                            if (reason == null) reason = "";
+
                             if (accepted) {
-                                sender.sendMessage("Hyväksyit hakemuksen " + application);
-                               warpApplicationManager.acceptApplication(application);
+                                sender.sendMessage("Hyväksyit hakemuksen " + application + " (Syy: " + reason + ")");
+                                warpApplicationManager.acceptApplication(application, reason);
                             } else {
-                                sender.sendMessage("Hylkäsit hakemuksen " + application);
-                                warpApplicationManager.denyApplication(application);
+                                sender.sendMessage("Hylkäsit hakemuksen " + application + " (Syy: " + reason + ")");
+                                warpApplicationManager.denyApplication(application, reason);
                             }
                         }))
                 .register();
-
-
     }
 
     public Argument<List<String>> customWarpArgument(String nodeName) {
-        // Construct our CustomArgument that takes in a String input and returns a list of home names
         return new CustomArgument<List<String>, String>(new GreedyStringArgument(nodeName), info -> {
-
             List<String> homeNames = warpManager.getWarpNames();
-
-            // Check if the warp names list is not null and contains names
             if (homeNames == null || homeNames.isEmpty()) {
                 throw CustomArgument.CustomArgumentException.fromMessageBuilder(new CustomArgument.MessageBuilder("Warppeja ei ole."));
             } else {
@@ -208,21 +218,16 @@ public class WarpCommands {
             if (warpManager.getWarpNames() == null) {
                 return new String[0];
             }
-
             return warpManager.getWarpNames().toArray(new String[0]);
         }));
     }
 
     public Argument<List<String>> customOwnedWarpArgument(String nodeName) {
-        // Construct our CustomArgument that takes in a String input and returns a list of home names
         return new CustomArgument<List<String>, String>(new GreedyStringArgument(nodeName), info -> {
-            // Retrieve the list of home names for the player
-
             Player player = (Player) info.sender();
             UUID uuid = player.getUniqueId();
             List<String> warpNames = warpManager.getOwnedWarpNames(uuid);
 
-            // Check if the home names list is not null and contains names
             if (warpNames == null || warpNames.isEmpty()) {
                 throw CustomArgument.CustomArgumentException.fromMessageBuilder(new CustomArgument.MessageBuilder("Ei ole warppeja."));
             } else {
@@ -232,13 +237,10 @@ public class WarpCommands {
             if (info == null || info.sender() == null || !(info.sender() instanceof Player player)) {
                 throw new IllegalArgumentException("Invalid sender information.");
             }
-
             List<String> warpNames = warpManager.getOwnedWarpNames(player.getUniqueId());
-
             if (warpNames == null) {
                 return new String[0];
             }
-
             return warpNames.toArray(new String[0]);
         }));
     }

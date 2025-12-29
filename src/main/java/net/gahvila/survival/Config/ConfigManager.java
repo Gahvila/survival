@@ -10,4 +10,9 @@ public class ConfigManager {
         Yaml data = new Yaml("config.yml", instance.getDataFolder() + "/");
         return data.getOrDefault("warp-application-webhook-url", "");
     }
+
+    public static String getAnnouncementWebhookUrl() {
+        Yaml data = new Yaml("config.yml", instance.getDataFolder() + "/");
+        return data.getOrDefault("announcement-webhook-url", "");
+    }
 }

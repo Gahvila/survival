@@ -4,8 +4,9 @@ import de.leonhard.storage.Json;
 import net.gahvila.gahvilacore.Profiles.Prefix.Backend.Enum.PrefixType.Single;
 import net.gahvila.survival.Config.ConfigManager;
 import net.gahvila.survival.Utils.DiscordWebhook;
-import net.gahvila.survival.Warps.Warp;
 import net.gahvila.survival.Warps.WarpManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,7 +27,6 @@ public class WarpApplicationManager {
         this.warpManager = warpManager;
     }
 
-    //application creation
     public void sendWarpApplication(Player player, String warpName, Location location) throws IOException {
         if (warpName == null || warpName.trim().isEmpty()) {
             player.sendRichMessage("<red>Warpin nimi ei voi olla tyhjä.");
@@ -38,7 +38,7 @@ public class WarpApplicationManager {
             return;
         }
 
-        if (!warpName.matches("^[a-zA-Z0-9_]+$")) {
+        if (!warpName.matches("^[a-zA-Z0-9_ äöåÄÖÅ]+$")) {
             player.sendRichMessage("<red>Warpin nimessä saa olla vain kirjaimia, numeroita ja alaviivoja.");
             return;
         }
@@ -48,14 +48,18 @@ public class WarpApplicationManager {
             return;
         }
 
+        if (getActiveApplicationCount(player.getUniqueId()) >= 2) {
+            player.sendRichMessage("<red>Sinulla on jo 2 käsittelemätöntä warp-hakemusta. Odota niiden käsittelyä.");
+            return;
+        }
+
         Json warpData = new Json("warpapplications.json", instance.getDataFolder() + "/data/");
         for (String key : warpData.getFileData().singleLayerKeySet()) {
             String existingWarpName = warpData.getString(key + ".warpName");
-            String existingPlayerUUID = warpData.getString(key + ".playerUUID");
-            if (existingWarpName != null && existingPlayerUUID != null &&
-                    existingWarpName.equalsIgnoreCase(warpName) &&
-                    existingPlayerUUID.equals(player.getUniqueId().toString())) {
-                player.sendRichMessage("Sinulla on jo avoin warp-hakemus nimellä '" + warpName + "'.");
+            boolean isProcessed = warpData.getBoolean(key + ".processed");
+
+            if (!isProcessed && existingWarpName != null && existingWarpName.equalsIgnoreCase(warpName)) {
+                player.sendRichMessage("<red>Warp nimellä '" + warpName + "' on jo hakemuksessa.");
                 return;
             }
         }
@@ -67,12 +71,25 @@ public class WarpApplicationManager {
         player.sendRichMessage("Warp-hakemus '<yellow>" + warpName + "</yellow>' on lähetetty tarkistettavaksi.");
     }
 
+    private int getActiveApplicationCount(UUID playerUUID) {
+        Json warpData = new Json("warpapplications.json", instance.getDataFolder() + "/data/");
+        int count = 0;
+        for (String key : warpData.getFileData().singleLayerKeySet()) {
+            String existingPlayerUUID = warpData.getString(key + ".playerUUID");
+            boolean processed = warpData.getBoolean(key + ".processed");
+
+            if (existingPlayerUUID != null && existingPlayerUUID.equals(playerUUID.toString()) && !processed) {
+                count++;
+            }
+        }
+        return count;
+    }
 
     private void saveApplication(UUID applicationUUID, UUID playerUUID, String currentPlayerName, String warpName, Location location) {
         Json warpData = new Json("warpapplications.json", instance.getDataFolder() + "/data/");
         String uuid = applicationUUID.toString();
         warpData.getFileData().insert(uuid + ".warpName", warpName);
-        warpData.getFileData().insert(uuid + ".playerUUID", playerUUID);
+        warpData.getFileData().insert(uuid + ".playerUUID", playerUUID.toString());
         warpData.getFileData().insert(uuid + ".currentPlayerName", currentPlayerName);
         warpData.getFileData().insert(uuid + ".applicationdate", System.currentTimeMillis());
         warpData.getFileData().insert(uuid + ".world", location.getWorld().getName());
@@ -81,6 +98,9 @@ public class WarpApplicationManager {
         warpData.getFileData().insert(uuid + ".z", location.getZ());
         warpData.getFileData().insert(uuid + ".yaw", location.getYaw());
         warpData.set(uuid + ".pitch", location.getPitch());
+
+        warpData.set(uuid + ".processed", false);
+        warpData.set(uuid + ".acknowledged", false);
     }
 
     private void sendApplicationWebhook(UUID applicationUUID, UUID playerUUID, String currentPlayerName, String warpName, Location location) throws IOException {
@@ -98,44 +118,33 @@ public class WarpApplicationManager {
     }
 
 
-    //data retrieval
     public ArrayList<UUID> getApplications() {
         Json warpData = new Json("warpapplications.json", instance.getDataFolder() + "/data/");
         ArrayList<UUID> applicationUUIDs = new ArrayList<>();
 
         for (String key : warpData.getFileData().singleLayerKeySet()) {
-            applicationUUIDs.add(UUID.fromString(key));
+            if (!warpData.getBoolean(key + ".processed")) {
+                applicationUUIDs.add(UUID.fromString(key));
+            }
         }
 
         return applicationUUIDs;
     }
 
-
     public String getApplicationWarpName(UUID applicationUUID) {
         Json warpData = new Json("warpapplications.json", instance.getDataFolder() + "/data/");
-        String uuid = applicationUUID.toString();
-        if (warpData.getFileData().containsKey(uuid)) {
-            return warpData.getString(uuid + ".warpName");
-        }
-        return null;
+        return warpData.getString(applicationUUID.toString() + ".warpName");
     }
 
     public String getApplicationPlayerName(UUID applicationUUID) {
         Json warpData = new Json("warpapplications.json", instance.getDataFolder() + "/data/");
-        String uuid = applicationUUID.toString();
-        if (warpData.getFileData().containsKey(uuid)) {
-            return warpData.getString(uuid + ".currentPlayerName");
-        }
-        return null;
+        return warpData.getString(applicationUUID.toString() + ".currentPlayerName");
     }
 
     public UUID getApplicationPlayerUUID(UUID applicationUUID) {
         Json warpData = new Json("warpapplications.json", instance.getDataFolder() + "/data/");
-        String uuid = applicationUUID.toString();
-        if (warpData.getFileData().containsKey(uuid)) {
-            return UUID.fromString(warpData.getString(uuid + ".playerUUID"));
-        }
-        return null;
+        String uuidStr = warpData.getString(applicationUUID.toString() + ".playerUUID");
+        return uuidStr != null ? UUID.fromString(uuidStr) : null;
     }
 
     public Location getApplicationLocation(UUID applicationUUID) {
@@ -148,34 +157,88 @@ public class WarpApplicationManager {
             double z = warpData.getDouble(uuid + ".z");
             float yaw = (float) warpData.getDouble(uuid + ".yaw");
             float pitch = (float) warpData.getDouble(uuid + ".pitch");
-            Location location = new Location(world, x, y, z, yaw, pitch);
-            return location;
+            return new Location(world, x, y, z, yaw, pitch);
         }
-
-
         return null;
     }
 
-    public void deleteApplication(UUID applicationUUID) {
-        Json warpData = new Json("warpapplications.json", instance.getDataFolder() + "/data/");
-        if (warpData.contains(applicationUUID.toString())) {
-            warpData.set(applicationUUID.toString(), null);
-        }
-    }
+    public void acceptApplication(UUID applicationUUID, String reason) {
+        processApplication(applicationUUID, true, reason);
 
-    // application controls
-    public void acceptApplication(UUID applicationUUID) {
         UUID playerUUID = getApplicationPlayerUUID(applicationUUID);
         String playerName = getApplicationPlayerName(applicationUUID);
         String warpName = getApplicationWarpName(applicationUUID);
         Location location = getApplicationLocation(applicationUUID);
-        warpManager.setWarp(playerUUID, playerName, warpName, location, Single.VALKOINEN, Material.LODESTONE);
 
-        deleteApplication(applicationUUID);
-        //TODO: send webhook about new warp here
+        warpManager.setWarp(playerUUID, playerName, warpName, location, Single.VALKOINEN, Material.LODESTONE);
     }
 
-    public void denyApplication(UUID applicationUUID) {
-        deleteApplication(applicationUUID);
+    public void denyApplication(UUID applicationUUID, String reason) {
+        processApplication(applicationUUID, false, reason);
+    }
+
+    private void processApplication(UUID applicationUUID, boolean accepted, String reason) {
+        Json warpData = new Json("warpapplications.json", instance.getDataFolder() + "/data/");
+        String uuid = applicationUUID.toString();
+
+        if (!warpData.contains(uuid)) return;
+
+        warpData.set(uuid + ".processed", true);
+        warpData.set(uuid + ".accepted", accepted);
+        warpData.set(uuid + ".reason", reason);
+
+        UUID playerUUID = getApplicationPlayerUUID(applicationUUID);
+        Player player = Bukkit.getPlayer(playerUUID);
+
+        if (player != null && player.isOnline()) {
+            sendResultNotification(player, getApplicationWarpName(applicationUUID), accepted, reason);
+            warpData.set(uuid + ".acknowledged", true);
+        } else {
+            warpData.set(uuid + ".acknowledged", false);
+        }
+    }
+
+    public void checkPendingNotifications(Player player) {
+        Json warpData = new Json("warpapplications.json", instance.getDataFolder() + "/data/");
+
+        for (String key : warpData.getFileData().singleLayerKeySet()) {
+            String appPlayerUUID = warpData.getString(key + ".playerUUID");
+            boolean processed = warpData.getBoolean(key + ".processed");
+            boolean acknowledged = warpData.getBoolean(key + ".acknowledged");
+
+            if (appPlayerUUID != null && appPlayerUUID.equals(player.getUniqueId().toString())
+                    && processed && !acknowledged) {
+
+                String warpName = warpData.getString(key + ".warpName");
+                boolean accepted = warpData.getBoolean(key + ".accepted");
+                String reason = warpData.getString(key + ".reason");
+
+                sendResultNotification(player, warpName, accepted, reason);
+
+                warpData.set(key + ".acknowledged", true);
+            }
+        }
+    }
+
+    private void sendResultNotification(Player player, String warpName, boolean accepted, String reason) {
+        MiniMessage mm = MiniMessage.miniMessage();
+        String statusColor = accepted ? "<green>" : "<red>";
+        String statusText = accepted ? "HYVÄKSYTTY" : "HYYLÄTTY";
+
+        player.sendMessage(mm.deserialize("<gray>--------------------------------"));
+        player.sendMessage(mm.deserialize("<yellow>Warp-hakemus: <white>" + warpName));
+        player.sendMessage(mm.deserialize("<gray>Tila: " + statusColor + "<bold>" + statusText));
+
+        if (reason != null && !reason.isEmpty()) {
+            player.sendMessage(mm.deserialize("<gray>Syy: <white>" + reason));
+        }
+
+        player.sendMessage(mm.deserialize("<gray>--------------------------------"));
+
+        if (accepted) {
+            player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
+        } else {
+            player.playSound(player.getLocation(), org.bukkit.Sound.BLOCK_NOTE_BLOCK_BASS, 1f, 0.5f);
+        }
     }
 }
