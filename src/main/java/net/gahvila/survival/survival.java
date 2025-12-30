@@ -12,6 +12,7 @@ import net.gahvila.survival.DailyRTP.integration.ClaimBlockListener;
 import net.gahvila.survival.Events.JoinEvent;
 import net.gahvila.survival.Events.PlayerDeath;
 import net.gahvila.survival.Events.QuitEvent;
+import net.gahvila.survival.Features.ElytraReplacer;
 import net.gahvila.survival.Features.NoPunchDamage;
 import net.gahvila.survival.Features.RegionBorderVisualizer;
 import net.gahvila.survival.Homes.HomeCommands;
@@ -88,7 +89,7 @@ public class survival extends JavaPlugin implements Listener {
 
         //register events
         registerListeners(new PlayerDeath(teleportManager), new JoinEvent(), new QuitEvent(),
-                new WarpEvents(warpManager, warpApplicationManager), new Pets(), new HomeEvents(homeManager), new NoPunchDamage());
+                new WarpEvents(warpManager, warpApplicationManager), new Pets(), new HomeEvents(homeManager), new NoPunchDamage(), new ElytraReplacer());
 
         //fix reload argh
         for (Player player : Bukkit.getOnlinePlayers()) {
