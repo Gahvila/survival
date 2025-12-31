@@ -57,7 +57,7 @@ public class survival extends JavaPlugin implements Listener {
 
         pluginManager = Bukkit.getPluginManager();
         PlaytimeManager playtimeManager = GahvilaCore.instance.getPlaytimeManager();
-        homeManager = new HomeManager(playtimeManager);
+        homeManager = new HomeManager();
         TeleportManager teleportManager = new TeleportManager();
         WarpManager warpManager = new WarpManager(playtimeManager);
         WarpApplicationManager warpApplicationManager = new WarpApplicationManager(warpManager);
