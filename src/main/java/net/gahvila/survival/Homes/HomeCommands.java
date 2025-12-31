@@ -117,7 +117,7 @@ public class HomeCommands {
                 .executesPlayer((p, args) -> {
                     UUID uuid = p.getUniqueId();
                     if (args.get("nimi") == null){
-                        if (homeManager.getHomes(uuid) == null || homeManager.getHomes(uuid).size() < homeManager.getAllowedHomes(p)) {
+                        if (homeManager.getHomes(uuid) == null || homeManager.getHomes(uuid).size() < homeManager.getAllowedHomes()) {
                             if (gambling.containsKey(p)){
                                 p.sendMessage("Et voi asettaa kotia juuri nyt.");
                                 return;
@@ -132,7 +132,7 @@ public class HomeCommands {
                         return;
                     }
                     String nimi = (String) args.get("nimi");
-                    if (homeManager.getHomes(uuid) == null || homeManager.getHomes(uuid).size() < homeManager.getAllowedHomes(p)) {
+                    if (homeManager.getHomes(uuid) == null || homeManager.getHomes(uuid).size() < homeManager.getAllowedHomes()) {
                         if (nimi.matches("[a-zA-Z0-9äöåÄÖÅ!?.,\\-_]+( [a-zA-Z0-9äöåÄÖÅ!?.,\\-_]+)*") && nimi.length() <= 30) {
                             if (!p.getWorld().getName().equals("world_the_end")) {
                                 homeManager.saveHome(uuid, nimi, p.getLocation());

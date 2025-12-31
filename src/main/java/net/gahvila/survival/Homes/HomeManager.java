@@ -161,19 +161,7 @@ public class HomeManager {
         }
     }
 
-    private static final List<Map.Entry<String, Integer>> GROUPS = List.of(
-            Map.entry("group.pro", 4),
-            Map.entry("group.espresso", 3),
-            Map.entry("group.mocha", 2),
-            Map.entry("group.default", 1)
-    );
-
-    public int getAllowedHomes(Player player) {
-        for (Map.Entry<String, Integer> entry : GROUPS) {
-            if (player.hasPermission(entry.getKey())) {
-                return entry.getValue();
-            }
-        }
-        return 1;
+    public int getAllowedHomes() {
+        return 3;
     }
 }

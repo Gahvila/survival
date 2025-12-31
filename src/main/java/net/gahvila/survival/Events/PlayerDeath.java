@@ -2,11 +2,16 @@ package net.gahvila.survival.Events;
 
 import net.gahvila.gahvilacore.GahvilaCore;
 import net.gahvila.gahvilacore.Teleport.TeleportManager;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+
+import java.util.Locale;
+import java.util.Optional;
 
 import static java.lang.Long.MAX_VALUE;
 import static net.gahvila.gahvilacore.Utils.MiniMessageUtils.toMM;
@@ -45,5 +50,7 @@ public class PlayerDeath implements Listener {
             }
             p.playSound(p.getRespawnLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_CURE, 0.4F, 1F);
         }
+        Optional.ofNullable(e.getPlayer().getLastDeathLocation())
+                .ifPresent(l -> p.sendMessage(toMM("<gray>Kuolinpaikkasi on koordinaateissa:</gray> <yellow>" + l.getBlockX() + "</yellow><gray>,</gray> <yellow>" + l.getBlockY() + "</yellow><gray>,</gray> <yellow>" + l.getBlockZ() + "</yellow><gray>.</gray>")));
     }
 }
