@@ -6,10 +6,16 @@ import net.crashcraft.crashclaim.claimobjects.Claim;
 import net.gahvila.survival.DailyRTP.DrtpManager;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Enemy;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class ClaimBlockListener implements Listener {
@@ -38,6 +44,42 @@ public class ClaimBlockListener implements Listener {
         if (isNearDailyTeleport(loc)) {
             event.setCancelled(true);
             event.getPlayer().sendRichMessage("<red>Et voi tehdä tuota.");
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onEntityExplode(EntityExplodeEvent event) {
+        Location loc = event.getLocation();
+
+        if (isNearDailyTeleport(loc)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onBlockIgnite(BlockIgniteEvent event) {
+        Location loc = event.getBlock().getLocation();
+
+        if (isNearDailyTeleport(loc)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onCreatureSpawn(CreatureSpawnEvent event) {
+        if (event.getEntity() instanceof Enemy) {
+            if (isNearDailyTeleport(event.getLocation())) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onEntityTarget(EntityTargetLivingEntityEvent event) {
+        if (event.getEntity() instanceof Enemy) {
+            if (event.getTarget() != null && isNearDailyTeleport(event.getTarget().getLocation())) {
+                event.setCancelled(true);
+            }
         }
     }
 
