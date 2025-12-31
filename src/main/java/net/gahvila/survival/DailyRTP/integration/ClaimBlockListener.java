@@ -7,6 +7,7 @@ import net.gahvila.survival.DailyRTP.DrtpManager;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Enemy;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -14,6 +15,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -78,6 +80,15 @@ public class ClaimBlockListener implements Listener {
     public void onEntityTarget(EntityTargetLivingEntityEvent event) {
         if (event.getEntity() instanceof Enemy) {
             if (event.getTarget() != null && isNearDailyTeleport(event.getTarget().getLocation())) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onEntityDamage(EntityDamageEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            if (isNearDailyTeleport(player.getLocation())) {
                 event.setCancelled(true);
             }
         }
