@@ -23,38 +23,57 @@ public class WarpManager {
 
     public HashSet<Warp> warps = new HashSet<>();
 
-    public static HashSet<Material> bad_blocks = new HashSet<>();
-    static {
-        bad_blocks.add(Material.LAVA);
-        bad_blocks.add(Material.FIRE);
-        bad_blocks.add(Material.CACTUS);
-        bad_blocks.add(Material.MAGMA_BLOCK);
-    }
-    public static HashSet<Material> ground_blocks = new HashSet<>();
-    static {
-        bad_blocks.add(Material.AIR);
-        bad_blocks.add(Material.LAVA);
-        bad_blocks.add(Material.FIRE);
-        bad_blocks.add(Material.CACTUS);
-        bad_blocks.add(Material.MAGMA_BLOCK);
-    }
+    // Define blocks that are dangerous to stand IN (feet/head)
+    private static final Set<Material> DANGEROUS_BLOCKS = new HashSet<>();
+    // Define blocks that are dangerous to stand ON (floor)
+    private static final Set<Material> UNSAFE_FLOOR = new HashSet<>();
 
+    static {
+        DANGEROUS_BLOCKS.add(Material.LAVA);
+        DANGEROUS_BLOCKS.add(Material.FIRE);
+        DANGEROUS_BLOCKS.add(Material.SWEET_BERRY_BUSH);
+        DANGEROUS_BLOCKS.add(Material.CACTUS);
+
+        UNSAFE_FLOOR.add(Material.AIR);
+        UNSAFE_FLOOR.add(Material.LAVA);
+        UNSAFE_FLOOR.add(Material.FIRE);
+        UNSAFE_FLOOR.add(Material.MAGMA_BLOCK);
+        UNSAFE_FLOOR.add(Material.CACTUS);
+    }
 
     public boolean isLocationSafe(Location location) {
-
         int x = location.getBlockX();
         int y = location.getBlockY();
         int z = location.getBlockZ();
-        //Get instances of the blocks around where the player would spawn
-        Block block = location.getWorld().getBlockAt(x, y, z);
-        Block below = location.getWorld().getBlockAt(x, y - 1, z);
-        Block above = location.getWorld().getBlockAt(x, y + 1, z);
-        //spawnrtp
-        if (!ground_blocks.contains(below.getType())){
-            return !(bad_blocks.contains(below.getType())) || (block.isSolid()) || (above.getType().isSolid());
-        }else{
+        var world = location.getWorld();
+
+        if (world == null) return false;
+
+        Block centerGround = world.getBlockAt(x, y - 1, z);
+        Block centerFeet = world.getBlockAt(x, y, z);
+        Block centerHead = world.getBlockAt(x, y + 1, z);
+
+        if (UNSAFE_FLOOR.contains(centerGround.getType()) || !centerGround.getType().isSolid()) {
             return false;
         }
+        if (centerFeet.getType().isSolid() || centerHead.getType().isSolid()) {
+            return false;
+        }
+
+        for (int ix = x - 1; ix <= x + 1; ix++) {
+            for (int iz = z - 1; iz <= z + 1; iz++) {
+
+                Block surroundingFeet = world.getBlockAt(ix, y, iz);
+                Block surroundingHead = world.getBlockAt(ix, y + 1, iz);
+
+                if (DANGEROUS_BLOCKS.contains(surroundingFeet.getType()) ||
+                        DANGEROUS_BLOCKS.contains(surroundingHead.getType())) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     //

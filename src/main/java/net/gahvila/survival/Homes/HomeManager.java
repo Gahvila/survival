@@ -14,12 +14,6 @@ import static net.gahvila.survival.survival.instance;
 
 public class HomeManager {
 
-    private final Json homeData;
-
-    public HomeManager() {
-        this.homeData = new Json("homedata.json", instance.getDataFolder() + "/data/");
-    }
-
     private String encode(String homeName) {
         if (homeName == null) return null;
         return Base64.getEncoder().encodeToString(homeName.getBytes(StandardCharsets.UTF_8));
@@ -50,6 +44,8 @@ public class HomeManager {
         float pitch = location.getPitch();
 
         Thread.startVirtualThread(() -> {
+            Json homeData = new Json("homedata.json", instance.getDataFolder() + "/data/");
+
             String root = uuid + "." + pathKey;
 
             homeData.set(root + ".realName", home);
@@ -67,7 +63,6 @@ public class HomeManager {
     public void putHomeIntoCache(UUID uuid) {
         HashMap<String, Location> data = homes.getOrDefault(uuid, new HashMap<>());
         List<String> homesFromStorage = getHomesFromStorage(uuid);
-
         if (homesFromStorage == null) return;
 
         for (String homeName : homesFromStorage) {
@@ -80,6 +75,8 @@ public class HomeManager {
         String pathKey = encode(home);
 
         Thread.startVirtualThread(() -> {
+            Json homeData = new Json("homedata.json", instance.getDataFolder() + "/data/");
+
             if (homeData.contains(uuid + "." + pathKey)) {
                 homeData.set(uuid + "." + pathKey, null);
             }
@@ -89,6 +86,8 @@ public class HomeManager {
     }
 
     public void deleteHomesInWorld(String worldName) {
+        Json homeData = new Json("homedata.json", instance.getDataFolder() + "/data/");
+
         List<String> homeowners = new ArrayList<>(homeData.getFileData().singleLayerKeySet());
 
         for (String homeowner : homeowners) {
@@ -105,6 +104,8 @@ public class HomeManager {
     }
 
     public Location getHomeFromStorage(UUID uuid, String home) {
+        Json homeData = new Json("homedata.json", instance.getDataFolder() + "/data/");
+
         String pathKey = encode(home);
         String root = uuid + "." + pathKey;
 
@@ -128,9 +129,10 @@ public class HomeManager {
     }
 
     public ArrayList<String> getHomesFromStorage(UUID uuid) {
+        Json homeData = new Json("homedata.json", instance.getDataFolder() + "/data/");
+
         if (homeData.contains(String.valueOf(uuid))) {
             ArrayList<String> decodedHomes = new ArrayList<>();
-
             Set<String> encodedKeys = homeData.getFileData().singleLayerKeySet(String.valueOf(uuid));
 
             for (String key : encodedKeys) {
@@ -150,6 +152,7 @@ public class HomeManager {
     }
 
     public void editHomeName(UUID uuid, String oldHome, String newHome) {
+        Json homeData = new Json("homedata.json", instance.getDataFolder() + "/data/");
         String oldKey = encode(oldHome);
 
         if (homeData.getFileData().containsKey(uuid + "." + oldKey)) {
@@ -160,7 +163,6 @@ public class HomeManager {
             }
         }
     }
-
     public int getAllowedHomes() {
         return 3;
     }
