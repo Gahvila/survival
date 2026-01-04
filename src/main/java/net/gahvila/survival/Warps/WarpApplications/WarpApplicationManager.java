@@ -28,6 +28,11 @@ public class WarpApplicationManager {
     }
 
     public void sendWarpApplication(Player player, String warpName, Location location) throws IOException {
+        if (!warpManager.isLocationSafe(location)) {
+            player.sendRichMessage("<red>Sijainti jossa olet ei ole turvallinen.");
+            return;
+        }
+
         if (warpName == null || warpName.trim().isEmpty()) {
             player.sendRichMessage("<red>Warpin nimi ei voi olla tyhjä.");
             return;

@@ -162,25 +162,24 @@ public class WarpCommands {
                         }))
                 .withSubcommand(new CommandAPICommand("review")
                         .withArguments(new UUIDArgument("application"))
-                        .withOptionalArguments(new BooleanArgument("accepted"))
+                        .withOptionalArguments(new TextArgument("action")
+                                .replaceSuggestions(ArgumentSuggestions.strings("true", "false", "teleport")))
                         .withOptionalArguments(new GreedyStringArgument("reason"))
                         .executes((sender, args) -> {
-                            UUID application = UUID.fromString(args.getRaw("application"));
+                            UUID application = (UUID) args.get("application");
 
                             if (!warpApplicationManager.getApplications().contains(application)) {
                                 sender.sendMessage("Tuota hakemusta ei löytynyt, tai se on jo käsitelty.");
                                 return;
                             }
 
-                            if (args.getRaw("accepted") == null) {
+                            String action = (String) args.get("action");
+
+                            if (action == null) {
                                 sender.sendRichMessage("Vaihtoehtoja:");
                                 if (sender instanceof Player) {
-                                    Location location = warpApplicationManager.getApplicationLocation(application);
-                                    if(location != null) {
-                                        String teleportCommand = "/tp " + sender.getName() + " " + location.getX() + " " + location.getY() + " " + location.getZ() + " " + location.getYaw() + " " + location.getPitch();
-                                        sender.sendRichMessage("<click:run_command:'" + teleportCommand + "'><white><u>Teleporttaa warpin sijaintiin");
-                                    }
-                                    sender.sendRichMessage("");
+                                    String tpArgCommand = "/adminwarp review " + application + " teleport";
+                                    sender.sendRichMessage("<click:run_command:'" + tpArgCommand + "'><white><u>Teleporttaa warpin sijaintiin");
                                 }
                                 String acceptCommand = "/adminwarp review " + application + " true ";
                                 String denyCommand = "/adminwarp review " + application + " false ";
@@ -190,7 +189,22 @@ public class WarpCommands {
                                 return;
                             }
 
-                            boolean accepted = Boolean.parseBoolean(args.getRaw("accepted"));
+                            if (action.equalsIgnoreCase("teleport")) {
+                                if (sender instanceof Player player) {
+                                    Location location = warpApplicationManager.getApplicationLocation(application);
+                                    if (location != null) {
+                                        player.teleportAsync(location);
+                                        sender.sendMessage("Teleportattiin hakemuksen sijaintiin.");
+                                    } else {
+                                        sender.sendMessage("Hakemuksen sijaintia ei löytynyt.");
+                                    }
+                                } else {
+                                    sender.sendMessage("Vain pelaajat voivat teleportata.");
+                                }
+                                return;
+                            }
+
+                            boolean accepted = Boolean.parseBoolean(action);
                             String reason = (String) args.get("reason");
 
                             if (reason == null) reason = "";
